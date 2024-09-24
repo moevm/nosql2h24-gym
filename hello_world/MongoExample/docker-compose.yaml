@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongo
+    depends_on:
+      - mongo
+    networks:
+      - mynetwork
+
+  mongo:
+    image: mongo:8.0
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
