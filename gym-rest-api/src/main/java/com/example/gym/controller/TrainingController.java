@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.gym.exception.InvalidDataException;
+import com.example.gym.exception.ResourceNotFoundException;
 import com.example.gym.model.client.ClientPojo;
 import com.example.gym.model.client.ResponseClientDto;
 import com.example.gym.model.dto.ResponseError;
@@ -103,17 +105,9 @@ public class TrainingController {
             @PathVariable String trainingId,
             @Parameter(description = "Идентификатор клиента, которого необходимо записать", required = true)
             @PathVariable String clientId
-    ) {
-        try {
-            trainingService.registrationClientForTraining(trainingId, clientId);
-            return ResponseEntity.ok().body("Клиент записан");
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        } catch (IllegalArgumentException exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        } catch (Exception exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        }
+    ) throws ResourceNotFoundException, InvalidDataException {
+        trainingService.registrationClientForTraining(trainingId, clientId);
+        return ResponseEntity.ok().body("Клиент записан");
     }
 
     @PutMapping("/{trainingId}")
@@ -144,15 +138,9 @@ public class TrainingController {
             @PathVariable String trainingId,
             @RequestBody @Parameter(description = "Сущность тренировки, для обновления существующей тренировки", required = true)
             CreateTrainingDto updateTrainingDto
-    ) {
-        try {
-            ResponseTrainingDto updatedTraining = trainingService.updateTraining(trainingId, updateTrainingDto);
-            return ResponseEntity.ok().body(updatedTraining);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        } catch (Exception exception) {
-            return responseService.getBadRequestResponseEntity("Некорректные данные");
-        }
+    ) throws ResourceNotFoundException, InvalidDataException {
+        ResponseTrainingDto updatedTraining = trainingService.updateTraining(trainingId, updateTrainingDto);
+        return ResponseEntity.ok().body(updatedTraining);
     }
 
     @GetMapping("/{trainingId}")
@@ -181,15 +169,9 @@ public class TrainingController {
     public ResponseEntity<?> getTraining(
             @Parameter(description = "Идентификатор тренировки, которую необходимо получить.", required = true)
             @PathVariable String trainingId
-    ) {
-        try {
-            ResponseTrainingDto updatedTraining = trainingService.findTrainingById(trainingId);
-            return ResponseEntity.ok().body(updatedTraining);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        } catch (Exception exception) {
-            return responseService.getBadRequestResponseEntity("Некорректные данные");
-        }
+    ) throws ResourceNotFoundException {
+        ResponseTrainingDto updatedTraining = trainingService.findTrainingById(trainingId);
+        return ResponseEntity.ok().body(updatedTraining);
     }
 
     @GetMapping("/{trainingId}/registration")
@@ -214,13 +196,9 @@ public class TrainingController {
     public ResponseEntity<?> findTrainingClients(
             @Parameter(description = "Идентификатор тренировки", required = true)
             @PathVariable String trainingId
-    ) {
-        try {
-            List<ClientPojo> clients = trainingService.findTrainingClients(trainingId);
-            return ResponseEntity.ok().body(clients);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        }
+    ) throws ResourceNotFoundException {
+        List<ClientPojo> clients = trainingService.findTrainingClients(trainingId);
+        return ResponseEntity.ok().body(clients);
     }
 
 }

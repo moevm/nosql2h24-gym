@@ -22,22 +22,24 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/rooms")
 @RequiredArgsConstructor
+@Tag(name = "Room", description = "Операции, связанные с залами")
 public class RoomController {
 
     private final RoomService roomService;
 
     @PostMapping
-    @Operation(summary = "Добавить тренировку по идентификатору тренера.",
-                description = "Добавить тренировку по идентификатору тренера.",
+    @Operation(summary = "Создать зал.",
+                description = "Создает зал.",
                 responses = {
                         @ApiResponse(
                                 responseCode = "201",
-                                description = "Тренировка успешно создана.",
+                                description = "Зал успешно создан.",
                                 content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ResponseRoomDto.class))
                         ),
@@ -45,12 +47,6 @@ public class RoomController {
                             responseCode = "400",
                             description = "Неккоректные данные.",
                             content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseError.class))
-                        ),
-                        @ApiResponse(
-                                responseCode = "404",
-                                description = "Тренер с указанным идентификатором не найден.",
-                                content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = ResponseError.class))
                         )
     })
@@ -63,12 +59,12 @@ public class RoomController {
     }
 
     @GetMapping
-    @Operation(summary = "Получить все комнаты",
-                description = "Возвращает все комнаты.",
+    @Operation(summary = "Получить все залы",
+                description = "Возвращает все залы.",
                 responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Список комнат успешно получен.",
+                            description = "Список залов успешно получен.",
                             content = @Content(mediaType = "application/json",
                                     array = @ArraySchema(
                                             schema = @Schema(implementation = ResponseRoomDto.class) 
@@ -80,18 +76,18 @@ public class RoomController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Удалить комнтаы по её идентификатору.",
-                    description = "Удаляет комнату по её идентификатору.",
+    @Operation(summary = "Удалить зал по его идентификатору.",
+                    description = "Удаляет зал по его идентификатору.",
                     responses = {
                             @ApiResponse(
                                     responseCode = "200",
-                                    description = "Комната успешно удалена.",
+                                    description = "Зал успешно удален.",
                                     content = @Content(mediaType = "application/json",
                                             schema = @Schema(implementation = String.class))
                             )
     })
-    public ResponseEntity<?> deleteTrainer(
-            @PathVariable @Parameter(description = "Идентификатор комнаты, которую необходимо удалить", required = true)
+    public ResponseEntity<?> deleteRoom(
+            @PathVariable @Parameter(description = "Идентификатор зала, который необходимо удалить", required = true)
             String id
     ) {
         roomService.delete(id);

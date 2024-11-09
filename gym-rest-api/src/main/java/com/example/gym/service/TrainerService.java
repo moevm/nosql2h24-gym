@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.gym.exception.InvalidDataException;
+import com.example.gym.exception.ResourceNotFoundException;
+import com.example.gym.exception.UniquenessViolationException;
 import com.example.gym.model.trainer.ResponseTrainerDto;
 import com.example.gym.model.trainer.ResponseTrainerWithoutTrainingsDto;
 import com.example.gym.model.trainer.UpdateTrainerDto;
@@ -69,7 +72,7 @@ public class TrainerService {
     // }
 
     @Transactional
-    public ResponseTrainerDto updateTrainer(String id, UpdateTrainerDto dto) {
+    public ResponseTrainerDto updateTrainer(String id, UpdateTrainerDto dto) throws UniquenessViolationException, ResourceNotFoundException {
         User trainer = getById(id);
 
         if (!trainer.getName().equals(dto.getName()) && dto.getName() != null) {
@@ -82,7 +85,8 @@ public class TrainerService {
 
         if (!trainer.getEmail().equals(dto.getEmail()) && dto.getEmail() != null) {
             if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
-                throw new IllegalArgumentException("Пользователь с такой электронной почтой уже существует");
+                throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
+                        .formatted(dto.getEmail()));
             }
 
             trainer.setEmail(dto.getEmail());
@@ -90,7 +94,8 @@ public class TrainerService {
 
         if (!trainer.getPhoneNumber().equals(dto.getPhoneNumber()) && dto.getPhoneNumber() != null) {
             if (uniquenessCheckService.findByPhoneNumber(dto.getPhoneNumber()).isPresent()) {
-                throw new IllegalArgumentException("Пользователь с таким номером телефона уже существует");
+                throw new UniquenessViolationException("Пользователь с номером телефона %s уже существует"
+                        .formatted(dto.getPhoneNumber()));
             }
 
             trainer.setPhoneNumber(dto.getPhoneNumber());
@@ -140,7 +145,7 @@ public class TrainerService {
     //     return modelMapper.toTrainerDto(updatedTrainer);
     // }
 
-    public ResponseTrainerDto findById(String id) {
+    public ResponseTrainerDto findById(String id) throws ResourceNotFoundException {
         ResponseTrainerDto trainer = modelMapper.toTrainerDto(getById(id));
         return trainer;
     }
@@ -151,14 +156,14 @@ public class TrainerService {
     // }
 
     @Transactional
-    public ResponseTrainingDto createTraining(CreateTrainingDto dto, String trainerId) {
+    public ResponseTrainingDto createTraining(CreateTrainingDto dto, String trainerId) throws ResourceNotFoundException, InvalidDataException {
         User trainer = getById(trainerId);
 
         LocalDateTime newStartTime = dto.getStartTime();
         LocalDateTime newEndTime = dto.getEndTime();
 
         if (newStartTime.isAfter(newEndTime)) {
-            throw new IllegalArgumentException("Время начала тренировки должно быть раньше времени окончания.");
+            throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
         }
     
         List<Training> overlappingTrainings = trainingService.findAll().stream()
@@ -169,7 +174,7 @@ public class TrainerService {
                 .collect(Collectors.toList());
         
         if (!overlappingTrainings.isEmpty()) {
-            throw new IllegalArgumentException("Время новой тренировки пересекается с существующей тренировкой.");
+            throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
         }
         return trainingService.createTraining(dto, trainer);
     }
@@ -212,12 +217,10 @@ public class TrainerService {
     //     return trainingService.findTrainingClients(trainingId);
     // }
 
-    public User getById(String id) throws IllegalArgumentException {
-        Optional<User> optionalTrainer = userRepository.findById(id);
-        if (optionalTrainer.isEmpty()) {
-            throw new NoResultException("Тренер с id %s не найден".formatted(id));
-        }
-        return optionalTrainer.get();
+    public User getById(String id) throws ResourceNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Тренер с id %s не найден".formatted(id)));
+
     }
 
 }

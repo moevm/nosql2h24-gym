@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 
+import com.example.gym.exception.ResourceNotFoundException;
 import com.example.gym.model.client.ResponseClientDto;
 import com.example.gym.model.subscription.SubscriptionStatus;
 import com.example.gym.model.subscription.dto.CreateSubscriptionDto;
@@ -15,7 +16,6 @@ import com.example.gym.model.user.pojo.Subscription;
 import com.example.gym.repository.UserRepository;
 import com.example.gym.util.Mapper;
 
-import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -27,13 +27,10 @@ public class SubscriptionService {
     private final Mapper modelMapper;
 
     @Transactional
-    public ResponseClientDto createSubscription(CreateSubscriptionDto dto, String clientId) {
-        Optional<User> optionalClient = userRepository.findById(clientId);
-        if (optionalClient.isEmpty()) {
-            throw new NoResultException("Клиент с id %s не найден".formatted(clientId));
-        }
+    public ResponseClientDto createSubscription(CreateSubscriptionDto dto, String clientId) throws ResourceNotFoundException {
+        User client = userRepository.findById(clientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Клиент с id %s не найден".formatted(clientId)));
         
-        User client = optionalClient.get();
         ClientInfo clientInfo = client.getClientInfo();
         List<Subscription> subscriptions = clientInfo.getSubscription();
         LocalDate now = LocalDate.now();

@@ -7,6 +7,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.example.gym.exception.AuthenticationException;
+import com.example.gym.exception.UniquenessViolationException;
 import com.example.gym.model.dto.security.JwtResponse;
 import com.example.gym.model.dto.security.LoginUserDto;
 import com.example.gym.model.dto.security.RegisterUserDto;
@@ -28,14 +30,14 @@ public class AuthenticationService {
     private final UserDetailService userDetailService;
     private final JwtTokenUtils jwtTokenUtils;
 
-    public void register(RegisterUserDto dto) {
+    public void register(RegisterUserDto dto) throws UniquenessViolationException {
         if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Пользователь с электронной почтой %s уже существует"
+            throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
                     .formatted(dto.getEmail()));
         }
 
         if (uniquenessCheckService.findByPhoneNumber(dto.getPhoneNumber()).isPresent()) {
-            throw new IllegalArgumentException("Пользователь с номером телефона %s уже существует"
+            throw new UniquenessViolationException("Пользователь с номером телефона %s уже существует"
                     .formatted(dto.getPhoneNumber()));
         }
 
@@ -51,12 +53,12 @@ public class AuthenticationService {
 
     }
 
-    public JwtResponse login(LoginUserDto dto) {
+    public JwtResponse login(LoginUserDto dto) throws AuthenticationException {
         try {
             ayAuthenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
         } catch (Exception exception) {
-            throw new IllegalArgumentException("Неверные логин или пароль");
+            throw new AuthenticationException("Неверные логин или пароль");
         }
 
         UserDetails userDetails = userDetailService.loadUserByUsername(dto.getEmail());

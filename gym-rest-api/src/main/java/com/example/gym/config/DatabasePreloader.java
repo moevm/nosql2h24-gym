@@ -34,7 +34,6 @@ public class DatabasePreloader implements ApplicationRunner {
     }
 
     private void createAdmin() {
-        userRepository.deleteAll();
         if (userRepository.findAllByRoleIndex(UserRoleType.ROLE_ADMIN.ordinal()).size() == 0) {
             User admin = new User(
                 "gym-admin", 

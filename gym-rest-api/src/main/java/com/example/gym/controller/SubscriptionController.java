@@ -1,7 +1,6 @@
 package com.example.gym.controller;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.gym.exception.ResourceNotFoundException;
 import com.example.gym.model.client.ResponseClientDto;
 import com.example.gym.model.dto.ResponseError;
 import com.example.gym.model.subscription.dto.CreateSubscriptionDto;
@@ -28,7 +28,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -38,7 +37,6 @@ import lombok.RequiredArgsConstructor;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
-    private final ResponseService responseService;
 
     @PostMapping("/client/{clientId}")
     @Operation(summary = "Создать абонемент по идентификатору клиента.",
@@ -68,13 +66,9 @@ public class SubscriptionController {
             CreateSubscriptionDto dto,
             @PathVariable @Parameter(description = "Идентификатор клиента, для которого создается абонемент.")
             String clientId
-    ) {
-        try {
-            ResponseClientDto createdSubscription = subscriptionService.createSubscription(dto, clientId);
-            return ResponseEntity.created(URI.create("/subscriptions/" + createdSubscription.getId())).body(createdSubscription);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        }
+    ) throws ResourceNotFoundException {
+        ResponseClientDto createdSubscription = subscriptionService.createSubscription(dto, clientId);
+        return ResponseEntity.created(URI.create("/subscriptions/" + createdSubscription.getId())).body(createdSubscription);
     }
 
 //     @GetMapping

@@ -1,21 +1,18 @@
 package com.example.gym.service;
 
-import java.util.Optional;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.gym.exception.ResourceNotFoundException;
+import com.example.gym.exception.UniquenessViolationException;
 import com.example.gym.model.client.ResponseClientDto;
-import com.example.gym.model.client.ResponseClientForStatistic;
 import com.example.gym.model.client.UpdateClientDto;
-import com.example.gym.model.subscription.dto.ResponseSubscriptionDto;
-import com.example.gym.model.training.dto.ResponseTrainingForClientDto;
 import com.example.gym.model.user.User;
 import com.example.gym.model.user.UserRoleType;
 import com.example.gym.repository.UserRepository;
 import com.example.gym.util.Mapper;
 
-import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -50,9 +47,8 @@ public class ClientService {
                 .toList();
     }
 
-    public ResponseClientDto findClientById(String id) {
-        User client = getById(id);
-        return modelMapper.toClientDto(client);
+    public ResponseClientDto findClientById(String id) throws ResourceNotFoundException {
+        return modelMapper.toClientDto(getById(id));
     }
 
     public void deleteClient(String id) {
@@ -60,7 +56,7 @@ public class ClientService {
     }
 
     @Transactional
-    public ResponseClientDto updateClient(String id, UpdateClientDto dto) {
+    public ResponseClientDto updateClient(String id, UpdateClientDto dto) throws ResourceNotFoundException, UniquenessViolationException {
         User client = getById(id);
         
         if (!client.getName().equals(dto.getName()) && dto.getName() != null) {
@@ -73,7 +69,8 @@ public class ClientService {
 
         if (!client.getEmail().equals(dto.getEmail()) && dto.getEmail() != null) {
             if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
-                throw new IllegalArgumentException("Пользователь с такой электронной почтой уже существует");
+                throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
+                        .formatted(dto.getEmail()));
             } 
 
             client.setEmail(dto.getEmail());
@@ -81,7 +78,8 @@ public class ClientService {
 
         if (!client.getPhoneNumber().equals(dto.getPhoneNumber()) && dto.getPhoneNumber() != null) {
             if (uniquenessCheckService.findByPhoneNumber(dto.getPhoneNumber()).isPresent()) {
-                throw new IllegalArgumentException("Пользователь с таким номер телефона уже существует");
+                throw new UniquenessViolationException("Пользователь с номером телефона %s уже существует"
+                        .formatted(dto.getPhoneNumber()));
             } 
 
             client.setPhoneNumber(dto.getPhoneNumber());
@@ -123,13 +121,9 @@ public class ClientService {
     //     return modelMapper.toDto(subscription);
     // }
 
-    public User getById(String id) {
-        Optional<User> optionalClient = userRepository.findById(id);
-        if (optionalClient.isEmpty()) {
-            throw new NoResultException("Клиент с id %s не найден".formatted(id));
-        }
-
-        return optionalClient.get();
+    public User getById(String id) throws ResourceNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Клиент с id %s не найден".formatted(id)));
     }
 
 }

@@ -5,13 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.gym.exception.AuthenticationException;
+import com.example.gym.exception.UniquenessViolationException;
 import com.example.gym.model.admin.ResponseAdminDto;
 import com.example.gym.model.dto.ResponseError;
 import com.example.gym.model.dto.security.JwtResponse;
 import com.example.gym.model.dto.security.LoginUserDto;
 import com.example.gym.model.dto.security.RegisterUserDto;
 import com.example.gym.service.AuthenticationService;
-import com.example.gym.util.ResponseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final ResponseService responseService;
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
@@ -47,30 +47,18 @@ public class AuthenticationController {
     public ResponseEntity<?> registration(
             @RequestBody @Parameter(description = "Сущность пользователя для создания", required = true)
             RegisterUserDto registerUserDto
-    ) {
-        try {
-            authenticationService.register(registerUserDto);
-            return ResponseEntity.ok().body(null);
-        } catch (IllegalArgumentException exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        } catch (Exception exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        }
+    ) throws UniquenessViolationException {
+        authenticationService.register(registerUserDto);
+        return ResponseEntity.ok().body(null);
     } 
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @RequestBody @Parameter(description = "Сущность пользователя для входа", required = true)
             LoginUserDto loginUserDto
-    ) {
-        try {
-            JwtResponse tokens = authenticationService.login(loginUserDto);
-            return ResponseEntity.ok().body(tokens);
-        } catch (IllegalArgumentException exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        }  catch (Exception exception) {
-            return responseService.getBadRequestResponseEntity("Некорректные данные");
-        }
+    ) throws AuthenticationException {
+        JwtResponse tokens = authenticationService.login(loginUserDto);
+        return ResponseEntity.ok().body(tokens);
     }
 
 }

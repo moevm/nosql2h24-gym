@@ -1,8 +1,10 @@
 package com.example.gym.service;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import com.example.gym.repository.RoomRepository;
 import com.example.gym.repository.TrainingRepository;
 import com.example.gym.repository.UserRepository;
 import com.example.gym.util.Mapper;
+import com.example.gym.exception.InvalidDataException;
+import com.example.gym.exception.ResourceNotFoundException;
 import com.example.gym.model.client.ClientPojo;
 import com.example.gym.model.client.ResponseClientDto;
 import com.example.gym.model.room.Room;
@@ -39,7 +43,7 @@ public class TrainingService {
     private final Mapper modelMapper;
     private final RoomRepository roomRepository;
 
-    public ResponseTrainingDto findTrainingById(String id) {
+    public ResponseTrainingDto findTrainingById(String id) throws ResourceNotFoundException {
         Training training = getById(id);
         return modelMapper.toDto(training);
     }
@@ -62,7 +66,12 @@ public class TrainingService {
     // }
 
     @Transactional
-    public ResponseTrainingDto createTraining(CreateTrainingDto dto, User trainer) {
+    public ResponseTrainingDto createTraining(CreateTrainingDto dto, User trainer) throws InvalidDataException {
+        LocalDateTime newStartTime = dto.getStartTime();
+        LocalDateTime newEndTime = dto.getEndTime();
+        validateTime(newStartTime, newEndTime);
+        validateOverlapping(newStartTime, newEndTime, trainer.getId());
+
         Training training = modelMapper.toModel(dto);
         TrainerPojo trainerPojo = modelMapper.toPojo(trainer);
         training.setTrainerPojo(trainerPojo);
@@ -83,12 +92,12 @@ public class TrainingService {
     }
 
     @Transactional
-    public void registrationClientForTraining(String trainigId, String clientId) {
+    public void registrationClientForTraining(String trainigId, String clientId) throws ResourceNotFoundException, InvalidDataException {
         Training training = getById(trainigId);
         User client = clientService.getById(clientId);
 
         if (!training.isHasFreeRegistration()) {
-            throw new IllegalArgumentException("Свободных записей нет");
+            throw new InvalidDataException("Свободных записей нет");
         }
 
         List<ClientPojo> clientsInTraining = training.getClients();
@@ -124,14 +133,19 @@ public class TrainingService {
     }
 
     @Transactional
-    public ResponseTrainingDto updateTraining(String trainingId, CreateTrainingDto dto) {
+    public ResponseTrainingDto updateTraining(
+            String trainingId, 
+            CreateTrainingDto dto
+    ) throws ResourceNotFoundException, InvalidDataException {
         Training training = getById(trainingId);
 
         if (dto.getStartTime() != null && !training.getStartTime().equals(dto.getStartTime())) {
+            validateTime(dto.getStartTime(), training.getEndTime());
             training.setStartTime(dto.getStartTime());
         }
 
         if (dto.getEndTime() != null && !training.getEndTime().equals(dto.getEndTime())) {
+            validateTime(training.getStartTime(), dto.getEndTime());
             training.setEndTime(dto.getEndTime());
         }
 
@@ -153,7 +167,7 @@ public class TrainingService {
         return modelMapper.toDto(updatedTraining);
     }
 
-    public List<ClientPojo> findTrainingClients(String trainingId) {
+    public List<ClientPojo> findTrainingClients(String trainingId) throws ResourceNotFoundException {
         Training training = getById(trainingId);
         return training.getClients();
     }
@@ -178,12 +192,28 @@ public class TrainingService {
         return trainingRepository.findAll();
     }
 
-    public Training getById(String id) {
-        Optional<Training> optionalTraining = trainingRepository.findById(id);
-        if (optionalTraining.isEmpty()) {
-            throw new NoResultException("Тренировка с id %s не найдена".formatted(id));
-        }
-
-        return optionalTraining.get();
+    public Training getById(String id) throws ResourceNotFoundException {
+        return trainingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Тренировка с id %s не найдена".formatted(id)));
     }
+
+    private void validateTime(LocalDateTime startTime, LocalDateTime endTime) throws InvalidDataException {
+        if (startTime.isAfter(endTime)) {
+            throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
+        }
+    }
+
+    private void validateOverlapping(LocalDateTime startTime, LocalDateTime endTime, String trainerId) throws InvalidDataException {
+        List<Training> overlappingTrainings = findAll().stream()
+                .filter(training -> training.getTrainerPojo().getId().equals(trainerId))
+                .filter(training -> 
+                    (startTime.isBefore(training.getEndTime()) && endTime.isAfter(training.getStartTime()))
+                )
+                .collect(Collectors.toList());
+        
+        if (!overlappingTrainings.isEmpty()) {
+            throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
+        }
+    }
+
 }

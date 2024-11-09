@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.gym.exception.ResourceNotFoundException;
+import com.example.gym.exception.UniquenessViolationException;
 import com.example.gym.model.client.ResponseClientDto;
 import com.example.gym.model.client.UpdateClientDto;
 import com.example.gym.model.dto.ResponseError;
 import com.example.gym.service.ClientService;
-import com.example.gym.util.ResponseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,7 +25,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 public class ClientController {
 
     private final ClientService clientService;
-    private final ResponseService responseService;
 
     @GetMapping
     @Operation(summary = "Получить всех клиентов",
@@ -74,13 +73,9 @@ public class ClientController {
     public ResponseEntity<?> findClientById(
             @PathVariable @Parameter(description = "Идентификатор клиента, которго необходимо получить", required = true)
             String clientId
-    ) {
-        try {
-            ResponseClientDto client = clientService.findClientById(clientId);
-            return ResponseEntity.ok().body(client);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        }
+    ) throws ResourceNotFoundException {
+        ResponseClientDto client = clientService.findClientById(clientId);
+        return ResponseEntity.ok().body(client);
     }
 
     @PutMapping("/{clientId}")
@@ -111,15 +106,9 @@ public class ClientController {
             String clientId,
             @RequestBody @Parameter(description = "Сущность клиента, для обновления существуюшего клиента", required = true)
             UpdateClientDto dto
-    ) {
-        try {
-            ResponseClientDto updatedClient = clientService.updateClient(clientId, dto);
-            return ResponseEntity.ok().body(updatedClient);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        } catch (IllegalArgumentException exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        }
+    ) throws ResourceNotFoundException, UniquenessViolationException {
+        ResponseClientDto updatedClient = clientService.updateClient(clientId, dto);
+        return ResponseEntity.ok().body(updatedClient);
     }
 
     @DeleteMapping("/{clientId}")

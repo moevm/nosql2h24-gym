@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.gym.exception.InvalidDataException;
+import com.example.gym.exception.ResourceNotFoundException;
+import com.example.gym.exception.UniquenessViolationException;
 import com.example.gym.model.dto.ResponseError;
 import com.example.gym.model.trainer.ResponseTrainerDto;
 import com.example.gym.model.trainer.ResponseTrainerWithoutTrainingsDto;
@@ -105,14 +108,9 @@ public class TrainerController {
     public ResponseEntity<?> findTrainerById(
             @Parameter(description = "Идентификатор тренера, которого нужно получить", required = true)
             @PathVariable String id
-    ) {
-        try {
-            ResponseTrainerDto trainer = trainerService.findById(id);
-            return ResponseEntity.ok().body(trainer);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity("Тренер с id %s не найден"
-                    .formatted(id));
-        }
+    ) throws ResourceNotFoundException {
+        ResponseTrainerDto trainer = trainerService.findById(id);
+        return ResponseEntity.ok().body(trainer);
     }
 
     @PutMapping("/{trainerId}")
@@ -143,15 +141,9 @@ public class TrainerController {
             String trainerId,
             @RequestBody @Parameter(description = "Сущность тренера, для обновления существуюшего тренера", required = true)
             UpdateTrainerDto dto
-    ) {
-        try {
-            ResponseTrainerDto updatedTrainer = trainerService.updateTrainer(trainerId, dto);
-            return ResponseEntity.ok().body(updatedTrainer);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        } catch (IllegalArgumentException exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        }
+    ) throws UniquenessViolationException, ResourceNotFoundException {
+        ResponseTrainerDto updatedTrainer = trainerService.updateTrainer(trainerId, dto);
+        return ResponseEntity.ok().body(updatedTrainer);
     }
 
     @DeleteMapping("/{trainerId}")
@@ -233,17 +225,9 @@ public class TrainerController {
             @PathVariable String id,
             @RequestBody @Parameter(description = "Сущность тренировки, которую необходимо создать", required = true)
             CreateTrainingDto dto
-    ) {
-        try {
-            ResponseTrainingDto createdTraining = trainerService.createTraining(dto, id);
-            return ResponseEntity.created(URI.create("/training/" + createdTraining.getId())).body(createdTraining);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        } catch (IllegalArgumentException exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        } catch (Exception exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        }
+    ) throws ResourceNotFoundException, InvalidDataException {
+        ResponseTrainingDto createdTraining = trainerService.createTraining(dto, id);
+        return ResponseEntity.created(URI.create("/training/" + createdTraining.getId())).body(createdTraining);
     }
 
 }

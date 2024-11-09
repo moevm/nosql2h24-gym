@@ -1,10 +1,11 @@
 package com.example.gym.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.gym.exception.ResourceNotFoundException;
+import com.example.gym.exception.UniquenessViolationException;
 import com.example.gym.model.admin.ResponseAdminDto;
 import com.example.gym.model.admin.UpdateAdminDto;
 import com.example.gym.model.user.User;
@@ -12,7 +13,6 @@ import com.example.gym.model.user.UserRoleType;
 import com.example.gym.repository.UserRepository;
 import com.example.gym.util.Mapper;
 
-import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -43,7 +43,7 @@ public class AdminService {
                 .toList();
     }
 
-    public ResponseAdminDto findAdminById(String id) {
+    public ResponseAdminDto findAdminById(String id) throws ResourceNotFoundException {
         User admin = getById(id);
         return modelMapper.toAdminDto(admin);
     }
@@ -53,7 +53,10 @@ public class AdminService {
     }
 
     @Transactional
-    public ResponseAdminDto updateAdmin(String id, UpdateAdminDto dto) {
+    public ResponseAdminDto updateAdmin(
+            String id, 
+            UpdateAdminDto dto
+    ) throws ResourceNotFoundException, UniquenessViolationException {
         User admin = getById(id);
         
         if (!admin.getName().equals(dto.getName()) && dto.getName() != null) {
@@ -66,7 +69,8 @@ public class AdminService {
 
         if (!admin.getEmail().equals(dto.getEmail()) && dto.getEmail() != null) {
             if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
-                throw new IllegalArgumentException("Пользователь с такой электронной почтой существует");
+                throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
+                        .formatted(dto.getEmail()));
             } 
             
             admin.setEmail(dto.getEmail());
@@ -76,13 +80,10 @@ public class AdminService {
         return modelMapper.toAdminDto(updatedAdmin);
     }
 
-    public User getById(String id) {
-        Optional<User> optionalAdmin = userRepository.findById(id);
-        if (optionalAdmin.isEmpty()) {
-            throw new NoResultException("Админа с id %s не найден".formatted(id));
-        }
-
-        return optionalAdmin.get();
+    public User getById(String id) throws ResourceNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Админ с ID %s не найден"
+                        .formatted(id)));
     }
 
 }

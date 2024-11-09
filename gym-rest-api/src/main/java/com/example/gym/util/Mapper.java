@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import com.example.gym.model.admin.ResponseAdminDto;
 import com.example.gym.model.client.ClientPojo;
 import com.example.gym.model.client.ResponseClientDto;
+import com.example.gym.model.promotion.Promotion;
+import com.example.gym.model.promotion.dto.CreatePromotionDto;
+import com.example.gym.model.promotion.dto.ResponsePromotionDto;
 import com.example.gym.model.room.CreateRoomDto;
 import com.example.gym.model.room.ResponseRoomDto;
 import com.example.gym.model.room.Room;
@@ -41,6 +44,13 @@ public class Mapper {
             }
         });
 
+        this.modelMapper.addMappings(new PropertyMap<CreatePromotionDto, Promotion>() {
+            @Override
+            protected void configure() {
+                map().setId(null);
+            }
+        });
+
     }
 
     public ResponseAdminDto toAdminDto(User admin) {
@@ -69,8 +79,18 @@ public class Mapper {
         return modelMapper.map(createSectionDto, Section.class);
     }
 
+    public Promotion toModel(CreatePromotionDto createPromotionDto) {
+        return modelMapper.map(createPromotionDto, Promotion.class);
+    }
+
     public Room toModel(CreateRoomDto createRoomDto) {
         return modelMapper.map(createRoomDto, Room.class);
+    }
+
+    public ResponsePromotionDto toDto(Promotion promotion) {
+        ResponsePromotionDto dto = modelMapper.map(promotion, ResponsePromotionDto.class);
+        dto.setCreatedBy(promotion.getCreatedBy());
+        return dto;
     }
 
     public ResponseSectionDto toSectionDto(Section section) {

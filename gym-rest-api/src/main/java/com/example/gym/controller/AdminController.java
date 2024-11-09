@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.gym.exception.ResourceNotFoundException;
+import com.example.gym.exception.UniquenessViolationException;
 import com.example.gym.model.admin.ResponseAdminDto;
 import com.example.gym.model.admin.UpdateAdminDto;
 import com.example.gym.model.client.ResponseClientForStatistic;
@@ -81,13 +83,9 @@ public class AdminController {
     public ResponseEntity<?> getAdminById(
             @PathVariable @Parameter(description = "Идентификатор админа, которого необходимо получить", required = true)
             String adminId
-    ) {
-        try {
-            ResponseAdminDto adminDto = adminService.findAdminById(adminId);
-            return ResponseEntity.ok().body(adminDto);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        }
+    ) throws ResourceNotFoundException {
+        ResponseAdminDto adminDto = adminService.findAdminById(adminId);
+        return ResponseEntity.ok().body(adminDto);
     }
 
     @DeleteMapping("/{adminId}")
@@ -137,15 +135,9 @@ public class AdminController {
             String adminId,
             @RequestBody @Parameter(description = "Сущность админа, для обновления существуюшего админа", required = true)
             UpdateAdminDto dto
-    ) {
-        try {
-            ResponseAdminDto updatedAdmin = adminService.updateAdmin(adminId, dto);
-            return ResponseEntity.ok().body(updatedAdmin);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        } catch (IllegalArgumentException exception) {
-            return responseService.getBadRequestResponseEntity(exception.getMessage());
-        }
+    ) throws ResourceNotFoundException, UniquenessViolationException {
+        ResponseAdminDto updatedAdmin = adminService.updateAdmin(adminId, dto);
+        return ResponseEntity.ok().body(updatedAdmin);
     }
 
 //     @GetMapping("/trainings-conducted")
