@@ -1,9 +1,5 @@
 package com.example.gym.security;
 
-import com.example.gym.security.jwt.JwtAuthenticationEntryPoint;
-import com.example.gym.security.jwt.JwtAuthenticationFilter;
-import com.example.gym.security.service.UserDetailService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +13,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.example.gym.security.jwt.JwtAuthenticationEntryPoint;
+import com.example.gym.security.jwt.JwtAuthenticationFilter;
+import com.example.gym.security.service.UserDetailService;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity

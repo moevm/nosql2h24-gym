@@ -9,7 +9,7 @@ import com.example.gym.model.training.Training;
 
 public interface TrainingRepository extends MongoRepository<Training, String> {
 
-    List<Training> findAllByTrainerId(String trainerId);
-    Optional<Training> findByIdAndTrainerId(String id, String trainingId);
+    // List<Training> findAllByTrainerId(String trainerId);
+    // Optional<Training> findByIdAndTrainerId(String id, String trainingId);
 
 }

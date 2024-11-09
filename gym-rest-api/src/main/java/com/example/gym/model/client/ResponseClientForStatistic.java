@@ -1,14 +1,15 @@
 package com.example.gym.model.client;
 
+import java.util.List;
+
 import com.example.gym.model.training.dto.ResponseTrainingDto;
+
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

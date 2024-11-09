@@ -1,18 +1,14 @@
 package com.example.gym.model.user;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.example.gym.model.section.Section;
-import com.example.gym.model.subscription.Subscription;
-import com.example.gym.model.training.Training;
+import com.example.gym.model.user.pojo.ClientInfo;
+import com.example.gym.model.user.pojo.TrainerInfo;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -38,35 +34,26 @@ public class User {
     private String email;
     private String phoneNumber;
     private String comment;
-    private Integer experience;
-    private Integer hourlyRate = 0;
-    private String qualification;
-    private boolean free = true;
-
-    @DBRef(lazy = true)
-    private Set<UserRole> roles = new HashSet<>();
-
+    private List<String> roles; 
     private Integer roleIndex;
 
-    @DBRef(lazy = true)
-    private Set<Training> trainings;
-
-    @DBRef(lazy = true)
-    private Subscription subscription;
-
-    @DBRef(lazy = true)
-    private Set<Section> sections = new HashSet<>();
+    private TrainerInfo trainerInfo;
+    private ClientInfo clientInfo;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedDate;
 
-    public List<String> getSectionNames() {
-        return sections.stream()
-                .map(s -> s.getName())
-                .toList();
+    public User(String name, String surname, String email, String password, String phoneNumber, List<String> roles, Integer roleIndex) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.roles = roles;
+        this.roleIndex = roleIndex;
     }
 
 }

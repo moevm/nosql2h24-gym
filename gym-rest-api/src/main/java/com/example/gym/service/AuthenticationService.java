@@ -1,21 +1,22 @@
 package com.example.gym.service;
 
+import java.util.List;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
 import com.example.gym.model.dto.security.JwtResponse;
 import com.example.gym.model.dto.security.LoginUserDto;
 import com.example.gym.model.dto.security.RegisterUserDto;
 import com.example.gym.model.user.User;
 import com.example.gym.model.user.UserRoleType;
 import com.example.gym.repository.UserRepository;
-import com.example.gym.repository.UserRoleRepository;
 import com.example.gym.security.jwt.JwtTokenUtils;
 import com.example.gym.security.service.UserDetailService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +27,6 @@ public class AuthenticationService {
     private final AuthenticationManager ayAuthenticationManager;
     private final UserDetailService userDetailService;
     private final JwtTokenUtils jwtTokenUtils;
-    private final UserRoleRepository userRoleRepository;
 
     public void register(RegisterUserDto dto) {
         if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
@@ -46,8 +46,7 @@ public class AuthenticationService {
         userToCreate.setPassword(dto.getPassword());
         userToCreate.setPhoneNumber(dto.getPhoneNumber());
         userToCreate.setRoleIndex(UserRoleType.ROLE_USER.ordinal());
-        userToCreate.setRoles(Set.of(
-                userRoleRepository.findByName(UserRoleType.ROLE_USER)));
+        userToCreate.setRoles(List.of(UserRoleType.ROLE_USER.name()));
         userRepository.save(userToCreate);
 
     }

@@ -1,22 +1,23 @@
 package com.example.gym.service;
 
+import java.util.Optional;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.example.gym.model.client.ResponseClientDto;
 import com.example.gym.model.client.ResponseClientForStatistic;
 import com.example.gym.model.client.UpdateClientDto;
-import com.example.gym.model.subscription.Subscription;
 import com.example.gym.model.subscription.dto.ResponseSubscriptionDto;
 import com.example.gym.model.training.dto.ResponseTrainingForClientDto;
 import com.example.gym.model.user.User;
 import com.example.gym.model.user.UserRoleType;
 import com.example.gym.repository.UserRepository;
 import com.example.gym.util.Mapper;
+
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -90,37 +91,37 @@ public class ClientService {
         return modelMapper.toClientDto(updatedClient);
     }
 
-    public List<ResponseTrainingForClientDto> findClientTrainings(String id) {
-        User client = getById(id);
-        return client.getTrainings().stream()
-                .map(t -> modelMapper.toDtoWithTrainer(t))
-                .toList();
-    }
+    // public List<ResponseTrainingForClientDto> findClientTrainings(String id) {
+    //     User client = getById(id);
+    //     return client.getTrainings().stream()
+    //             .map(t -> modelMapper.toDtoWithTrainer(t))
+    //             .toList();
+    // }
 
-    public List<ResponseClientForStatistic> getClientsActivity() {
-        List<User> clients = userRepository.findAllByRoleIndex(ROLE_USER_INDEX);
-        return clients.stream()
-                .map(c -> {
-                    ResponseClientForStatistic responseClientForStatistic = new ResponseClientForStatistic();
-                    responseClientForStatistic.setClient(modelMapper.toClientDto(c));
-                    responseClientForStatistic.setCount(c.getTrainings().size());
-                    responseClientForStatistic.setTrainings(c.getTrainings().stream()
-                            .map(t -> modelMapper.toDto(t))
-                            .toList());  
-                    return responseClientForStatistic;
-                })
-                .toList();
-    }
+    // public List<ResponseClientForStatistic> getClientsActivity() {
+    //     List<User> clients = userRepository.findAllByRoleIndex(ROLE_USER_INDEX);
+    //     return clients.stream()
+    //             .map(c -> {
+    //                 ResponseClientForStatistic responseClientForStatistic = new ResponseClientForStatistic();
+    //                 responseClientForStatistic.setClient(modelMapper.toClientDto(c));
+    //                 responseClientForStatistic.setCount(c.getTrainings().size());
+    //                 responseClientForStatistic.setTrainings(c.getTrainings().stream()
+    //                         .map(t -> modelMapper.toDto(t))
+    //                         .toList());  
+    //                 return responseClientForStatistic;
+    //             })
+    //             .toList();
+    // }
 
-    public ResponseSubscriptionDto findClientSubscription(String id) {
-        User client = getById(id);
-        Subscription subscription = client.getSubscription();
-        if (subscription == null) {
-            return new ResponseSubscriptionDto();
-        } 
+    // public ResponseSubscriptionDto findClientSubscription(String id) {
+    //     User client = getById(id);
+    //     Subscription subscription = client.getSubscription();
+    //     if (subscription == null) {
+    //         return new ResponseSubscriptionDto();
+    //     } 
 
-        return modelMapper.toDto(subscription);
-    }
+    //     return modelMapper.toDto(subscription);
+    // }
 
     public User getById(String id) {
         Optional<User> optionalClient = userRepository.findById(id);

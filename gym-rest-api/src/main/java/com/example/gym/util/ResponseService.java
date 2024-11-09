@@ -1,9 +1,10 @@
 package com.example.gym.util;
 
-import com.example.gym.model.dto.ResponseError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.example.gym.model.dto.ResponseError;
 
 @Service
 public class ResponseService {

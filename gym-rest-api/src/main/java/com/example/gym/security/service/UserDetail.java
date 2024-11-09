@@ -1,18 +1,20 @@
 package com.example.gym.security.service;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.example.gym.model.user.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,7 +35,7 @@ public class UserDetail implements UserDetails {
         //        .map(role -> new SimpleGrantedAuthority(role))
         //        .collect(Collectors.toList());
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .map(role -> new SimpleGrantedAuthority(role))
                 .collect(Collectors.toList());
         UserDetail userDetails = new UserDetail(
                 null,

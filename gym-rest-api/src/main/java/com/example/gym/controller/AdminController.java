@@ -148,57 +148,57 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/trainings-conducted")
-    @Operation(summary = "Получить все проведенные тренировки.",
-        description = "Возвращает список всех проведенных тренировок.",
-        responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "Список проведенных тренировок успешно получен.",
-                        content = @Content(mediaType = "application/json",
-                                schema = @Schema(implementation = ResponseTrainingForStatistic.class))
-                )
-    })
-    public ResponseEntity<?> getNumberOfTrainingsConducted() {
-        ResponseTrainingForStatistic conductedTrainings = trainingService.findAllConductedTrainings();
-        return ResponseEntity.ok().body(conductedTrainings);
-    }
+//     @GetMapping("/trainings-conducted")
+//     @Operation(summary = "Получить все проведенные тренировки.",
+//         description = "Возвращает список всех проведенных тренировок.",
+//         responses = {
+//                 @ApiResponse(
+//                         responseCode = "200",
+//                         description = "Список проведенных тренировок успешно получен.",
+//                         content = @Content(mediaType = "application/json",
+//                                 schema = @Schema(implementation = ResponseTrainingForStatistic.class))
+//                 )
+//     })
+//     public ResponseEntity<?> getNumberOfTrainingsConducted() {
+//         ResponseTrainingForStatistic conductedTrainings = trainingService.findAllConductedTrainings();
+//         return ResponseEntity.ok().body(conductedTrainings);
+//     }
 
-    @GetMapping("/clients-activity")
-    @Operation(summary = "Получить активность всех клиентов.",
-                description = "Возвращает список всех активности всех клиентов.",
-                responses = {
-                        @ApiResponse(
-                                responseCode = "200",
-                                description = "Активность клиентов успешно получена.",
-                                        content = @Content(mediaType = "application/json",
-                                                array = @ArraySchema(
-                                                        schema = @Schema(implementation = ResponseClientForStatistic.class) 
-                                                ))
-                        )
-    })
-    public ResponseEntity<?> getClientsActivity() {
-        List<ResponseClientForStatistic> clientForStatistic = clientService.getClientsActivity();
-        return ResponseEntity.ok().body(clientForStatistic);
-    }
+//     @GetMapping("/clients-activity")
+//     @Operation(summary = "Получить активность всех клиентов.",
+//                 description = "Возвращает список всех активности всех клиентов.",
+//                 responses = {
+//                         @ApiResponse(
+//                                 responseCode = "200",
+//                                 description = "Активность клиентов успешно получена.",
+//                                         content = @Content(mediaType = "application/json",
+//                                                 array = @ArraySchema(
+//                                                         schema = @Schema(implementation = ResponseClientForStatistic.class) 
+//                                                 ))
+//                         )
+//     })
+//     public ResponseEntity<?> getClientsActivity() {
+//         List<ResponseClientForStatistic> clientForStatistic = clientService.getClientsActivity();
+//         return ResponseEntity.ok().body(clientForStatistic);
+//     }
 
-    @GetMapping("/trainers-activity")
-    @Operation(summary = "Получить активность всех тренеров.",
-                description = "Возвращает список всех активности всех тренеров.",
-                responses = {
-                        @ApiResponse(
-                                responseCode = "200",
-                                description = "Активность тренеров успешно получена.",
-                                        content = @Content(mediaType = "application/json",
-                                                array = @ArraySchema(
-                                                        schema = @Schema(implementation = ResponseTrainerForStatistic.class) 
-                                                ))
-                        )
-    })
-    public ResponseEntity<?> getTrainersActivity() {
-        List<ResponseTrainerForStatistic> trainersForStatistic = trainerService.getTrainersActivity();
-        return ResponseEntity.ok().body(trainersForStatistic);
-    }
+//     @GetMapping("/trainers-activity")
+//     @Operation(summary = "Получить активность всех тренеров.",
+//                 description = "Возвращает список всех активности всех тренеров.",
+//                 responses = {
+//                         @ApiResponse(
+//                                 responseCode = "200",
+//                                 description = "Активность тренеров успешно получена.",
+//                                         content = @Content(mediaType = "application/json",
+//                                                 array = @ArraySchema(
+//                                                         schema = @Schema(implementation = ResponseTrainerForStatistic.class) 
+//                                                 ))
+//                         )
+//     })
+//     public ResponseEntity<?> getTrainersActivity() {
+//         List<ResponseTrainerForStatistic> trainersForStatistic = trainerService.getTrainersActivity();
+//         return ResponseEntity.ok().body(trainersForStatistic);
+//     }
 
 
 } 

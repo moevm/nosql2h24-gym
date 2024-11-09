@@ -1,18 +1,20 @@
 package com.example.gym.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
 import com.example.gym.model.admin.ResponseAdminDto;
 import com.example.gym.model.admin.UpdateAdminDto;
 import com.example.gym.model.user.User;
 import com.example.gym.model.user.UserRoleType;
 import com.example.gym.repository.UserRepository;
 import com.example.gym.util.Mapper;
+
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

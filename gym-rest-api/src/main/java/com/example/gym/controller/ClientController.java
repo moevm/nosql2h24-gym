@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.gym.model.client.ResponseClientDto;
 import com.example.gym.model.client.UpdateClientDto;
 import com.example.gym.model.dto.ResponseError;
-import com.example.gym.model.subscription.dto.ResponseSubscriptionDto;
-import com.example.gym.model.training.dto.ResponseTrainingForClientDto;
 import com.example.gym.service.ClientService;
 import com.example.gym.util.ResponseService;
 
@@ -73,7 +71,7 @@ public class ClientController {
                                         schema = @Schema(implementation = ResponseError.class))
                         )
     })
-    public ResponseEntity<?> findClientByIdEntity(
+    public ResponseEntity<?> findClientById(
             @PathVariable @Parameter(description = "Идентификатор клиента, которго необходимо получить", required = true)
             String clientId
     ) {
@@ -133,64 +131,64 @@ public class ClientController {
         return ResponseEntity.ok().body(null);
     }
 
-    @GetMapping("/{clientId}/trainings")
-    @Operation(summary = "Получить тренировки клиента по его индентификатору.",
-                description = "Возвращает список тренировок клиента по его идентификатору.",
-                responses = {
-                        @ApiResponse(
-                                responseCode = "200",
-                                description = "Список тренировок успешно получен.",
-                                content = @Content(mediaType = "application/json",
-                                        array = @ArraySchema(
-                                                schema = @Schema(implementation = ResponseTrainingForClientDto.class) 
-                                        ))
-                        ),
-                        @ApiResponse(
-                                responseCode = "404",
-                                description = "Клиент с указанным идентификатором не найден.",
-                                content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseError.class))
-                        )
-    })
-    public ResponseEntity<?> findClientTrainings(
-            @PathVariable @Parameter(description = "Идентификатор клиента, которого необходимо получить", required = true)
-            String clientId
-    ) {
-        try {
-            List<ResponseTrainingForClientDto> trainings = clientService.findClientTrainings(clientId);
-            return ResponseEntity.ok().body(trainings);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        }
-    }
+//     @GetMapping("/{clientId}/trainings")
+//     @Operation(summary = "Получить тренировки клиента по его индентификатору.",
+//                 description = "Возвращает список тренировок клиента по его идентификатору.",
+//                 responses = {
+//                         @ApiResponse(
+//                                 responseCode = "200",
+//                                 description = "Список тренировок успешно получен.",
+//                                 content = @Content(mediaType = "application/json",
+//                                         array = @ArraySchema(
+//                                                 schema = @Schema(implementation = ResponseTrainingForClientDto.class) 
+//                                         ))
+//                         ),
+//                         @ApiResponse(
+//                                 responseCode = "404",
+//                                 description = "Клиент с указанным идентификатором не найден.",
+//                                 content = @Content(mediaType = "application/json",
+//                                         schema = @Schema(implementation = ResponseError.class))
+//                         )
+//     })
+//     public ResponseEntity<?> findClientTrainings(
+//             @PathVariable @Parameter(description = "Идентификатор клиента, которого необходимо получить", required = true)
+//             String clientId
+//     ) {
+//         try {
+//             List<ResponseTrainingForClientDto> trainings = clientService.findClientTrainings(clientId);
+//             return ResponseEntity.ok().body(trainings);
+//         } catch (NoResultException exception) {
+//             return responseService.getNotFoundResponseEntity(exception.getMessage());
+//         }
+//     }
 
-    @GetMapping("/{clientId}/subscription")
-    @Operation(summary = "Получить абонемент клиента по его индентификатору.",
-                description = "Возвращает абонемент клиента по его идентификатору.",
-                responses = {
-                        @ApiResponse(
-                                responseCode = "200",
-                                description = "Абонемент успешно получен.",
-                                content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseSubscriptionDto.class))
-                        ),
-                        @ApiResponse(
-                                responseCode = "404",
-                                description = "Клиент с указанным идентификатором не найден.",
-                                content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseError.class))
-                        )
-    })
-    public ResponseEntity<?> findClientSubscription(
-            @PathVariable @Parameter(description = "Идентификатор клиента, абонемент которго необходимо получить", required = true)
-            String clientId
-    ) {
-        try {
-            ResponseSubscriptionDto subcription = clientService.findClientSubscription(clientId);
-            return ResponseEntity.ok().body(subcription);
-        } catch (NoResultException exception) {
-            return responseService.getNotFoundResponseEntity(exception.getMessage());
-        }
-    }
+//     @GetMapping("/{clientId}/subscription")
+//     @Operation(summary = "Получить абонемент клиента по его индентификатору.",
+//                 description = "Возвращает абонемент клиента по его идентификатору.",
+//                 responses = {
+//                         @ApiResponse(
+//                                 responseCode = "200",
+//                                 description = "Абонемент успешно получен.",
+//                                 content = @Content(mediaType = "application/json",
+//                                         schema = @Schema(implementation = ResponseSubscriptionDto.class))
+//                         ),
+//                         @ApiResponse(
+//                                 responseCode = "404",
+//                                 description = "Клиент с указанным идентификатором не найден.",
+//                                 content = @Content(mediaType = "application/json",
+//                                         schema = @Schema(implementation = ResponseError.class))
+//                         )
+//     })
+//     public ResponseEntity<?> findClientSubscription(
+//             @PathVariable @Parameter(description = "Идентификатор клиента, абонемент которго необходимо получить", required = true)
+//             String clientId
+//     ) {
+//         try {
+//             ResponseSubscriptionDto subcription = clientService.findClientSubscription(clientId);
+//             return ResponseEntity.ok().body(subcription);
+//         } catch (NoResultException exception) {
+//             return responseService.getNotFoundResponseEntity(exception.getMessage());
+//         }
+//     }
 
 }

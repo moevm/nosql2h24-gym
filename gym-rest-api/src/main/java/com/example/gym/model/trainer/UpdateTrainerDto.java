@@ -28,7 +28,7 @@ public class UpdateTrainerDto {
     @Schema(description = "Опыт работы", example = "2")
     private Integer experience;
     @Schema(description = "Почасовая ставка в рублях", example = "500")
-    private Integer hourlyRate;
+    private Double hourlyRate;
     @Schema(description = "Специализация", example = "")
     private String specialization;
     @Schema(description = "Список названий секций, в которых преподает тренер", example = "['Name1', 'Name2']")

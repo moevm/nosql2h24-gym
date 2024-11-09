@@ -13,7 +13,10 @@ import lombok.Setter;
 @Schema(name = "Create Subscription", description = "Сущность абонемента для создания")
 public class CreateSubscriptionDto {
 
-    @Schema(description = "Длительность абонемента в днях", example = "30")
+    @Schema(description = "Длительность", example = "30")
     private Integer duration;
+
+    @Schema(description = "Стоимость", example = "300")
+    private Double price;
 
 }

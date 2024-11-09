@@ -1,21 +1,7 @@
 package com.example.gym.controller;
 
-import com.example.gym.model.client.ResponseClientDto;
-import com.example.gym.model.dto.ResponseError;
-import com.example.gym.model.training.dto.CreateTrainingDto;
-import com.example.gym.model.training.dto.ResponseTrainingClientDto;
-import com.example.gym.model.training.dto.ResponseTrainingDto;
-import com.example.gym.service.TrainingService;
-import com.example.gym.util.ResponseService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.NoResultException;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +12,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.example.gym.model.client.ClientPojo;
+import com.example.gym.model.client.ResponseClientDto;
+import com.example.gym.model.dto.ResponseError;
+import com.example.gym.model.training.dto.CreateTrainingDto;
+import com.example.gym.model.training.dto.ResponseTrainingClientDto;
+import com.example.gym.model.training.dto.ResponseTrainingDto;
+import com.example.gym.service.TrainingService;
+import com.example.gym.util.ResponseService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.NoResultException;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/trainings")
@@ -160,7 +163,7 @@ public class TrainingController {
                                     responseCode = "200",
                                     description = "Тренировка успешно получена.",
                                     content = @Content(mediaType = "application/json",
-                                            schema = @Schema(implementation = ResponseTrainingClientDto.class))
+                                            schema = @Schema(implementation = ResponseTrainingDto.class))
                             ),
                             @ApiResponse(
                                 responseCode = "400",
@@ -180,7 +183,7 @@ public class TrainingController {
             @PathVariable String trainingId
     ) {
         try {
-            ResponseTrainingClientDto updatedTraining = trainingService.findTrainingById(trainingId);
+            ResponseTrainingDto updatedTraining = trainingService.findTrainingById(trainingId);
             return ResponseEntity.ok().body(updatedTraining);
         } catch (NoResultException exception) {
             return responseService.getNotFoundResponseEntity(exception.getMessage());
@@ -197,7 +200,7 @@ public class TrainingController {
                                 responseCode = "200",
                                 description = "Список клиентов успешно получен.",
                                 content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseClientDto.class))
+                                        schema = @Schema(implementation = ClientPojo.class))
                         ),
                         @ApiResponse(
                                 responseCode = "404",
@@ -213,7 +216,7 @@ public class TrainingController {
             @PathVariable String trainingId
     ) {
         try {
-            List<ResponseClientDto> clients = trainingService.findTrainingClients(trainingId);
+            List<ClientPojo> clients = trainingService.findTrainingClients(trainingId);
             return ResponseEntity.ok().body(clients);
         } catch (NoResultException exception) {
             return responseService.getNotFoundResponseEntity(exception.getMessage());

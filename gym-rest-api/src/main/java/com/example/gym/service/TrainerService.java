@@ -1,32 +1,31 @@
 package com.example.gym.service;
 
-import com.example.gym.model.client.ResponseClientDto;
-import com.example.gym.model.section.Section;
-import com.example.gym.model.trainer.HourlyRateDto;
-import com.example.gym.model.trainer.ResponseTrainerDto;
-import com.example.gym.model.trainer.ResponseTrainerForStatistic;
-import com.example.gym.model.trainer.ResponseTrainerWithoutTrainingsDto;
-import com.example.gym.model.trainer.UpdateTrainerDto;
-import com.example.gym.model.training.Training;
-import com.example.gym.model.training.dto.CreateTrainingDto;
-import com.example.gym.model.training.dto.ResponseTrainingClientDto;
-import com.example.gym.model.training.dto.ResponseTrainingDto;
-import com.example.gym.model.user.User;
-import com.example.gym.model.user.UserRoleType;
-import com.example.gym.repository.SectionRepository;
-import com.example.gym.repository.UserRepository;
-import com.example.gym.util.Mapper;
-import jakarta.persistence.NoResultException;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.example.gym.model.trainer.ResponseTrainerDto;
+import com.example.gym.model.trainer.ResponseTrainerWithoutTrainingsDto;
+import com.example.gym.model.trainer.UpdateTrainerDto;
+import com.example.gym.model.training.Training;
+import com.example.gym.model.training.dto.CreateTrainingDto;
+
+import com.example.gym.model.training.dto.ResponseTrainingDto;
+import com.example.gym.model.user.User;
+import com.example.gym.model.user.UserRoleType;
+import com.example.gym.model.user.pojo.Section;
+import com.example.gym.model.user.pojo.TrainerInfo;
+import com.example.gym.repository.UserRepository;
+import com.example.gym.util.Mapper;
+
+import jakarta.persistence.NoResultException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,6 @@ public class TrainerService {
     private final UniquenessCheckService uniquenessCheckService;
     private final UserRepository userRepository;
     private final TrainingService trainingService;
-    private final SectionRepository sectionRepository;
     private final Mapper modelMapper;
 
     private final static Integer ROLE_TRAINER_INDEX = UserRoleType.ROLE_TRAINER.ordinal();
@@ -43,18 +41,18 @@ public class TrainerService {
     public List<ResponseTrainerWithoutTrainingsDto> findAll(String section) {
         return userRepository.findAllByRoleIndex(ROLE_TRAINER_INDEX).stream()
             .filter(trainer -> section == null || section.isEmpty() || section.isBlank() ||
-                    trainer.getSectionNames().contains(section))
+                    trainer.getTrainerInfo().getSectionNames().contains(section))
             .map(modelMapper::toDtoWithoutTraining)
             .toList();
     }
 
-    public List<ResponseTrainerWithoutTrainingsDto> findAllFree(String section) {
-        return userRepository.findAllByFreeAndRoleIndex(true, ROLE_TRAINER_INDEX).stream()
-                .filter(trainer -> section == null || section.isEmpty() || section.isBlank() ||
-                        trainer.getSectionNames().contains(section))
-                .map(modelMapper::toDtoWithoutTraining)
-                .toList();
-    }
+    // public List<ResponseTrainerWithoutTrainingsDto> findAllFree(String section) {
+    //     return userRepository.findAllByFreeAndRoleIndex(true, ROLE_TRAINER_INDEX).stream()
+    //             .filter(trainer -> section == null || section.isEmpty() || section.isBlank() ||
+    //                     trainer.getTrainerInfo().getSectionNames().contains(section))
+    //             .map(modelMapper::toDtoWithoutTraining)
+    //             .toList();
+    // }
 
     // @Transactional
     // public ResponseTrainerDto createTrainer(CreateTrainerDto dto) {
@@ -98,64 +96,59 @@ public class TrainerService {
             trainer.setPhoneNumber(dto.getPhoneNumber());
         }
 
-        if (trainer.getExperience() != dto.getExperience() && dto.getExperience() != null) {
-            trainer.setExperience(dto.getExperience());
+        TrainerInfo trainerInfo = trainer.getTrainerInfo();
+        if (trainerInfo.getExperience() != dto.getExperience() && dto.getExperience() != null) {
+            trainerInfo.setExperience(dto.getExperience());
         }
 
-        if (trainer.getQualification() != dto.getSpecialization() && dto.getSpecialization() != null) {
-            trainer.setQualification(dto.getSpecialization());
+        if (trainerInfo.getQualification() != dto.getSpecialization() && dto.getSpecialization() != null) {
+            trainerInfo.setQualification(dto.getSpecialization());
         }
 
-        if (trainer.getHourlyRate() != dto.getHourlyRate() && dto.getHourlyRate() != null) {
-            trainer.setHourlyRate(dto.getHourlyRate());
+        if (trainerInfo.getHourlyRate() != dto.getHourlyRate() && dto.getHourlyRate() != null) {
+            trainerInfo.setHourlyRate(dto.getHourlyRate());
         }
 
         if (dto.getSections() != null) {
-            trainer.setSections(getSections(dto.getSections()));
+            trainerInfo.setSections(getSections(dto.getSections()));
         }
+
+        trainer.setTrainerInfo(trainerInfo);
 
         User updatedTrainer = userRepository.save(trainer);
         return modelMapper.toTrainerDto(updatedTrainer);
     } 
 
-    private Set<Section> getSections(List<String> sectionsList) {
+    private List<Section> getSections(List<String> sectionsList) {
         Set<Section> sections = new HashSet<>();
         for (String sectionName : sectionsList) {
-            Optional<Section> optionalSection = sectionRepository.findByName(sectionName);
-            
-            if (optionalSection.isPresent()) {
-                sections.add(optionalSection.get());
-            } else {
-                throw new NoResultException("Секция с названием " + sectionName + " не найдена");
-            }
+            sections.add(new Section(sectionName));
         }
 
-        return sections;
+        return sections.stream().toList();
     }
 
     public void deleteTrainer(String id) {
         userRepository.deleteById(id);
     }
 
-    @Transactional
-    public ResponseTrainerDto setTrainerHourlyRate(String id, HourlyRateDto dto) {
-        User trainer = getById(id);
-        trainer.setHourlyRate(dto.getHourlyRate());
-        User updatedTrainer = userRepository.save(trainer);
-        return modelMapper.toTrainerDto(updatedTrainer);
-    }
+    // @Transactional
+    // public ResponseTrainerDto setTrainerHourlyRate(String id, HourlyRateDto dto) {
+    //     User trainer = getById(id);
+    //     trainer.setHourlyRate(dto.getHourlyRate());
+    //     User updatedTrainer = userRepository.save(trainer);
+    //     return modelMapper.toTrainerDto(updatedTrainer);
+    // }
 
     public ResponseTrainerDto findById(String id) {
         ResponseTrainerDto trainer = modelMapper.toTrainerDto(getById(id));
-        List<ResponseTrainingDto> trainings = trainingService.findTrainingsByTrainerId(id);
-        trainer.setTrainings(trainings);
         return trainer;
     }
 
-    public List<ResponseTrainingDto> findTrainingsByTrainerId(String id) {
-        getById(id);
-        return trainingService.findTrainingsByTrainerId(id);
-    }
+    // public List<ResponseTrainingDto> findTrainingsByTrainerId(String id) {
+    //     getById(id);
+    //     return trainingService.findTrainingsByTrainerId(id);
+    // }
 
     @Transactional
     public ResponseTrainingDto createTraining(CreateTrainingDto dto, String trainerId) {
@@ -169,7 +162,7 @@ public class TrainerService {
         }
     
         List<Training> overlappingTrainings = trainingService.findAll().stream()
-                .filter(training -> training.getTrainer().getId().equals(trainerId))
+                .filter(training -> training.getTrainerPojo().getId().equals(trainerId))
                 .filter(training -> 
                     (newStartTime.isBefore(training.getEndTime()) && newEndTime.isAfter(training.getStartTime()))
                 )
@@ -181,78 +174,43 @@ public class TrainerService {
         return trainingService.createTraining(dto, trainer);
     }
 
-    public void deleteTrainingByTrainer(String trainerId, String trainingId) {
-        getById(trainingId);
-        trainingService.deleteTraining(trainingId);
-    }
-
-    public void deleteTraining(String trainingId) {
-        trainingService.deleteTraining(trainingId);
-    }
-
-    @Transactional
-    public ResponseTrainingDto updateTraining(String trainerId, String trainingId, CreateTrainingDto dto) {
-        getById(trainerId);
-        return trainingService.updateTraining(trainingId, dto);
-    }
-
-    public ResponseTrainingClientDto findTrainingsByIdAndTrainerId(String trainerId, String trainingId) {
-        ResponseTrainingDto training = trainingService.findTrainingByIdAndTrainerId(trainingId, trainerId);
-        List<ResponseClientDto> clients = trainingService.findTrainingClients(trainingId);
-        return new ResponseTrainingClientDto(training, clients);
-    }
-
-    public List<ResponseTrainerDto> findTrainersBySection(Section section) {
-        List<User> trainers = userRepository.findAllBySections(section);
-        return trainers.stream()
-                .map(t -> modelMapper.toTrainerDto(t))
-                .toList();
-    }
+    // public List<ResponseTrainerDto> findTrainersBySection(Section section) {
+    //     List<User> trainers = userRepository.findAllBySections(section);
+    //     return trainers.stream()
+    //             .map(t -> modelMapper.toTrainerDto(t))
+    //             .toList();
+    // }
 
     public List<ResponseTrainingDto> findAllTrainigs() {
         return trainingService.findAllTrainigs();
     }
 
-    @Transactional
-    public void registrationClientForTraining(String trainerId, String trainingId, String clientId) {
-        User trainer = getById(trainerId);
-        trainingService.registrationClientForTraining(trainingId, clientId);
-        System.out.println(trainingService.findAll().stream()
-                .filter(training -> training.getTrainer().getId().equals(trainerId))
-                .anyMatch(training -> training.isHasFreeRegistration() == true));
+    // public List<ResponseTrainerForStatistic> getTrainersActivity() {
+    //     List<User> trainers = userRepository.findAllByRoleIndex(ROLE_TRAINER_INDEX);
+    //     List<Training> trainings = trainingService.findAll();
+    //     return trainers.stream()    
+    //             .map(t -> {
+    //                 ResponseTrainerForStatistic responseTrainerForStatistic = new ResponseTrainerForStatistic();
+    //                 responseTrainerForStatistic.setTrainer(modelMapper.toTrainerDto(t));
+    //                 List<Training> filterByTrainer = trainings.stream()
+    //                         .filter(training -> training.getTrainer() == t)
+    //                         .toList();
+    //                 responseTrainerForStatistic.setCount(filterByTrainer.size());
+    //                 responseTrainerForStatistic.setTrainings(filterByTrainer.stream()
+    //                         .map(training -> modelMapper.toDto(training))
+    //                         .toList());  
+    //                 responseTrainerForStatistic.setProfit(filterByTrainer.stream()
+    //                         .map(training -> training.getDuration())
+    //                         .reduce(0f, (Float x, Float y) -> x + y) * t.getHourlyRate());  
+    //                 return responseTrainerForStatistic;
+    //             })
+    //             .toList();
+    // }
 
-        trainer.setFree(trainingService.findAll().stream()
-                .filter(training -> training.getTrainer().getId().equals(trainerId))
-                .anyMatch(training -> training.isHasFreeRegistration() == true));
-        userRepository.save(trainer);
-    }
-
-    public List<ResponseTrainerForStatistic> getTrainersActivity() {
-        List<User> trainers = userRepository.findAllByRoleIndex(ROLE_TRAINER_INDEX);
-        List<Training> trainings = trainingService.findAll();
-        return trainers.stream()    
-                .map(t -> {
-                    ResponseTrainerForStatistic responseTrainerForStatistic = new ResponseTrainerForStatistic();
-                    responseTrainerForStatistic.setTrainer(modelMapper.toTrainerDto(t));
-                    List<Training> filterByTrainer = trainings.stream()
-                            .filter(training -> training.getTrainer() == t)
-                            .toList();
-                    responseTrainerForStatistic.setCount(filterByTrainer.size());
-                    responseTrainerForStatistic.setTrainings(filterByTrainer.stream()
-                            .map(training -> modelMapper.toDto(training))
-                            .toList());  
-                    responseTrainerForStatistic.setProfit(filterByTrainer.stream()
-                            .map(training -> training.getDuration())
-                            .reduce(0f, (Float x, Float y) -> x + y) * t.getHourlyRate());  
-                    return responseTrainerForStatistic;
-                })
-                .toList();
-    }
-
-    public List<ResponseClientDto> findTrainingClients(String trainerId, String trainingId) {
-        getById(trainerId);
-        return trainingService.findTrainingClients(trainingId);
-    }
+    // public List<ResponseClientDto> findTrainingClients(String trainerId, String trainingId) {
+    //     getById(trainerId);
+    //     return trainingService.findTrainingClients(trainingId);
+    // }
 
     public User getById(String id) throws IllegalArgumentException {
         Optional<User> optionalTrainer = userRepository.findById(id);

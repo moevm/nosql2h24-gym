@@ -24,6 +24,6 @@ public class CreateTrainingDto {
     @Schema(description = "Секция", example = "Плавание")
     private String section;
     @Schema(description = "ID комнаты", example = "1")
-    private Integer roomId;
+    private String roomId;
 
 }
