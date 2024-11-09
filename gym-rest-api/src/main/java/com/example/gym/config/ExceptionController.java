@@ -51,14 +51,14 @@ public class ExceptionController {
                 new ResponseError(HttpStatus.NOT_FOUND.value(), exception.getMessage()));
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ResponseError> handleException(Exception exception) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                new ResponseError(
-                        HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-                        "Ошибка сервера: " + exception.getMessage()
-        ));
-    }
+    // @ExceptionHandler(Exception.class)
+    // @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    // public ResponseEntity<ResponseError> handleException(Exception exception) {
+    //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+    //             new ResponseError(
+    //                     HttpStatus.INTERNAL_SERVER_ERROR.value(), 
+    //                     "Ошибка сервера: " + exception.getMessage()
+    //     ));
+    // }
 
 }
