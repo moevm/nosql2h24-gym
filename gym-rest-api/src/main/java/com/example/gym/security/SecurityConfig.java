@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.example.gym.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.gym.security.jwt.JwtAuthenticationFilter;
-import com.example.gym.security.service.UserDetailService;
+import com.example.gym.security.service.MyUserDetailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint entryPoint;
-    private final UserDetailService userDetailService;
+    private final MyUserDetailService userDetailService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

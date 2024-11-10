@@ -39,10 +39,9 @@ public class TrainerService {
     private final TrainingService trainingService;
     private final Mapper modelMapper;
 
-    private final static Integer ROLE_TRAINER_INDEX = UserRoleType.ROLE_TRAINER.ordinal();
 
     public List<ResponseTrainerWithoutTrainingsDto> findAll(String section) {
-        return userRepository.findAllByRoleIndex(ROLE_TRAINER_INDEX).stream()
+        return userRepository.findAllByRoles(UserRoleType.ROLE_TRAINER.name()).stream()
             .filter(trainer -> section == null || section.isEmpty() || section.isBlank() ||
                     trainer.getTrainerInfo().getSectionNames().contains(section))
             .map(modelMapper::toDtoWithoutTraining)
@@ -75,15 +74,15 @@ public class TrainerService {
     public ResponseTrainerDto updateTrainer(String id, UpdateTrainerDto dto) throws UniquenessViolationException, ResourceNotFoundException {
         User trainer = getById(id);
 
-        if (!trainer.getName().equals(dto.getName()) && dto.getName() != null) {
+        if (dto.getName() != null && !trainer.getName().equals(dto.getName())) {
             trainer.setName(dto.getName());
         }
 
-        if (!trainer.getSurname().equals(dto.getSurname()) && dto.getSurname() != null) {
+        if (dto.getSurname() != null && !trainer.getSurname().equals(dto.getSurname())) {
             trainer.setSurname(dto.getSurname());
         }
 
-        if (!trainer.getEmail().equals(dto.getEmail()) && dto.getEmail() != null) {
+        if (dto.getEmail() != null && !trainer.getEmail().equals(dto.getEmail())) {
             if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
                 throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
                         .formatted(dto.getEmail()));
@@ -92,7 +91,7 @@ public class TrainerService {
             trainer.setEmail(dto.getEmail());
         }
 
-        if (!trainer.getPhoneNumber().equals(dto.getPhoneNumber()) && dto.getPhoneNumber() != null) {
+        if (dto.getPhoneNumber() != null && !trainer.getPhoneNumber().equals(dto.getPhoneNumber())) {
             if (uniquenessCheckService.findByPhoneNumber(dto.getPhoneNumber()).isPresent()) {
                 throw new UniquenessViolationException("Пользователь с номером телефона %s уже существует"
                         .formatted(dto.getPhoneNumber()));
@@ -102,15 +101,15 @@ public class TrainerService {
         }
 
         TrainerInfo trainerInfo = trainer.getTrainerInfo();
-        if (trainerInfo.getExperience() != dto.getExperience() && dto.getExperience() != null) {
+        if (dto.getExperience() != null && trainerInfo.getExperience() != dto.getExperience()) {
             trainerInfo.setExperience(dto.getExperience());
         }
 
-        if (trainerInfo.getQualification() != dto.getSpecialization() && dto.getSpecialization() != null) {
+        if (dto.getSpecialization() != null && trainerInfo.getQualification() != dto.getSpecialization()) {
             trainerInfo.setQualification(dto.getSpecialization());
         }
 
-        if (trainerInfo.getHourlyRate() != dto.getHourlyRate() && dto.getHourlyRate() != null) {
+        if (dto.getHourlyRate() != null && trainerInfo.getHourlyRate() != dto.getHourlyRate()) {
             trainerInfo.setHourlyRate(dto.getHourlyRate());
         }
 

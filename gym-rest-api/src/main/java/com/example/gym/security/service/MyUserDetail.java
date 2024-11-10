@@ -21,15 +21,15 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 @Slf4j
-public class UserDetail implements UserDetails {
+public class MyUserDetail implements UserDetails {
 
-    private Integer id;
+    private String id;
     private String username;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public static UserDetail build(User user) {
+    public static MyUserDetail build(User user) {
         //    List<String> strings = new ArrayList<>(List.of("ROLE_ADMIN", "ROLE_SUPPORTER", "ROLE_WORKER"));
         //    List<GrantedAuthority> authorities = strings.stream()
         //        .map(role -> new SimpleGrantedAuthority(role))
@@ -37,8 +37,8 @@ public class UserDetail implements UserDetails {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role))
                 .collect(Collectors.toList());
-        UserDetail userDetails = new UserDetail(
-                null,
+        MyUserDetail userDetails = new MyUserDetail(
+                user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getPassword(),
@@ -55,6 +55,10 @@ public class UserDetail implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override

@@ -15,8 +15,10 @@ public class ResponseAdminDto {
 
     @Schema(description = "Идентификатор", example = "1")
     private String id;
-    @Schema(description = "Имя", example = "Иванов Иван Иванович")
-    private String username;
+    @Schema(description = "Имя", example = "Иван")
+    private String name;
+    @Schema(description = "Фамилия", example = "Иванов")
+    private String surname;
     @Schema(description = "Пароль", example = "password")
     private String password;
     @Schema(description = "Электронная почта", example = "example@example.com")

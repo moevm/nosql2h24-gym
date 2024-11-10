@@ -3,6 +3,7 @@ package com.example.gym.service;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.List;
 
@@ -39,8 +40,8 @@ public class SubscriptionService {
             now.plusDays(dto.getDuration()),
             SubscriptionStatus.ACTIVE,
             dto.getPrice(),
-            null, 
-            null
+            LocalDateTime.now(), 
+            LocalDateTime.now()
         ));
 
         User savedClient = userRepository.save(client);

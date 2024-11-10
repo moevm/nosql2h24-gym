@@ -35,7 +35,6 @@ public class User {
     private String phoneNumber;
     private String comment;
     private List<String> roles; 
-    private Integer roleIndex;
 
     private TrainerInfo trainerInfo;
     private ClientInfo clientInfo;
@@ -46,14 +45,13 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedDate;
 
-    public User(String name, String surname, String email, String password, String phoneNumber, List<String> roles, Integer roleIndex) {
+    public User(String name, String surname, String email, String password, String phoneNumber, List<String> roles) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.roles = roles;
-        this.roleIndex = roleIndex;
     }
 
 }

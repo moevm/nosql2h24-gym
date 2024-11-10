@@ -43,10 +43,7 @@ public class ResponseClientDto {
     @ArraySchema(
             schema = @Schema(description = "Роль", example = "ROLE_USER")
     )
-    private List<String> roles; 
-
-    @Schema(description = "Индекс роли", example = "1")
-    private Integer roleIndex;
+    private List<String> roles;     
 
     @Schema(description = "Информация о клиенте", implementation = ClientInfo.class)
     private ClientInfo clientInfo;

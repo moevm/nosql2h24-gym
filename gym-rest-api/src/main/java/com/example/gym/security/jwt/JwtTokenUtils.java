@@ -2,6 +2,8 @@ package com.example.gym.security.jwt;
 
 import org.springframework.stereotype.Component;
 
+import com.example.gym.security.service.MyUserDetail;
+
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +13,6 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,38 +28,40 @@ public class JwtTokenUtils {
     @Value("${jwt.lifetime}")
     private Duration tokenLifeTime;
 
-    public String generateAccessToken(UserDetails userDetails, String email) {
+    public String generateAccessToken(MyUserDetail userDetails, String email) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(r -> r.getAuthority())
                 .toList();
         claims.put("roles", roles);
+        claims.put("email", email);
         
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + tokenLifeTime.toMillis());
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(email)
+                .subject(userDetails.getId())
                 .issuedAt(issuedDate)
                 .expiration(expiredDate)
                 .signWith(getSecretKey(tokenSecret))
                 .compact();
     }
 
-    public String generateRefreshToken(UserDetails userDetails, String email) {
+    public String generateRefreshToken(MyUserDetail userDetails, String email) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(r -> r.getAuthority())
                 .toList();
         claims.put("roles", roles);
+        claims.put("email", email);
         
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + tokenLifeTime.toMillis());
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(email)
+                .subject(userDetails.getId())
                 .issuedAt(issuedDate)
                 .expiration(expiredDate)
                 .signWith(getSecretKey(tokenSecret))
@@ -97,8 +100,8 @@ public class JwtTokenUtils {
     }
 
     private String getUsernameFromToken(String token, String secret) {
-        return this.getClaims(token, secret)
-                .getSubject();
+        return (String) this.getClaims(token, secret)
+                .get("email");
     }
 
     private Claims getClaims(String token, String secret) {

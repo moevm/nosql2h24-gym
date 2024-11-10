@@ -24,8 +24,6 @@ public class AdminService {
     private final UserRepository userRepository;
     private final Mapper modelMapper;
 
-    private final static Integer ROLE_ADMIN_INDEX = UserRoleType.ROLE_ADMIN.ordinal();
-
     // @Transactional
     // public ResponseAdminDto createAdmin(CreateAdminDto adminDto) {
     //     if (findAdminByEmail(adminDto.getEmail()).isPresent()) {
@@ -38,7 +36,7 @@ public class AdminService {
     // }
 
     public List<ResponseAdminDto> findAllAdmins() {
-        return userRepository.findAllByRoleIndex(ROLE_ADMIN_INDEX).stream()
+        return userRepository.findAllByRoles(UserRoleType.ROLE_ADMIN.name()).stream()
                 .map(a -> modelMapper.toAdminDto(a))
                 .toList();
     }
@@ -59,15 +57,15 @@ public class AdminService {
     ) throws ResourceNotFoundException, UniquenessViolationException {
         User admin = getById(id);
         
-        if (!admin.getName().equals(dto.getName()) && dto.getName() != null) {
+        if (dto.getName() != null && !admin.getName().equals(dto.getName())) {
             admin.setName(dto.getName());
         }
 
-        if (!admin.getSurname().equals(dto.getSurname()) && dto.getSurname() != null) {
+        if (dto.getSurname() != null && !admin.getSurname().equals(dto.getSurname())) {
             admin.setSurname(dto.getSurname());
         }
 
-        if (!admin.getEmail().equals(dto.getEmail()) && dto.getEmail() != null) {
+        if (dto.getEmail() != null && !admin.getEmail().equals(dto.getEmail())) {
             if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
                 throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
                         .formatted(dto.getEmail()));

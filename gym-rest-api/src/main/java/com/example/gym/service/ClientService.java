@@ -42,7 +42,7 @@ public class ClientService {
     // }
 
     public List<ResponseClientDto> findAllClients() {
-        return userRepository.findAllByRoleIndex(ROLE_USER_INDEX).stream()
+        return userRepository.findAllByRoles(UserRoleType.ROLE_USER.name()).stream()
                 .map(c -> modelMapper.toClientDto(c))
                 .toList();
     }
@@ -59,15 +59,15 @@ public class ClientService {
     public ResponseClientDto updateClient(String id, UpdateClientDto dto) throws ResourceNotFoundException, UniquenessViolationException {
         User client = getById(id);
         
-        if (!client.getName().equals(dto.getName()) && dto.getName() != null) {
+        if (dto.getName() != null && !client.getName().equals(dto.getName())) {
             client.setName(dto.getName());
         }
 
-        if (!client.getSurname().equals(dto.getSurname()) && dto.getSurname() != null) {
+        if (dto.getSurname() != null && !client.getSurname().equals(dto.getSurname())) {
             client.setSurname(dto.getSurname());
         }
 
-        if (!client.getEmail().equals(dto.getEmail()) && dto.getEmail() != null) {
+        if (dto.getEmail() != null && !client.getEmail().equals(dto.getEmail())) {
             if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
                 throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
                         .formatted(dto.getEmail()));
@@ -76,7 +76,7 @@ public class ClientService {
             client.setEmail(dto.getEmail());
         }
 
-        if (!client.getPhoneNumber().equals(dto.getPhoneNumber()) && dto.getPhoneNumber() != null) {
+        if (dto.getPhoneNumber() != null && !client.getPhoneNumber().equals(dto.getPhoneNumber())) {
             if (uniquenessCheckService.findByPhoneNumber(dto.getPhoneNumber()).isPresent()) {
                 throw new UniquenessViolationException("Пользователь с номером телефона %s уже существует"
                         .formatted(dto.getPhoneNumber()));
