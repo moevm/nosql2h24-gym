@@ -10,29 +10,30 @@ services:
       - .env
 #    должны маппить потому что фронтенд будет посылать запросы на машину нашу
     ports:
-      - "${BACKEND_PORT}:8080"
+      - "127.0.0.1:${BACKEND_PORT}:8080"
     depends_on:
       - mongo
 
   frontend:
     build: ./frontend
+    env_file:
+      - .env
     image: gym-frontend-1.0.0
     container_name: gym-frontend
 #    добавить env для порта фронта
     ports:
-      - "3000:3000"
-    depends_on:
-      - mongo
+      - "127.0.0.1:${FRONTEND_PORT}:3000"
 
   mongo:
     image: mongo:8.0
     restart: always
     env_file:
       - .env
-#    ports: можно не прописывать, т.к. в сети докера и так доступна будет?
-#      - "${DATABASE_PORT_MAPPING}:27017"
+#    можно не прописывать порты, т.к. в сети докера и так доступна будет?
+    ports:
+      - "27017:27017"
     expose:
-      - "27017"
+      - 27017"
     volumes:
       - mongo-gym-db:/data/db
     environment:
