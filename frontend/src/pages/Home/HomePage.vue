@@ -168,7 +168,7 @@ const createTraining = async () => {
       "section": "Плавание",
       "roomId": "1"
     });
-    alert("Тренировка добавлена:", response.data);
+    console.log("Тренировка добавлена:", response.data);
   } catch (error) {
     console.error("Ошибка при добавлении тренировки:", error);
   }
@@ -187,7 +187,7 @@ const updateTrainer = async () => {
       "specialization": "string",
       "sections": "['Name1', 'Name2']"
     });
-    alert("Данные тренера обновлены:", response.data);
+    console.log("Данные тренера обновлены:", response.data);
   } catch (error) {
     console.error("Ошибка при обновлении данных тренера:", error);
   }
@@ -197,7 +197,7 @@ const updateTrainer = async () => {
 const deleteTrainer = async () => {
   try {
     await axiosInstance.delete(`/trainers/${trainerId}`);
-    alert("Тренер удалён.");
+    console.log("Тренер удалён.");
   } catch (error) {
     console.error("Ошибка при удалении тренера:", error);
   }
@@ -235,7 +235,7 @@ const updateTraining = async () => {
       "section": "Плавание",
       "roomId": "1"
     });
-    alert("Тренировка обновлена:", response.data);
+    console.log("Тренировка обновлена:", response.data);
   } catch (error) {
     console.error("Ошибка при обновлении тренировки:", error);
   }
@@ -245,7 +245,7 @@ const updateTraining = async () => {
 const deleteTraining = async () => {
   try {
     await axiosInstance.delete(`/trainings/${trainingId}`);
-    alert("Тренировка удалена.");
+    console.log("Тренировка удалена.");
   } catch (error) {
     console.error("Ошибка при удалении тренировки:", error);
   }
@@ -255,7 +255,7 @@ const deleteTraining = async () => {
 const registerClientForTraining = async () => {
   try {
     const response = await axiosInstance.post(`/trainings/${trainingId}/registration/${clientId}`);
-    alert("Клиент записан на тренировку:", response.data);
+    console.log("Клиент записан на тренировку:", response.data);
   } catch (error) {
     console.error("Ошибка при записи клиента на тренировку:", error);
   }
@@ -275,7 +275,7 @@ const getAllTrainings = async () => {
 const getTrainingClients = async () => {
   try {
     const response = await axiosInstance.get(`/trainings/${trainingId}/registration`);
-    alert("Клиенты тренировки:", response.data);
+    console.log("Клиенты тренировки:", response.data);
   } catch (error) {
     console.error("Ошибка при получении клиентов тренировки:", error);
   }
@@ -305,7 +305,7 @@ const updatePromotion = async () => {
       "discountPercentage": 10,
       "creatorId": "672e8f509016ff5e3ddaec88"
     });
-    alert("Поощрение обновлено:", response.data);
+    console.log("Поощрение обновлено:", response.data);
   } catch (error) {
     console.error("Ошибка при обновлении поощрения:", error);
   }
@@ -315,7 +315,7 @@ const updatePromotion = async () => {
 const deletePromotion = async () => {
   try {
     await axiosInstance.delete(`/promotions/${promotionId}`);
-    alert("Поощрение удалено.");
+    console.log("Поощрение удалено.");
   } catch (error) {
     console.error("Ошибка при удалении поощрения:", error);
   }
@@ -351,7 +351,7 @@ const clientsData = ref(null);
 const getClientById = async () => {
   try {
     const client = await axiosInstance.get(`/clients/${clientId}`);
-    alert(client)
+    console.log(client)
   } catch (error) {
     console.error("Ошибка при получении клиента:", error);
   }
@@ -365,7 +365,7 @@ const updateClientById = async () => {
       "email": "example@example.com",
       "phoneNumber": "+79998887766"
     });
-    alert(client)
+    console.log(client)
   } catch (error) {
     console.error("Ошибка при обновлении клиента:", error);
   }
@@ -427,7 +427,7 @@ const adminId = 1;
 const getAdminByid = async () => {
   try {
     const response = await axiosInstance.get(`/admins/${adminId}`);
-    alert(response.data)
+    console.log(response.data)
   } catch (error) {
     console.error("Ошибка при получении админа:", error);
   }
