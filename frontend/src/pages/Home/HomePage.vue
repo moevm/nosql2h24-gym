@@ -34,7 +34,11 @@
           <el-button @click="createTraining">Добавить тренировку</el-button>
           <el-button @click="updateTrainer">Обновить тренера</el-button>
           <el-button @click="deleteTrainer">Удалить тренера</el-button>
-          <el-text v-if="trainersData">Полученные тренеры: {{ trainersData }}</el-text>
+          <el-text v-if="trainersData" style="color:white; background: rgba(0,0,0, .5); font-size: 18px">Данные тренеры:
+            <ul>
+              <li v-for="data of trainersData">{{ data }}</li>
+            </ul>
+          </el-text>
         </el-row>
       </el-space>
     </el-container>
@@ -56,7 +60,11 @@
           <el-button @click="registerClientForTraining">Записать клиента на тренировку</el-button>
           <el-button @click="getAllTrainings">Получить все тренировки</el-button>
           <el-button @click="getTrainingClients">Получить клиентов тренировки</el-button>
-          <el-text v-if="trainingData">Данные тренировки: {{ trainingData }}</el-text>
+          <el-text v-if="trainingData" style="color:white; background: rgba(0,0,0, .5); font-size: 18px">Данные тренировки:
+            <ul>
+              <li v-for="data of trainingData">{{ data }}</li>
+            </ul>
+          </el-text>
         </el-row>
       </el-space>
     </el-container>
@@ -70,7 +78,7 @@
           <el-button @click="deletePromotion">Удалить поощрение по ID</el-button>
           <el-button @click="getAllPromotions">Получить все поощрения</el-button>
           <el-button @click="createPromotion">Создать поощрение</el-button>
-          <el-text v-if="promotionData">Данные поощрения: {{ promotionData }}</el-text>
+          <el-text size="large" v-if="promotionData">Данные поощрения: {{ promotionData }}</el-text>
         </el-row>
       </el-space>
     </el-container>
@@ -83,7 +91,11 @@
           <el-button @click="updateClientById">Обновить клиента по ID</el-button>
           <el-button @click="deleteClientById">Удалить клиента по ID</el-button>
           <el-button @click="getClients">Получить всех клиентов</el-button>
-          <el-text v-if="clientsData">Данные клиентов: {{ clientsData }}</el-text>
+          <el-text v-if="clientsData" style="color:white; background: rgba(0,0,0, .5); font-size: 18px">Данные клиентов:
+            <ul>
+              <li v-for="data of clientsData">{{ data }}</li>
+            </ul>
+          </el-text>
         </el-row>
       </el-space>
     </el-container>
@@ -95,7 +107,11 @@
           <el-button @click="getRooms">Получить залы</el-button>
           <el-button @click="createRoom">Создать зал</el-button>
           <el-button @click="deleteRoom">Удалить зал по ID</el-button>
-          <el-text v-if="roomsData">Данные залов: {{ roomsData }}</el-text>
+          <el-text v-if="roomsData" style="color:white; background: rgba(0,0,0, .5); font-size: 18px">Данные залов:
+            <ul>
+              <li v-for="data of roomsData">{{ data }}</li>
+            </ul>
+          </el-text>
         </el-row>
       </el-space>
     </el-container>
@@ -108,7 +124,11 @@
           <el-button @click="updateAdminById">Обновить админа по ID</el-button>
           <el-button @click="deleteAdminById">Удалить админа по ID</el-button>
           <el-button @click="getAdmins">Получить всех админов</el-button>
-          <el-text v-if="adminsData">Данные админов: {{ adminsData }}</el-text>
+          <el-text v-if="adminsData" style="color:white; background: rgba(0,0,0, .5); font-size: 18px">Данные админов:
+            <ul>
+              <li v-for="data of adminsData">{{ data }}</li>
+            </ul>
+          </el-text>
         </el-row>
       </el-space>
     </el-container>
@@ -148,7 +168,7 @@ const createTraining = async () => {
       "section": "Плавание",
       "roomId": "1"
     });
-    console.log("Тренировка добавлена:", response.data);
+    alert("Тренировка добавлена:", response.data);
   } catch (error) {
     console.error("Ошибка при добавлении тренировки:", error);
   }
@@ -167,7 +187,7 @@ const updateTrainer = async () => {
       "specialization": "string",
       "sections": "['Name1', 'Name2']"
     });
-    console.log("Данные тренера обновлены:", response.data);
+    alert("Данные тренера обновлены:", response.data);
   } catch (error) {
     console.error("Ошибка при обновлении данных тренера:", error);
   }
@@ -177,7 +197,7 @@ const updateTrainer = async () => {
 const deleteTrainer = async () => {
   try {
     await axiosInstance.delete(`/trainers/${trainerId}`);
-    console.log("Тренер удалён.");
+    alert("Тренер удалён.");
   } catch (error) {
     console.error("Ошибка при удалении тренера:", error);
   }
@@ -215,7 +235,7 @@ const updateTraining = async () => {
       "section": "Плавание",
       "roomId": "1"
     });
-    console.log("Тренировка обновлена:", response.data);
+    alert("Тренировка обновлена:", response.data);
   } catch (error) {
     console.error("Ошибка при обновлении тренировки:", error);
   }
@@ -225,7 +245,7 @@ const updateTraining = async () => {
 const deleteTraining = async () => {
   try {
     await axiosInstance.delete(`/trainings/${trainingId}`);
-    console.log("Тренировка удалена.");
+    alert("Тренировка удалена.");
   } catch (error) {
     console.error("Ошибка при удалении тренировки:", error);
   }
@@ -235,7 +255,7 @@ const deleteTraining = async () => {
 const registerClientForTraining = async () => {
   try {
     const response = await axiosInstance.post(`/trainings/${trainingId}/registration/${clientId}`);
-    console.log("Клиент записан на тренировку:", response.data);
+    alert("Клиент записан на тренировку:", response.data);
   } catch (error) {
     console.error("Ошибка при записи клиента на тренировку:", error);
   }
@@ -255,7 +275,7 @@ const getAllTrainings = async () => {
 const getTrainingClients = async () => {
   try {
     const response = await axiosInstance.get(`/trainings/${trainingId}/registration`);
-    console.log("Клиенты тренировки:", response.data);
+    alert("Клиенты тренировки:", response.data);
   } catch (error) {
     console.error("Ошибка при получении клиентов тренировки:", error);
   }
@@ -285,7 +305,7 @@ const updatePromotion = async () => {
       "discountPercentage": 10,
       "creatorId": "672e8f509016ff5e3ddaec88"
     });
-    console.log("Поощрение обновлено:", response.data);
+    alert("Поощрение обновлено:", response.data);
   } catch (error) {
     console.error("Ошибка при обновлении поощрения:", error);
   }
@@ -295,7 +315,7 @@ const updatePromotion = async () => {
 const deletePromotion = async () => {
   try {
     await axiosInstance.delete(`/promotions/${promotionId}`);
-    console.log("Поощрение удалено.");
+    alert("Поощрение удалено.");
   } catch (error) {
     console.error("Ошибка при удалении поощрения:", error);
   }
@@ -331,7 +351,7 @@ const clientsData = ref(null);
 const getClientById = async () => {
   try {
     const client = await axiosInstance.get(`/clients/${clientId}`);
-    console.log(client)
+    alert(client)
   } catch (error) {
     console.error("Ошибка при получении клиента:", error);
   }
@@ -345,7 +365,7 @@ const updateClientById = async () => {
       "email": "example@example.com",
       "phoneNumber": "+79998887766"
     });
-    console.log(client)
+    alert(client)
   } catch (error) {
     console.error("Ошибка при обновлении клиента:", error);
   }
@@ -361,7 +381,8 @@ const deleteClientById = async() => {
 
 const getClients = async () => {
   try {
-    clientsData.value = await axiosInstance.get(`/clients`);
+    const response = await axiosInstance.get(`/clients`);
+    clientsData.value = response.data;
   } catch (error) {
     console.error("Ошибка при получении клиента:", error);
   }
@@ -372,7 +393,8 @@ const roomId = 1;
 
 const getRooms = async () => {
   try {
-    roomsData.value = await axiosInstance.get(`/rooms`);
+    const response = await axiosInstance.get(`/rooms`);
+    roomsData.value = response.data
   } catch (error) {
     console.error("Ошибка при получении залов:", error);
   }
@@ -404,7 +426,8 @@ const adminId = 1;
 
 const getAdminByid = async () => {
   try {
-    await axiosInstance.get(`/admins/${adminId}`);
+    const response = await axiosInstance.get(`/admins/${adminId}`);
+    alert(response.data)
   } catch (error) {
     console.error("Ошибка при получении админа:", error);
   }
@@ -432,7 +455,8 @@ const deleteAdminById = async () => {
 
 const getAdmins = async () => {
   try {
-    await axiosInstance.get(`/admins}`);
+    const response = await axiosInstance.get(`/admins}`);
+    adminsData.value = response.data;
   } catch (error) {
     console.error("Ошибка при получении админов:", error);
   }
