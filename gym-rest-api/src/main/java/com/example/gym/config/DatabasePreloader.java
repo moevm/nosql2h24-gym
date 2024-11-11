@@ -23,8 +23,8 @@ public class DatabasePreloader implements ApplicationRunner {
 
     private final UserRepository userRepository;
     
-    @Value("${admin.password}")
-    private String adminPassword;
+//    @Value("${admin.password}")
+//    private String adminPassword;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -39,7 +39,7 @@ public class DatabasePreloader implements ApplicationRunner {
                 "gym-admin", 
                 "gym-admin", 
                 "gym-admin", 
-                adminPassword, 
+                "admin",
                 "",
                 List.of(UserRoleType.ROLE_ADMIN.name()));
 
