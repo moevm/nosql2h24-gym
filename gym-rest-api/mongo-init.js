@@ -456,7 +456,7 @@ db.training_sessions.insertMany([
         },
         "startTime": ISODate("2024-11-02T10:00:00Z"),
         "endTime": ISODate("2024-11-02T11:30:00Z"),
-        "available_slots": 5,
+        "availableSlots": 5,
         "clients": [
             {
                 "_id": ObjectId("653ef3a8a3e34567bcdf1001"),
@@ -494,7 +494,7 @@ db.training_sessions.insertMany([
         },
         "startTime": ISODate("2024-11-03T14:00:00Z"),
         "endTime": ISODate("2024-11-03T15:30:00Z"),
-        "available_slots": 4,
+        "availableSlots": 4,
         "clients": [
             {
                 "_id": ObjectId("653ef3a8a3e34567bcdf1003"),
@@ -526,7 +526,7 @@ db.training_sessions.insertMany([
         },
         "startTime": ISODate("2024-11-04T08:00:00Z"),
         "endTime": ISODate("2024-11-04T09:30:00Z"),
-        "available_slots": 10,
+        "availableSlots": 10,
         "clients": [],
         "createdAt": ISODate("2024-10-17T00:00:00Z"),
         "updatedAt": ISODate("2024-10-22T00:00:00Z")
@@ -551,7 +551,7 @@ db.training_sessions.insertMany([
         },
         "startTime": ISODate("2024-11-05T16:00:00Z"),
         "endTime": ISODate("2024-11-05T17:30:00Z"),
-        "available_slots": 3,
+        "availableSlots": 3,
         "clients": [
             {
                 "_id": ObjectId("653ef3a8a3e34567bcdf1004"),
@@ -589,7 +589,7 @@ db.training_sessions.insertMany([
         },
         "startTime": ISODate("2024-11-06T18:00:00Z"),
         "endTime": ISODate("2024-11-06T19:30:00Z"),
-        "available_slots": 8,
+        "availableSlots": 8,
         "clients": [],
         "createdAt": ISODate("2024-10-19T00:00:00Z"),
         "updatedAt": ISODate("2024-10-24T00:00:00Z")

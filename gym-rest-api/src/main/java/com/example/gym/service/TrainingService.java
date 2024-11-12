@@ -86,8 +86,8 @@ public class TrainingService {
     }
 
     @Transactional
-    public void registrationClientForTraining(String trainigId, String clientId) throws ResourceNotFoundException, InvalidDataException {
-        Training training = getById(trainigId);
+    public void registrationClientForTraining(String trainingId, String clientId) throws ResourceNotFoundException, InvalidDataException {
+        Training training = getById(trainingId);
         User client = clientService.getById(clientId);
 
         if (!training.isHasFreeRegistration()) {

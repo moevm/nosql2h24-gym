@@ -28,7 +28,7 @@ public class CreatePromotionDto {
     private LocalDateTime endDate;
 
     @Schema(name = "Скидка в процентах")
-    private Integer discountPersentage;
+    private Integer discountPercentage;
     
     @Schema(name = "Идентификатор создателя")
     private String creatorId;

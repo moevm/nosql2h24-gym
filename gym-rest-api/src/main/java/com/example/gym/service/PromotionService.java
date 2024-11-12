@@ -58,7 +58,7 @@ public class PromotionService {
         promotion.setStartDate((dto.getStartDate() != null ? dto.getStartDate() : promotion.getStartDate()));
         promotion.setEndDate((dto.getEndDate() != null ? dto.getEndDate() : promotion.getEndDate()));
         promotion.setDiscountPercentage(
-                (dto.getDiscountPersentage() != null ? dto.getDiscountPersentage() : promotion.getDiscountPercentage()));
+                (dto.getDiscountPercentage() != null ? dto.getDiscountPercentage() : promotion.getDiscountPercentage()));
         
         if (dto.getCreatorId() != null) {
             User creator = userRepository.findById(dto.getCreatorId())
