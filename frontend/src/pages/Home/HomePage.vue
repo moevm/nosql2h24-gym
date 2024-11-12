@@ -166,7 +166,11 @@ const createTraining = async () => {
       "endTime": "2024-11-10T21:36:57.216Z",
       "availableSlots": 10,
       "section": "Плавание",
-      "roomId": "653ef3a8a3e34567bcdf5001"
+      "room": {
+        id: "653ef3a8a3e34567bcdf5001",
+        name: "Main Gym",
+        capacity: 100
+      }
     });
     console.log("Тренировка добавлена:", response.data);
   } catch (error) {

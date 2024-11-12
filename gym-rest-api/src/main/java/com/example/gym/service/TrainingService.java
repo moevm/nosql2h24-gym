@@ -70,7 +70,7 @@ public class TrainingService {
         TrainerPojo trainerPojo = modelMapper.toPojo(trainer);
         training.setTrainer(trainerPojo);
 
-        Optional<Room> optionalRoom = roomRepository.findById(dto.getRoomId());
+        Optional<Room> optionalRoom = roomRepository.findById(dto.getRoom().getId());
         if (optionalRoom.isPresent()) {
             Room room = optionalRoom.get();
             RoomPojo roomPojo = modelMapper.toPojo(room);
@@ -151,9 +151,9 @@ public class TrainingService {
             training.setSection(new Section(dto.getSection()));
         }
 
-        if (dto.getRoomId() != null && !training.getRoom().getId().equals(dto.getRoomId())) {
+        if (dto.getRoom().getId() != null && !training.getRoom().getId().equals(dto.getRoom().getId())) {
             training.setRoom(modelMapper.toPojo(
-                    roomRepository.findById(dto.getRoomId()).get()
+                    roomRepository.findById(dto.getRoom().getId()).get()
             ));
         }
         

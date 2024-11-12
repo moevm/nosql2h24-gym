@@ -29,7 +29,7 @@ services:
     ports:
       - "27017"
     expose:
-      - 27017"
+      - 27017
     volumes:
       - mongo-gym-db:/data/db
       - ./gym-rest-api/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
