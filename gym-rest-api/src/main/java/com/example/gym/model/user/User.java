@@ -21,7 +21,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-@Document(collection = "my_users")
+@Document(collection = "users")
 @ToString
 public class User {
 
@@ -40,10 +40,10 @@ public class User {
     private ClientInfo clientInfo;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedAt;
 
     public User(String name, String surname, String email, String password, String phoneNumber, List<String> roles) {
         this.name = name;

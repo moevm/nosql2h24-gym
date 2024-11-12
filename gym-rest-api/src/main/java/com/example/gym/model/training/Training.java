@@ -34,7 +34,7 @@ public class Training {
     private boolean hasFreeRegistration = true;
     private Integer availableSlots;
 
-    private TrainerPojo trainerPojo;
+    private TrainerPojo trainer;
     private Section section;
     private RoomPojo room;
 

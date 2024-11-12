@@ -62,7 +62,7 @@ public class PromotionService {
         
         if (dto.getCreatorId() != null) {
             User creator = userRepository.findById(dto.getCreatorId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Пользователь с ID %s не найден".formatted(id)));
+                    .orElseThrow(() -> new ResourceNotFoundException("Пользователь с ID %s не найден".formatted(dto.getCreatorId())));
             
             promotion.setCreatedBy(new CreatedBy(creator.getId(), creator.getName(), creator.getSurname()));
         }

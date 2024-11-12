@@ -3,7 +3,6 @@ package com.example.gym.service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +25,6 @@ import com.example.gym.model.user.pojo.TrainerInfo;
 import com.example.gym.repository.UserRepository;
 import com.example.gym.util.Mapper;
 
-import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -166,7 +164,7 @@ public class TrainerService {
         }
     
         List<Training> overlappingTrainings = trainingService.findAll().stream()
-                .filter(training -> training.getTrainerPojo().getId().equals(trainerId))
+                .filter(training -> training.getTrainer().getId().equals(trainerId))
                 .filter(training -> 
                     (newStartTime.isBefore(training.getEndTime()) && newEndTime.isAfter(training.getStartTime()))
                 )

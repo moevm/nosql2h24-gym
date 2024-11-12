@@ -16,17 +16,13 @@ import com.example.gym.model.room.Room;
 import com.example.gym.model.room.RoomPojo;
 import com.example.gym.model.section.dto.CreateSectionDto;
 import com.example.gym.model.section.dto.ResponseSectionDto;
-import com.example.gym.model.subscription.dto.CreateSubscriptionDto;
-import com.example.gym.model.subscription.dto.ResponseSubscriptionDto;
 import com.example.gym.model.trainer.ResponseTrainerDto;
 import com.example.gym.model.trainer.ResponseTrainerWithoutTrainingsDto;
 import com.example.gym.model.trainer.TrainerPojo;
 import com.example.gym.model.training.Training;
 import com.example.gym.model.training.dto.CreateTrainingDto;
 import com.example.gym.model.training.dto.ResponseTrainingDto;
-import com.example.gym.model.training.dto.ResponseTrainingForClientDto;
 import com.example.gym.model.user.User;
-import com.example.gym.model.user.pojo.ClientInfo;
 import com.example.gym.model.user.pojo.Section;
 
 @Service
@@ -100,7 +96,7 @@ public class Mapper {
 
     public ResponseTrainingDto toDto(Training training) {
         ResponseTrainingDto dto = modelMapper.map(training, ResponseTrainingDto.class);
-        dto.setTrainer(training.getTrainerPojo());
+        dto.setTrainer(training.getTrainer());
         dto.setClients(training.getClients());
         dto.setRoom(training.getRoom());
         return dto;
@@ -132,7 +128,7 @@ public class Mapper {
 
     public ClientPojo toClientPojo(User newClient) {
         ClientPojo client = modelMapper.map(newClient, ClientPojo.class);
-        client.setRegistrationDate(newClient.getCreatedDate());
+        client.setRegistrationDate(newClient.getCreatedAt());
         client.setLoyaltyPoints(newClient.getClientInfo().getLoyaltyPoints());
         return client;
     }

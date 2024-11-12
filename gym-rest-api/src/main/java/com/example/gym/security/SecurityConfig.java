@@ -40,9 +40,8 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/admins/**").hasRole("ADMIN")
-                        .requestMatchers("/trainers/**").hasRole("TRAINER")
-                        .requestMatchers("/clients/**").hasRole("USER")
+                        .requestMatchers("/trainers/**").hasAnyRole("TRAINER", "ADMIN")
+                        .requestMatchers("/clients/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().permitAll())
                 .addFilterBefore(JwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build(); 

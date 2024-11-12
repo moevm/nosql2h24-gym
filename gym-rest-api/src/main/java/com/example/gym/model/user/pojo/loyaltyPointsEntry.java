@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class LoaltyPointsHistory {
+public class loyaltyPointsEntry {
 
     private Integer pointsChange;
     private String transactionType;

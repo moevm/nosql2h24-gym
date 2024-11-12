@@ -55,7 +55,7 @@
       <el-space direction="vertical">
         <el-row style="gap:15px">
           <el-button @click="getTraining">Получить тренировку по ID</el-button>
-          <el-button @click="updateTraining">Обновить тренировку по ID</el-button>
+<!--          <el-button @click="updateTraining">Обновить тренировку по ID</el-button>-->
           <el-button @click="deleteTraining">Удалить тренировку по ID</el-button>
           <el-button @click="registerClientForTraining">Записать клиента на тренировку</el-button>
           <el-button @click="getAllTrainings">Получить все тренировки</el-button>
@@ -68,7 +68,7 @@
         </el-row>
       </el-space>
     </el-container>
-    
+
     <el-container style="text-align: center">
       <el-header height="40px" style="text-transform:uppercase; font-size: 24px">PROMOTION (Операции, связанные с поощрениями)</el-header>
       <el-space direction="vertical">
@@ -82,7 +82,7 @@
         </el-row>
       </el-space>
     </el-container>
-    
+
     <el-container style="text-align: center">
       <el-header height="40px" style="text-transform:uppercase; font-size: 24px">CLIENTS (Операции, связанные с клиентами)</el-header>
       <el-space direction="vertical">
@@ -99,7 +99,7 @@
         </el-row>
       </el-space>
     </el-container>
-    
+
     <el-container style="text-align: center">
       <el-header height="40px" style="text-transform:uppercase; font-size: 24px">ROOMS (Операции, связанные с ЗАЛАМИ)</el-header>
       <el-space direction="vertical">
@@ -115,7 +115,7 @@
         </el-row>
       </el-space>
     </el-container>
-    
+
     <el-container style="text-align: center">
       <el-header height="40px" style="text-transform:uppercase; font-size: 24px">ADMIN CONTROLLER (Операции, связанные с АДМИНАМИ)</el-header>
       <el-space direction="vertical">
@@ -141,7 +141,7 @@ import router from '../../app/router';
 import axiosInstance from "../../widgets/axios";
 
 const trainersData = ref(null);
-const trainerId = 1; // Используем тестовый ID для примера
+const trainerId = "653ef3a8a3e34567bcdf2001"; // Используем тестовый ID для примера
 
 // Переход на страницу входа
 const handleLoginButton = () => {
@@ -166,7 +166,7 @@ const createTraining = async () => {
       "endTime": "2024-11-10T21:36:57.216Z",
       "availableSlots": 10,
       "section": "Плавание",
-      "roomId": "1"
+      "roomId": "653ef3a8a3e34567bcdf5001"
     });
     console.log("Тренировка добавлена:", response.data);
   } catch (error) {
@@ -180,12 +180,12 @@ const updateTrainer = async () => {
     const response = await axiosInstance.put(`/trainers/${trainerId}`, {
       "name": "Иван",
       "surname": "Иванов",
-      "email": "example@example.com",
+      "email": "trainer@example.com",
       "phoneNumber": "+79998887766",
       "experience": 2,
       "hourlyRate": 500,
       "specialization": "string",
-      "sections": "['Name1', 'Name2']"
+      "sections": ['Name1', 'Name2']
     });
     console.log("Данные тренера обновлены:", response.data);
   } catch (error) {
@@ -203,17 +203,20 @@ const deleteTrainer = async () => {
   }
 };
 
-const clientId = 1; // Пример ID клиента
+const clientId = "653ef3a8a3e34567bcdf1001"; // Пример ID клиента
 const createAbonement = async () => {
   try {
-    await axiosInstance.post(`/subscriptions/client/${clientId}`);
+    await axiosInstance.post(`/subscriptions/client/${clientId}`, {
+      "duration": "52",
+      "price": "300.14",
+    });
   } catch (error) {
     console.error("Ошибка при создании абонемента", error);
   }
 }
 
 const trainingData = ref(null);
-const trainingId = 1; // Пример ID тренировки
+const trainingId = "653ef3a8a3e34567bcdf3001"; // Пример ID тренировки
 
 // Получить тренировку по её идентификатору
 const getTraining = async () => {
@@ -226,20 +229,20 @@ const getTraining = async () => {
 };
 
 // Обновить тренировку по её идентификатору
-const updateTraining = async () => {
-  try {
-    const response = await axiosInstance.put(`/trainings/${trainingId}`, {
-      "startTime": "2024-11-10T21:36:04.328Z",
-      "endTime": "2024-11-10T21:36:04.328Z",
-      "availableSlots": 10,
-      "section": "Плавание",
-      "roomId": "1"
-    });
-    console.log("Тренировка обновлена:", response.data);
-  } catch (error) {
-    console.error("Ошибка при обновлении тренировки:", error);
-  }
-};
+// const updateTraining = async () => {
+//   try {
+//     const response = await axiosInstance.put(`/trainings/${trainingId}`, {
+//       "startTime": "2024-11-11T19:30:00.000Z",
+//       "endTime": "2024-11-11T18:00:00.000Z",
+//       "availableSlots": 10,
+//       "section": "Плавание",
+//       "roomId": "653ef3a8a3e34567bcdf5001"
+//     });
+//     console.log("Тренировка обновлена:", response.data);
+//   } catch (error) {
+//     console.error("Ошибка при обновлении тренировки:", error);
+//   }
+// };
 
 // Удалить тренировку по её идентификатору
 const deleteTraining = async () => {
@@ -282,7 +285,7 @@ const getTrainingClients = async () => {
 };
 
 const promotionData = ref(null);
-const promotionId = 1; // Пример ID для тестирования
+const promotionId = "653a1f2c1c9d440000a1bc24"; // Пример ID для тестирования
 
 // Получить поощрение по ID
 const getPromotionById = async () => {
@@ -303,7 +306,7 @@ const updatePromotion = async () => {
       "startDate": "2024-11-09T12:20:55.971Z",
       "endDate": "2024-12-09T12:20:55.971Z",
       "discountPercentage": 10,
-      "creatorId": "672e8f509016ff5e3ddaec88"
+      "creatorId": "653ef3a8a3e34567bcdf3001"
     });
     console.log("Поощрение обновлено:", response.data);
   } catch (error) {
@@ -339,7 +342,7 @@ const createPromotion = async () => {
       "startDate": "2024-11-09T12:20:55.971Z",
       "endDate": "2024-12-09T12:20:55.971Z",
       "discountPercentage": 10,
-      "creatorId": "672e8f509016ff5e3ddaec88"
+      "creatorId": "653ef3a8a3e34567bcdf3001"
     })
   } catch (error) {
     console.error("Ошибка при создании поощрения:", error);
@@ -362,7 +365,7 @@ const updateClientById = async () => {
     const client = await axiosInstance.put(`/clients/${clientId}`, {
       "name": "Иван",
       "surname": "Иванов",
-      "email": "example@example.com",
+      "email": "client@example.com",
       "phoneNumber": "+79998887766"
     });
     console.log(client)
@@ -389,7 +392,7 @@ const getClients = async () => {
 }
 
 const roomsData = ref(null);
-const roomId = 1;
+const roomId = "653ef3a8a3e34567bcdf4001";
 
 const getRooms = async () => {
   try {
@@ -403,10 +406,10 @@ const getRooms = async () => {
 const createRoom = async () => {
   try {
     await axiosInstance.post(`/rooms`, {
-      "name": "string",
-      "capacity": 0,
-      "address": "string",
-      "number": 0
+      "name": "Main Gym in Out City!",
+      "capacity": 500,
+      "address": "Tverskaya Street, 12",
+      "number": 1
     });
   } catch (error) {
     console.error("Ошибка при создании зала:", error);
@@ -422,7 +425,7 @@ const deleteRoom = async () => {
 }
 
 const adminsData = ref();
-const adminId = 1;
+const adminId = "653ef3a8a3e34567bcdf3001";
 
 const getAdminByid = async () => {
   try {
@@ -438,7 +441,7 @@ const updateAdminById = async() => {
     await axiosInstance.put(`/admins/${adminId}`, {
       "name": "Иван",
       "surname": "Иванов",
-      "email": "example@example.com"
+      "email": "admin@example.com"
     });
   } catch (error) {
     console.error("Ошибка при обновлении админа:", error);
@@ -455,7 +458,7 @@ const deleteAdminById = async () => {
 
 const getAdmins = async () => {
   try {
-    const response = await axiosInstance.get(`/admins}`);
+    const response = await axiosInstance.get(`/admins`);
     adminsData.value = response.data;
   } catch (error) {
     console.error("Ошибка при получении админов:", error);

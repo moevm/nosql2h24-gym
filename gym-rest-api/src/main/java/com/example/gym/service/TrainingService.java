@@ -1,9 +1,7 @@
 package com.example.gym.service;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
@@ -11,12 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.gym.model.training.Training;
 import com.example.gym.model.training.dto.CreateTrainingDto;
-import com.example.gym.model.training.dto.ResponseTrainingClientDto;
 import com.example.gym.model.training.dto.ResponseTrainingDto;
 import com.example.gym.model.training.dto.ResponseTrainingForStatistic;
 import com.example.gym.model.user.User;
 import com.example.gym.model.user.pojo.Section;
-import com.example.gym.model.user.pojo.TrainerInfo;
 import com.example.gym.repository.RoomRepository;
 import com.example.gym.repository.TrainingRepository;
 import com.example.gym.repository.UserRepository;
@@ -24,12 +20,10 @@ import com.example.gym.util.Mapper;
 import com.example.gym.exception.InvalidDataException;
 import com.example.gym.exception.ResourceNotFoundException;
 import com.example.gym.model.client.ClientPojo;
-import com.example.gym.model.client.ResponseClientDto;
 import com.example.gym.model.room.Room;
 import com.example.gym.model.room.RoomPojo;
 import com.example.gym.model.trainer.TrainerPojo;
 
-import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -74,7 +68,7 @@ public class TrainingService {
 
         Training training = modelMapper.toModel(dto);
         TrainerPojo trainerPojo = modelMapper.toPojo(trainer);
-        training.setTrainerPojo(trainerPojo);
+        training.setTrainer(trainerPojo);
 
         Optional<Room> optionalRoom = roomRepository.findById(dto.getRoomId());
         if (optionalRoom.isPresent()) {
@@ -198,6 +192,7 @@ public class TrainingService {
     }
 
     private void validateTime(LocalDateTime startTime, LocalDateTime endTime) throws InvalidDataException {
+//        TODO: endtime неправильно интерпретируется при запросе с фронта
         if (startTime.isAfter(endTime)) {
             throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
         }
@@ -205,7 +200,7 @@ public class TrainingService {
 
     private void validateOverlapping(LocalDateTime startTime, LocalDateTime endTime, String trainerId) throws InvalidDataException {
         List<Training> overlappingTrainings = findAll().stream()
-                .filter(training -> training.getTrainerPojo().getId().equals(trainerId))
+                .filter(training -> training.getTrainer().getId().equals(trainerId))
                 .filter(training -> 
                     (startTime.isBefore(training.getEndTime()) && endTime.isAfter(training.getStartTime()))
                 )

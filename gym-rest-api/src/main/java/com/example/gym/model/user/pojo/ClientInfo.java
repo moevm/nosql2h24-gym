@@ -21,10 +21,10 @@ public class ClientInfo {
     @ArraySchema(
            schema = @Schema(name = "Абонементы", implementation = Subscription.class)
     )
-    private List<Subscription> subscription;
+    private List<Subscription> subscriptions;
     @ArraySchema(
-            schema = @Schema(name = "История транзаций баллов лояльности", implementation = LoaltyPointsHistory.class)
+            schema = @Schema(name = "История транзаций баллов лояльности", implementation = loyaltyPointsEntry.class)
     )
-    private List<LoaltyPointsHistory> loaltyPointsHistories;
+    private List<loyaltyPointsEntry> loyaltyPointsHistory;
 
 }

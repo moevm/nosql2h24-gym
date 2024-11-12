@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.List;
 
 import com.example.gym.exception.ResourceNotFoundException;
@@ -33,7 +32,7 @@ public class SubscriptionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Клиент с id %s не найден".formatted(clientId)));
         
         ClientInfo clientInfo = client.getClientInfo();
-        List<Subscription> subscriptions = clientInfo.getSubscription();
+        List<Subscription> subscriptions = clientInfo.getSubscriptions();
         LocalDate now = LocalDate.now();
         subscriptions.add(new Subscription(
             now,

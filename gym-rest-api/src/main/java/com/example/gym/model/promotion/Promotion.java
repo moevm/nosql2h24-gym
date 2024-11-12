@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
 @Document(collection = "promotions")
 public class Promotion {
 
