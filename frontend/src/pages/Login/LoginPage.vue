@@ -49,6 +49,9 @@
 import { reactive, ref } from "vue";
 import axiosInstance from "../../widgets/axios";
 import router from "../../app/router";
+import { useAuthStore } from "../../widgets/store/auth";
+
+const authStore = useAuthStore();
 
 const formData = reactive({
   name: 'Иван',
@@ -91,11 +94,10 @@ const handleSubmit = async () => {
           refreshToken: string,
         } = res.data;
         
-        localStorage.setItem('authToken', tokens.accessToken)
-        localStorage.setItem('refreshToken', tokens.refreshToken)
+        authStore.setAuthToken(tokens.accessToken)
       });
       
-      await router.push('/');
+      await router.push('/profile');
     }
     
     // Переход на главную после успешного запроса

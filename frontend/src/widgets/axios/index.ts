@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { useAuthStore } from "../store/auth";
 
 const baseURL = 'http://localhost:8080';
+
 
 const axiosInstance = axios.create({
   baseURL, // Указываем базовый URL для всех запросов
@@ -13,7 +15,9 @@ const axiosInstance = axios.create({
 // Интерсептор для добавления токена в заголовки запросов
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken'); // Получаем токен из localStorage или другого места
+    const authStore = useAuthStore();
+    const token = authStore.getAuthToken(); // Получаем токен из localStorage или другого места
+    
     if (token) {
       // Добавляем токен в заголовки запроса
       config.headers['Authorization'] = `Bearer ${token}`;

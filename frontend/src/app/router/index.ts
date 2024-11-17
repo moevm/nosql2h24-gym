@@ -17,10 +17,12 @@ const router = createRouter({
 router.beforeEach((to, _, next) => {
   const token = localStorage.getItem('authToken'); // Получаем токен из localStorage
   
-  if (to.meta.requiresAuth && !token) {
-    next('/login');
+  if (to.path === '/login' && token) {
+    next('/profile');  // Путь на профиль, или на нужную страницу
+  } else if (to.meta.requiresAuth && !token) {
+    next('/login'); // Если маршрут требует авторизации, но токена нет
   } else {
-    next();
+    next(); // Даем проходить по другим маршрутам
   }
 });
 
