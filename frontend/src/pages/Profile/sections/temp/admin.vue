@@ -62,7 +62,7 @@ import axiosInstance from "../../../../widgets/axios";
 import { ref } from "vue";
 import Spacer from "../../../../shared/components/Spacer.vue";
 
-const adminsData = ref([]);
+const adminsData = ref(null);
 const adminId = "653ef3a8a3e34567bcdf3001";
 const promotionData = ref(null);
 const roomsData = ref(null);
@@ -74,7 +74,7 @@ const currentTable = ref<'admins' | 'promotions' | 'rooms' | null>(null);
 const getAdminByid = async () => {
   try {
     const response = await axiosInstance.get(`/admins/${adminId}`);
-    adminsData.value = [response.data]; // Отображаем одного администратора
+    adminsData.value = [response.data] as any; // Отображаем одного администратора
     currentTable.value = 'admins'; // Устанавливаем активную таблицу
   } catch (error) {
     console.error("Ошибка при получении админа:", error);
@@ -88,7 +88,7 @@ const updateAdminById = async () => {
       surname: "Иванов" + Math.ceil(Math.random() * 1000),
       email: "admin@example.com",
     });
-    adminsData.value = [response.data]; // Отображаем обновленного администратора
+    adminsData.value = [response.data] as any; // Отображаем обновленного администратора
     currentTable.value = 'admins'; // Устанавливаем активную таблицу
   } catch (error) {
     console.error("Ошибка при обновлении админа:", error);
@@ -126,7 +126,7 @@ const createPromotion = async () => {
       discountPercentage: 10,
       creatorId: adminId,
     });
-    promotionData.value = [response.data]; // Отображаем только созданное поощрение
+    promotionData.value = [response.data] as any; // Отображаем только созданное поощрение
     currentTable.value = 'promotions'; // Устанавливаем активную таблицу
   } catch (error) {
     console.error("Ошибка при создании поощрения:", error);
@@ -152,7 +152,7 @@ const createRoom = async () => {
       address: "Tverskaya Street, 12",
       number: 1,
     });
-    roomsData.value = [response.data]; // Отображаем только созданный зал
+    roomsData.value = [response.data] as any; // Отображаем только созданный зал
     currentTable.value = 'rooms'; // Устанавливаем активную таблицу
   } catch (error) {
     console.error("Ошибка при создании зала:", error);
