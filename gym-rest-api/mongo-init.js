@@ -11,6 +11,8 @@ db.users.insertMany([
         "comment": "Frequent client",
         "createdAt": ISODate("2023-08-20T10:00:00Z"),
         "updatedAt": ISODate("2024-08-20T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("2002-08-20T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 200,
@@ -37,6 +39,8 @@ db.users.insertMany([
         "comment": "New client",
         "createdAt": ISODate("2023-09-01T10:00:00Z"),
         "updatedAt": ISODate("2024-09-01T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1996-04-01T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 100,
@@ -63,6 +67,8 @@ db.users.insertMany([
         "comment": "Has an ongoing subscription",
         "createdAt": ISODate("2023-07-15T10:00:00Z"),
         "updatedAt": ISODate("2024-07-15T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("2000-04-01T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 300,
@@ -89,6 +95,8 @@ db.users.insertMany([
         "comment": "Prefers group classes",
         "createdAt": ISODate("2023-06-10T10:00:00Z"),
         "updatedAt": ISODate("2024-06-10T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1995-02-01T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 250,
@@ -115,6 +123,8 @@ db.users.insertMany([
         "comment": "Regular visitor",
         "createdAt": ISODate("2023-05-05T10:00:00Z"),
         "updatedAt": ISODate("2024-05-05T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1991-02-01T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 180,
@@ -144,14 +154,16 @@ db.users.insertMany([
         "comment": "Specializes in basketball training",
         "createdAt": ISODate("2023-01-10T10:00:00Z"),
         "updatedAt": ISODate("2024-01-10T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("2000-02-01T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "Professional Basketball Coach",
             "hourlyRate": NumberDecimal("200.00"),
             "sections": [
-                { "name": "Basketball Skills" },
-                { "name": "Team Strategy" }
+                "Basketball Skills",
+                "Team Strategy"
             ]
         }
     },
@@ -165,14 +177,16 @@ db.users.insertMany([
         "comment": "Expert in tennis training",
         "createdAt": ISODate("2023-02-15T10:00:00Z"),
         "updatedAt": ISODate("2024-02-15T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1993-01-12T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "Grand Slam Winner",
             "hourlyRate": NumberDecimal("250.00"),
             "sections": [
-                { "name": "Tennis Fundamentals" },
-                { "name": "Advanced Techniques" }
+                "Tennis Fundamentals",
+                "Advanced Techniques"
             ]
         }
     },
@@ -186,14 +200,16 @@ db.users.insertMany([
         "comment": "Specialist in sprint training",
         "createdAt": ISODate("2023-03-20T10:00:00Z"),
         "updatedAt": ISODate("2024-03-20T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1990-01-12T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "Olympic Sprinting Champion",
             "hourlyRate": NumberDecimal("300.00"),
             "sections": [
-                { "name": "Sprint Training" },
-                { "name": "Endurance Building" }
+                "Sprint Training",
+                "Endurance Building"
             ]
         }
     },
@@ -207,14 +223,16 @@ db.users.insertMany([
         "comment": "Focuses on gymnastics coaching",
         "createdAt": ISODate("2023-04-25T10:00:00Z"),
         "updatedAt": ISODate("2024-04-25T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("2001-01-12T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "World Champion Gymnast",
             "hourlyRate": NumberDecimal("220.00"),
             "sections": [
-                { "name": "Gymnastics Basics" },
-                { "name": "Floor Exercises" }
+                "Gymnastics Basics",
+                "Floor Exercises"
             ]
         }
     },
@@ -228,14 +246,16 @@ db.users.insertMany([
         "comment": "Specializes in football coaching",
         "createdAt": ISODate("2023-05-10T10:00:00Z"),
         "updatedAt": ISODate("2024-05-10T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("2001-01-12T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "NFL MVP",
             "hourlyRate": NumberDecimal("250.00"),
             "sections": [
-                { "name": "Football Techniques" },
-                { "name": "Team Leadership" }
+                "Football Techniques",
+                "Team Leadership"
             ]
         }
     }
@@ -252,6 +272,8 @@ db.users.insertMany([
         "comment": "Main administrator",
         "createdAt": ISODate("2023-01-01T10:00:00Z"),
         "updatedAt": ISODate("2024-01-01T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1994-11-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -266,6 +288,8 @@ db.users.insertMany([
         "comment": "Handles user issues",
         "createdAt": ISODate("2023-02-10T10:00:00Z"),
         "updatedAt": ISODate("2024-02-10T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1995-11-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -280,6 +304,8 @@ db.users.insertMany([
         "comment": "Manages schedules",
         "createdAt": ISODate("2023-03-15T10:00:00Z"),
         "updatedAt": ISODate("2024-03-15T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1995-12-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -294,6 +320,8 @@ db.users.insertMany([
         "comment": "Supervises finances",
         "createdAt": ISODate("2023-04-20T10:00:00Z"),
         "updatedAt": ISODate("2024-04-20T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1992-12-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -308,6 +336,8 @@ db.users.insertMany([
         "comment": "In charge of HR",
         "createdAt": ISODate("2023-05-25T10:00:00Z"),
         "updatedAt": ISODate("2024-05-25T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1997-12-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -658,8 +688,8 @@ db.users.insertMany([
             "qualification": "Кандидат в мастера спорта",
             "hourlyRate": NumberDecimal("150.00"),
             "sections": [
-                { "name": "Функциональная тренировка" },
-                { "name": "Кардио тренировка" }
+                "Функциональная тренировка",
+                "Кардио тренировка"
             ]
         }
     }
