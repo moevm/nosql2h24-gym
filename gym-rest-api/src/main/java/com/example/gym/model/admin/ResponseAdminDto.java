@@ -1,5 +1,9 @@
 package com.example.gym.model.admin;
 
+import java.time.LocalDateTime;
+
+import com.example.gym.model.user.pojo.GenderType;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,5 +27,9 @@ public class ResponseAdminDto {
     private String password;
     @Schema(description = "Электронная почта", example = "example@example.com")
     private String email;
+    @Schema(description = "Пол", enumAsRef = true)
+    private GenderType gender;
+    @Schema(description = "Дата рождения", example = "2002-08-15T00:00:00Z")
+    private LocalDateTime birthday;
     
 }

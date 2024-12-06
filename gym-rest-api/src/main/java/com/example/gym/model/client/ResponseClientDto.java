@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.gym.model.user.pojo.ClientInfo;
+import com.example.gym.model.user.pojo.GenderType;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,6 +40,11 @@ public class ResponseClientDto {
 
     @Schema(description = "Заметка")
     private String comment;
+
+    @Schema(description = "Пол", enumAsRef = true)
+    private GenderType gender;
+    @Schema(description = "Дата рождения", example = "2002-08-15T00:00:00Z")
+    private LocalDateTime birthday;
 
     @ArraySchema(
             schema = @Schema(description = "Роль", example = "ROLE_USER")
