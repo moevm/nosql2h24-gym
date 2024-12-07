@@ -6,6 +6,7 @@ import java.util.List;
 import com.example.gym.model.client.ClientPojo;
 import com.example.gym.model.room.RoomPojo;
 import com.example.gym.model.trainer.TrainerPojo;
+import com.example.gym.model.training.TrainingStatus;
 import com.example.gym.model.user.pojo.Section;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -34,10 +35,10 @@ public class ResponseTrainingDto {
     @Schema(description = "Зал", implementation = RoomPojo.class)
     private RoomPojo room;
 
-    @Schema(description = "Время начала тренировки в формате ISO 8601", example = "2023-10-01T15:30:00")
+    @Schema(description = "Время начала тренировки в формате ISO 8601", example = "15:30:00")
     private LocalDateTime startTime;
 
-    @Schema(description = "Время окончания тренировки в формате ISO 8601", example = "2023-10-01T15:30:00")
+    @Schema(description = "Время окончания тренировки в формате ISO 8601", example = "16:30:00")
     private LocalDateTime endTime;
 
     @Schema(description = "Количество мест", example = "3")
@@ -45,6 +46,9 @@ public class ResponseTrainingDto {
 
     @Schema(description = "Есть ли свободная запись на тренировку?", example = "true")
     private boolean hasFreeRegistration;
+
+    @Schema(description = "Статус тренировки", enumAsRef = true)
+    private TrainingStatus status;
 
     @ArraySchema(
         schema = @Schema(name = "Клиенты", implementation = ClientPojo.class)
