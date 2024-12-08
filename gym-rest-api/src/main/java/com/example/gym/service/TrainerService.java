@@ -1,27 +1,39 @@
 package com.example.gym.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.example.gym.exception.InvalidDataException;
 import com.example.gym.exception.ResourceNotFoundException;
 import com.example.gym.exception.UniquenessViolationException;
+import com.example.gym.model.dto.statistics.trainer.ResponseTrainingForStatistics;
+import com.example.gym.model.dto.statistics.trainer.TrainingDetailDto;
+import com.example.gym.model.subscription.SubscriptionStatus;
 import com.example.gym.model.trainer.ResponseTrainerDto;
 import com.example.gym.model.trainer.ResponseTrainerWithoutTrainingsDto;
-import com.example.gym.model.trainer.UpdateTrainerDto;
+import com.example.gym.model.trainer.TrainerPojo;
+import com.example.gym.model.trainer.update.UpdateTrainerDto;
+import com.example.gym.model.trainer.update.UpdateTrainerInfo;
 import com.example.gym.model.training.Training;
 import com.example.gym.model.training.dto.CreateTrainingDto;
 
 import com.example.gym.model.training.dto.ResponseTrainingDto;
 import com.example.gym.model.user.User;
 import com.example.gym.model.user.UserRoleType;
-import com.example.gym.model.user.pojo.Section;
+import com.example.gym.model.user.pojo.GenderType;
 import com.example.gym.model.user.pojo.TrainerInfo;
+import com.example.gym.repository.TrainingRepository;
 import com.example.gym.repository.UserRepository;
 import com.example.gym.util.Mapper;
 
@@ -36,14 +48,125 @@ public class TrainerService {
     private final UserRepository userRepository;
     private final TrainingService trainingService;
     private final Mapper modelMapper;
+    private final MongoTemplate mongoTemplate;
+    private final TrainingRepository trainingRepository;
 
+    public Map<String, Object> getProfitStatistics(String trainerId) {
+        List<Training> trainings = trainingRepository.findAllByTrainerId(trainerId);
 
-    public List<ResponseTrainerWithoutTrainingsDto> findAll(String section) {
-        return userRepository.findAllByRoles(UserRoleType.ROLE_TRAINER.name()).stream()
-            .filter(trainer -> section == null || section.isEmpty() || section.isBlank() ||
-                    trainer.getTrainerInfo().getSectionNames().contains(section))
+        Map<String, Double> profitStatistics = new HashMap<>();
+        profitStatistics.put("today", 0.0);
+        profitStatistics.put("this_week", 0.0);
+        profitStatistics.put("this_month", 0.0);
+        
+        Map<String, Double> previousMonthsProfit = new HashMap<>();
+
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
+        LocalDate startOfMonth = today.withDayOfMonth(1);
+
+        for (Training training : trainings) {
+            LocalDate trainingDate = training.getStartTime().toLocalDate();
+
+            double trainingProfit = training.getTrainer().getHourlyRate() * training.getClients().size() * training.getDurationInHours();
+
+            if (trainingDate.isEqual(today)) {
+                profitStatistics.put("today", profitStatistics.get("today") + trainingProfit);
+            }
+
+            if (!trainingDate.isBefore(startOfWeek)) {
+                profitStatistics.put("this_week", profitStatistics.get("this_week") + trainingProfit);
+            }
+
+            if (trainingDate.getMonth() == today.getMonth() && trainingDate.getYear() == today.getYear()) {
+                profitStatistics.put("this_month", profitStatistics.get("this_month") + trainingProfit);
+            }
+
+            if (trainingDate.isBefore(startOfMonth)) {
+                String monthYearKey = trainingDate.getYear() + "-" + trainingDate.getMonthValue();
+                previousMonthsProfit.put(monthYearKey, previousMonthsProfit.getOrDefault(monthYearKey, 0.0) + trainingProfit);
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("profitStatistics", profitStatistics);
+        result.put("previous_months_profit", previousMonthsProfit);
+
+        return result;
+    }
+
+    public List<TrainingDetailDto> getTrainingsStatistics(String trainerId) {
+        // LocalDateTime startDateTime = startDate.atStartOfDay();
+        // LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+        List<Training> trainings = trainingRepository.findAllByEndTimeBeforeAndTrainerId(
+                LocalDateTime.now(),
+                trainerId);
+
+        return trainings.stream()
+            .map(t -> {
+                Integer clientCount = t.getClients().size();
+                Double hourlyRate = t.getTrainer().getHourlyRate();
+                Double duration = t.getDurationInHours();
+                Double profit = clientCount * hourlyRate * duration;
+
+                LocalDate date = t.getStartTime().toLocalDate();
+                LocalTime time = t.getStartTime().toLocalTime();
+
+                System.out.println(t.getStartTime());
+                return new TrainingDetailDto(date, time, clientCount, profit, t.getId());
+            })
+            .collect(Collectors.toList());
+    }
+
+    public ResponseTrainingForStatistics getTrainingStatistics(String trainerId, String trainingId) {
+        ResponseTrainingForStatistics trainingStatistics = new ResponseTrainingForStatistics();
+
+        Training training = trainingRepository.findByEndTimeBeforeAndTrainerIdAndId(
+                LocalDateTime.now(),
+                trainerId,
+                trainingId);
+
+        trainingStatistics.setProfit(training.getDurationInHours() * training.getClients().size() * training.getTrainer().getHourlyRate());
+        trainingStatistics.setTraining(modelMapper.toDto(training));
+
+        return trainingStatistics;
+    }
+
+    public List<ResponseTrainerWithoutTrainingsDto> findAll(
+            String section,
+            String name,
+            String surname,
+            Optional<GenderType> gender,
+            LocalDateTime birthdayFrom,
+            LocalDateTime birthdayBefore
+    ) {
+        Query query = new Query();
+        
+        if (section != null && !section.isEmpty() && !section.isBlank())
+            query.addCriteria(Criteria.where("trainerInfo.sectionNames").in(section));
+        
+        if (name != null && !name.isEmpty() && !name.isBlank())
+            query.addCriteria(Criteria.where("name").regex(name, "i"));
+        
+        if (surname != null && !surname.isEmpty() && !surname.isBlank())
+            query.addCriteria(Criteria.where("surname").regex(surname, "i"));
+        
+        if (gender.isPresent())
+            query.addCriteria(Criteria.where("gender").is(gender.get()));
+        
+        if (birthdayFrom != null)
+            query.addCriteria(Criteria.where("birthday").gte(birthdayFrom));
+        
+        if (birthdayBefore != null)
+            query.addCriteria(Criteria.where("birthday").lt(birthdayBefore));
+
+        query.addCriteria(Criteria.where("roles").in(UserRoleType.ROLE_TRAINER));
+        
+        List<User> trainers = mongoTemplate.find(query, User.class);
+        
+        return trainers.stream()
             .map(modelMapper::toDtoWithoutTraining)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     // public List<ResponseTrainerWithoutTrainingsDto> findAllFree(String section) {
@@ -72,12 +195,16 @@ public class TrainerService {
     public ResponseTrainerDto updateTrainer(String id, UpdateTrainerDto dto) throws UniquenessViolationException, ResourceNotFoundException {
         User trainer = getById(id);
 
+        boolean needUpdate = false;
+
         if (dto.getName() != null && !trainer.getName().equals(dto.getName())) {
             trainer.setName(dto.getName());
+            needUpdate = true;
         }
 
         if (dto.getSurname() != null && !trainer.getSurname().equals(dto.getSurname())) {
             trainer.setSurname(dto.getSurname());
+            needUpdate = true;
         }
 
         if (dto.getEmail() != null && !trainer.getEmail().equals(dto.getEmail())) {
@@ -98,40 +225,68 @@ public class TrainerService {
             trainer.setPhoneNumber(dto.getPhoneNumber());
         }
 
+        if (dto.getGender() != null && trainer.getGender() != dto.getGender()) {
+            trainer.setGender(dto.getGender());
+            needUpdate = true;
+        }
+
+        if (dto.getBirthday() != null && (trainer.getBirthday() == null || 
+                (trainer.getBirthday() != null && !trainer.getBirthday().equals(dto.getBirthday())))) {
+            trainer.setBirthday(dto.getBirthday());
+        }
+
         TrainerInfo trainerInfo = trainer.getTrainerInfo();
-        if (dto.getExperience() != null && trainerInfo.getExperience() != dto.getExperience()) {
-            trainerInfo.setExperience(dto.getExperience());
+        UpdateTrainerInfo updateTrainerDto = dto.getTrainerInfo();
+        if (updateTrainerDto.getExperience() != null && trainerInfo.getExperience() != updateTrainerDto.getExperience()) {
+            trainerInfo.setExperience(updateTrainerDto.getExperience());
+            needUpdate = true;
         }
 
-        if (dto.getSpecialization() != null && trainerInfo.getQualification() != dto.getSpecialization()) {
-            trainerInfo.setQualification(dto.getSpecialization());
+        if (updateTrainerDto.getQualification() != null && trainerInfo.getQualification() != updateTrainerDto.getQualification()) {
+            trainerInfo.setQualification(updateTrainerDto.getQualification());
+            needUpdate = true;
         }
 
-        if (dto.getHourlyRate() != null && trainerInfo.getHourlyRate() != dto.getHourlyRate()) {
-            trainerInfo.setHourlyRate(dto.getHourlyRate());
+        if (updateTrainerDto.getHourlyRate() != null && trainerInfo.getHourlyRate() != updateTrainerDto.getHourlyRate()) {
+            trainerInfo.setHourlyRate(updateTrainerDto.getHourlyRate());
+            needUpdate = true;
         }
 
-        if (dto.getSections() != null) {
-            trainerInfo.setSections(getSections(dto.getSections()));
+        if (updateTrainerDto.getSections() != null) {
+            trainerInfo.setSections(updateTrainerDto.getSections());
         }
 
         trainer.setTrainerInfo(trainerInfo);
 
         User updatedTrainer = userRepository.save(trainer);
+
+        if (needUpdate) {
+            List<Training> trainings = trainingRepository.findAllByTrainerId(updatedTrainer.getId());
+            trainings.forEach(training -> {
+                TrainerPojo trainerPojo = new TrainerPojo();
+                trainerPojo.setId(updatedTrainer.getId());
+                trainerPojo.setName(updatedTrainer.getName());
+                trainerPojo.setSurname(updatedTrainer.getSurname());
+                trainerPojo.setGender(updatedTrainer.getGender());
+                trainerPojo.setQualification(updatedTrainer.getTrainerInfo().getQualification());
+                trainerPojo.setHourlyRate(updatedTrainer.getTrainerInfo().getHourlyRate());
+                training.setTrainer(trainerPojo);
+                trainingRepository.save(training);
+            });
+        }
+
         return modelMapper.toTrainerDto(updatedTrainer);
     } 
 
-    private List<Section> getSections(List<String> sectionsList) {
-        Set<Section> sections = new HashSet<>();
-        for (String sectionName : sectionsList) {
-            sections.add(new Section(sectionName));
-        }
-
-        return sections.stream().toList();
-    }
-
     public void deleteTrainer(String id) {
-        userRepository.deleteById(id);
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent() && user.get().getClientInfo() != null &&  
+                !user.get().getClientInfo().getSubscriptions().isEmpty() &&
+                user.get().getClientInfo().getSubscriptions().get(0).getStatus() == SubscriptionStatus.ACTIVE) {
+            throw new InvalidDataException("Нельзя удалить пользователя с активным абонементом");
+        } else {
+            userRepository.deleteById(id);
+        }
     }
 
     // @Transactional
@@ -147,10 +302,10 @@ public class TrainerService {
         return trainer;
     }
 
-    // public List<ResponseTrainingDto> findTrainingsByTrainerId(String id) {
-    //     getById(id);
-    //     return trainingService.findTrainingsByTrainerId(id);
-    // }
+    public List<ResponseTrainingDto> findTrainigs(String id) {
+        getById(id);
+        return trainingService.findTrainingsByTrainerId(id);
+    }
 
     @Transactional
     public ResponseTrainingDto createTraining(CreateTrainingDto dto, String trainerId) throws ResourceNotFoundException, InvalidDataException {
@@ -182,10 +337,6 @@ public class TrainerService {
     //             .map(t -> modelMapper.toTrainerDto(t))
     //             .toList();
     // }
-
-    public List<ResponseTrainingDto> findAllTrainigs() {
-        return trainingService.findAllTrainigs();
-    }
 
     // public List<ResponseTrainerForStatistic> getTrainersActivity() {
     //     List<User> trainers = userRepository.findAllByRoleIndex(ROLE_TRAINER_INDEX);

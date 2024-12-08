@@ -9,6 +9,7 @@ import com.example.gym.model.promotion.CreatedBy;
 import com.example.gym.model.promotion.Promotion;
 import com.example.gym.model.promotion.dto.CreatePromotionDto;
 import com.example.gym.model.promotion.dto.ResponsePromotionDto;
+import com.example.gym.model.promotion.dto.UpdatePromotionDto;
 import com.example.gym.model.user.User;
 import com.example.gym.repository.PromotionRepository;
 import com.example.gym.repository.UserRepository;
@@ -49,7 +50,7 @@ public class PromotionService {
         return modelMapper.toDto(promotion);
     }
 
-    public ResponsePromotionDto update(CreatePromotionDto dto, String id) throws ResourceNotFoundException {
+    public ResponsePromotionDto update(UpdatePromotionDto dto, String id) throws ResourceNotFoundException {
         Promotion promotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Поощрения с ID %s не найдено".formatted(id)));
 
@@ -60,12 +61,12 @@ public class PromotionService {
         promotion.setDiscountPercentage(
                 (dto.getDiscountPercentage() != null ? dto.getDiscountPercentage() : promotion.getDiscountPercentage()));
         
-        if (dto.getCreatorId() != null) {
-            User creator = userRepository.findById(dto.getCreatorId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Пользователь с ID %s не найден".formatted(dto.getCreatorId())));
+        // if (dto.getCreatorId() != null) {
+        //     User creator = userRepository.findById(dto.getCreatorId())
+        //             .orElseThrow(() -> new ResourceNotFoundException("Пользователь с ID %s не найден".formatted(dto.getCreatorId())));
             
-            promotion.setCreatedBy(new CreatedBy(creator.getId(), creator.getName(), creator.getSurname()));
-        }
+        //     promotion.setCreatedBy(new CreatedBy(creator.getId(), creator.getName(), creator.getSurname()));
+        // }
 
         return modelMapper.toDto(promotionRepository.save(promotion));
     }

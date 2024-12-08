@@ -1,21 +1,28 @@
 package com.example.gym.service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.example.gym.model.training.Training;
+import com.example.gym.model.training.TrainingStatus;
 import com.example.gym.model.training.dto.CreateTrainingDto;
 import com.example.gym.model.training.dto.ResponseTrainingDto;
-import com.example.gym.model.training.dto.ResponseTrainingForStatistic;
+import com.example.gym.model.training.dto.UpdateTrainingDto;
 import com.example.gym.model.user.User;
+import com.example.gym.model.user.pojo.GenderType;
 import com.example.gym.model.user.pojo.Section;
 import com.example.gym.repository.RoomRepository;
 import com.example.gym.repository.TrainingRepository;
-import com.example.gym.repository.UserRepository;
+import com.example.gym.security.service.MyUserDetail;
+import com.example.gym.security.service.MyUserDetailService;
 import com.example.gym.util.Mapper;
 import com.example.gym.exception.InvalidDataException;
 import com.example.gym.exception.ResourceNotFoundException;
@@ -32,21 +39,80 @@ import lombok.RequiredArgsConstructor;
 public class TrainingService {
 
     private final TrainingRepository trainingRepository;
-    private final UserRepository userRepository;
     private final ClientService clientService;
     private final Mapper modelMapper;
     private final RoomRepository roomRepository;
+    private final MongoTemplate mongoTemplate;
+    private final MyUserDetailService myUserDetailService;
 
     public ResponseTrainingDto findTrainingById(String id) throws ResourceNotFoundException {
         Training training = getById(id);
         return modelMapper.toDto(training);
     }
 
-    // public List<ResponseTrainingDto> findTrainingsByTrainerId(String trainerId) {
-    //     List<Training> trainings = trainingRepository.findAllByTrainerId(trainerId);
-    //     return trainings.stream()
-    //             .map(s -> modelMapper.toDto(s))
+    
+    public List<ResponseTrainingDto> findTrainingsByTrainerId(String trainerId) {
+        List<Training> trainings = trainingRepository.findAllByTrainerId(trainerId);
+        return trainings.stream()
+                .map(s -> modelMapper.toDto(s))
+                .toList();
+    }
+
+    // @Transactional
+    // public ResponseTrainingDto start(String trainingId) {
+    //     Training training = getById(trainingId);
+    //     training.setStatus(TrainingStatus.PROGRESS);
+    //     Training savedTraining = trainingRepository.save(training);
+    //     return modelMapper.toDto(savedTraining);
+    // }
+
+    // @Transactional
+    // public ResponseTrainingDto finish(String trainingId) {
+    //     Training training = getById(trainingId);
+    //     training.setStatus(TrainingStatus.FINISH);
+    //     Training savedTraining = trainingRepository.save(training);
+
+    //     List<ClientPojo> clientPojos = training.getClients();
+    //     List<String> clientIds = clientPojos.stream()
+    //             .map(ClientPojo::getId)
     //             .toList();
+        
+    //     List<User> clients = userRepository.findAllById(clientIds);
+        
+    //     List<LoyaltySettings> loyaltySettings = loyaltySettingsRepository.findAll();
+
+    //     if (!loyaltySettings.isEmpty()) {
+    //         LoyaltySettings loyaltySetting = loyaltySettings.get(0);
+
+    //         long trainingDuration = ChronoUnit.HOURS.between(training.getStartTime(), training.getEndTime());
+    //         TrainerPojo trainer = training.getTrainer();
+    //         Double trainerHourlyRate = trainer.getHourlyRate();
+
+    //         clients.stream().forEach(u -> {
+
+    //             Double loyalty = (trainerHourlyRate * trainingDuration * loyaltySetting.getAcceptanceRate());
+    //             Integer bonus = 0;
+    //             if (loyalty < 1d) {
+    //                 bonus = 1;
+    //             } else {
+    //                 bonus = (int) Math.ceil(loyalty);
+    //             }
+
+    //             ClientInfo clientInfo = u.getClientInfo();
+
+    //             if (clientInfo != null) {
+    //                 if (clientInfo.getLoyaltyPoints() == null)
+    //                     clientInfo.setLoyaltyPoints(0);
+
+    //                 clientInfo.setLoyaltyPoints(clientInfo.getLoyaltyPoints() + bonus);
+    //             }
+
+    //             u.setClientInfo(clientInfo);
+    //             userRepository.save(u);
+    //         });
+    //     }
+
+    //     return modelMapper.toDto(savedTraining);
     // }
 
     // public ResponseTrainingDto findTrainingByIdAndTrainerId(String trainingId, String trainerId) {
@@ -67,13 +133,18 @@ public class TrainingService {
         validateOverlapping(newStartTime, newEndTime, trainer.getId());
 
         Training training = modelMapper.toModel(dto);
+        training.setStartTime(dto.getStartTime());
+        training.setEndTime(dto.getEndTime());
         TrainerPojo trainerPojo = modelMapper.toPojo(trainer);
         training.setTrainer(trainerPojo);
+        training.setStatus(TrainingStatus.AWAIT);
+        training.setHasFreeRegistration(true);
 
-        Optional<Room> optionalRoom = roomRepository.findById(dto.getRoom().getId());
+        Optional<Room> optionalRoom = roomRepository.findById(dto.getRoomId());
         if (optionalRoom.isPresent()) {
             Room room = optionalRoom.get();
             RoomPojo roomPojo = modelMapper.toPojo(room);
+            System.out.println(roomPojo.getName());
             training.setRoom(roomPojo);
         }
 
@@ -90,11 +161,16 @@ public class TrainingService {
         Training training = getById(trainingId);
         User client = clientService.getById(clientId);
 
-        if (!training.isHasFreeRegistration()) {
+        if (!training.isFree()) {
             throw new InvalidDataException("Свободных записей нет");
         }
 
         List<ClientPojo> clientsInTraining = training.getClients();
+
+        if (clientsInTraining.stream().anyMatch(c -> c.getId().equals(clientId))) {
+            throw new InvalidDataException("Клиент уже записан на эту тренировку");
+        }
+
         ClientPojo newClient = modelMapper.toClientPojo(client);
         clientsInTraining.add(newClient);
         training.setClients(clientsInTraining);
@@ -129,7 +205,7 @@ public class TrainingService {
     @Transactional
     public ResponseTrainingDto updateTraining(
             String trainingId, 
-            CreateTrainingDto dto
+            UpdateTrainingDto dto
     ) throws ResourceNotFoundException, InvalidDataException {
         Training training = getById(trainingId);
 
@@ -151,9 +227,9 @@ public class TrainingService {
             training.setSection(new Section(dto.getSection()));
         }
 
-        if (dto.getRoom().getId() != null && !training.getRoom().getId().equals(dto.getRoom().getId())) {
+        if (dto.getRoomId() != null && !training.getRoom().getId().equals(dto.getRoomId())) {
             training.setRoom(modelMapper.toPojo(
-                    roomRepository.findById(dto.getRoom().getId()).get()
+                    roomRepository.findById(dto.getRoomId()).get()
             ));
         }
         
@@ -166,20 +242,68 @@ public class TrainingService {
         return training.getClients();
     }
 
-    public ResponseTrainingForStatistic findAllConductedTrainings() {
-        ResponseTrainingForStatistic trainingsForStatistic = new ResponseTrainingForStatistic();
-        List<ResponseTrainingDto> trainings = findAll().stream()
-                .map(t -> modelMapper.toDto(t))
-                .toList();
-        trainingsForStatistic.setCount(trainings.size());
-        trainingsForStatistic.setTrainings(trainings);
-        return trainingsForStatistic;
-    }
+    // public ResponseTrainingForStatistic findAllConductedTrainings() {
+    //     ResponseTrainingForStatistic trainingsForStatistic = new ResponseTrainingForStatistic();
+    //     List<ResponseTrainingDto> trainings = findAll().stream()
+    //             .map(t -> modelMapper.toDto(t))
+    //             .toList();
+    //     trainingsForStatistic.setCount(trainings.size());
+    //     trainingsForStatistic.setTrainings(trainings);
+    //     return trainingsForStatistic;
+    // }
 
-    public List<ResponseTrainingDto> findAllTrainigs() {
-        return findAll().stream()
-                .map(t -> modelMapper.toDto(t))
-                .toList();
+    public List<ResponseTrainingDto> findAllTrainigs(
+            String address,
+            String section,
+            String name,
+            String surname,
+            Optional<GenderType> gender,
+            LocalDateTime startTime,
+            Principal principal
+    ) {
+
+        MyUserDetail user = myUserDetailService.loadUserByUsername(principal.getName());
+    
+        Query query = new Query();
+
+        if (section != null && !section.isEmpty() && !section.isBlank()) {
+            query.addCriteria(Criteria.where("section.name").regex(section, "i"));
+        }
+
+        if (name != null && !name.isEmpty() && !name.isBlank()) {
+            query.addCriteria(Criteria.where("trainer.name").regex(name, "i"));
+        }
+
+        if (surname != null && !surname.isEmpty() && !surname.isBlank()) {
+            query.addCriteria(Criteria.where("trainer.surname").regex(surname, "i"));
+        }
+
+        if (gender.isPresent()) {
+            query.addCriteria(Criteria.where("trainer.gender").is(gender.get()));
+        }
+
+        if (startTime != null) {
+            query.addCriteria(Criteria.where("startTime").gte(startTime));
+        }
+
+        String userId = user.getId();
+        query.addCriteria(Criteria.where("clients").not().elemMatch(Criteria.where("id").is(userId)));
+
+        List<Training> trainings = mongoTemplate.find(query, Training.class);
+
+        if (address != null && !address.isEmpty() && !address.isBlank()) {
+            Query roomQuery = new Query();
+            roomQuery.addCriteria(Criteria.where("location.address").regex(address, "i"));
+            List<Room> rooms = mongoTemplate.find(roomQuery, Room.class);
+            List<String> roomIds = rooms.stream().map(Room::getId).collect(Collectors.toList());
+            trainings = trainings.stream()
+                    .filter(t -> roomIds.contains(t.getRoom().getId()))
+                    .collect(Collectors.toList());
+        }
+
+        return trainings.stream()
+            .map(t -> modelMapper.toDto(t))
+            .toList();
     }
 
     public List<Training> findAll() {
@@ -192,9 +316,8 @@ public class TrainingService {
     }
 
     private void validateTime(LocalDateTime startTime, LocalDateTime endTime) throws InvalidDataException {
-//        TODO: endtime неправильно интерпретируется при запросе с фронта
         if (startTime.isAfter(endTime)) {
-            throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
+            throw new InvalidDataException("Конец тренировки не может быть раньше начала.");
         }
     }
 
