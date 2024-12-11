@@ -266,7 +266,7 @@ public class AdminService {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
         
-        List<Training> trainings = trainingRepository.findAllByStartTimeBetweenAndEndTimeBefore(startDateTime, endDateTime, LocalDateTime.now());
+        List<Training> trainings = trainingRepository.findAllByEndTimeBeforeAndStartTimeBetween(LocalDateTime.now(), startDateTime, endDateTime);
         
         log.info("Start Date: {}", startDateTime);
         log.info("End Date: {}", endDateTime);
@@ -316,13 +316,9 @@ public class AdminService {
             SubscriptionStatus status,
             int page,
             int size
-    ) {
-        System.out.println(startDate);
-        System.out.println(endDate);        
+    ) {    
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
-        System.out.println(startDateTime);        
-        System.out.println(endDateTime); 
         PurchasedSubcriptions purchasedSubcriptions = new PurchasedSubcriptions();
         List<User> clients = userRepository.findAllByRoles("ROLE_USER");
         List<User> filteredClients = clients.stream()
@@ -398,7 +394,7 @@ public class AdminService {
         List<Room> rooms = roomRepository.findAll();
         System.out.println("Количество комнат: " + rooms.size());
     
-        List<Training> trainings = trainingRepository.findAllByStartTimeBetweenAndEndTimeBefore(startDateTime, endDateTime, LocalDateTime.now());
+        List<Training> trainings = trainingRepository.findAllByEndTimeBeforeAndStartTimeBetween(LocalDateTime.now(), startDateTime, endDateTime);
         System.out.println("Количество тренировок: " + trainings.size());
     
         System.out.println("Start Date: " + startDateTime);

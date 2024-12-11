@@ -20,16 +20,16 @@ public interface TrainingRepository extends MongoRepository<Training, String> {
     @Query("{ 'room.id': ?0 }")
     List<Training> findAllByRoomId(String roomId);
 
-    @Query("{ 'startTime': { $gte: ?0, $lte: ?1 }, 'endTime': { $lt: ?2 } }")
-    List<Training> findAllByStartTimeBetweenAndEndTimeBefore(LocalDateTime startTime, LocalDateTime endTime, LocalDateTime now);
+    @Query("{ 'endTime': { $lt: ?0 }, 'startTime': { $gte: ?1, $lt: ?2 } }")
+    List<Training> findAllByEndTimeBeforeAndStartTimeBetween(LocalDateTime now, LocalDateTime startTime, LocalDateTime endTime);
 
-    @Query("{ 'startTime': { $gte: ?0, $lte: ?1 }, 'endTime': { $lt: ?2 }, 'trainer.id': ?3 }")
+    @Query("{ 'startTime': { $gte: ?0, $lte: ?1 }, 'endTime': { $lt: ?1 }, 'trainer.id': ?2 }")
     List<Training> findAllByStartTimeBetweenAndTrainerIdAndEndTimeBefore(
-            LocalDateTime startTime, LocalDateTime endTime, LocalDateTime now, String trainerId);
+            LocalDateTime startTime, LocalDateTime endTime, String trainerId);
 
-    @Query("{ 'startTime': { $gte: ?0, $lte: ?1 }, 'endTime': { $lt: ?2 }, 'trainer.id': ?3, 'id': ?4 }")
+    @Query("{ 'startTime': { $gte: ?0, $lte: ?1 }, 'endTime': { $lt: ?1 }, 'trainer.id': ?2, 'id': ?3 }")
     Training findByStartTimeBetweenAndTrainerIdAndIdAndEndTimeBefore(
-            LocalDateTime startTime, LocalDateTime endTime, LocalDateTime now, String trainerId, String trainingId);
+            LocalDateTime startTime, LocalDateTime endTime, String trainerId, String trainingId);
 
     @Query("{ 'endTime': { $lt: ?0 }, 'trainer.id': ?1, 'id': ?2 }")
     Training findByEndTimeBeforeAndTrainerIdAndId(

@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -18,13 +16,11 @@ import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,12 +29,10 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -122,64 +116,60 @@ public class FileController {
     }
     
     @PostMapping("/import")
-    public ResponseEntity<String> importDatabase(@RequestParam("file") MultipartFile file) throws IOException, StreamReadException, DatabindException, java.io.IOException {
-        // Создаем экземпляр MongoClient
-        MongoClient mongoClient = MongoClients.create(uri);
+    public ResponseEntity<String> importDatabase(@RequestParam("file") MultipartFile file) throws IOException, StreamReadException, DatabindException {
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase(uri.split("/")[uri.split("/").length - 1].split("\\?")[0]);
 
-        // Получаем экземпляр MongoDatabase
-        MongoDatabase database = mongoClient.getDatabase(uri.split("/")[uri.split("/").length - 1].split("\\?")[0]);
+            MongoIterable<String> collectionNamesToDelete = database.listCollectionNames();
+            for (String collectionName : collectionNamesToDelete) {
+                database.getCollection(collectionName).drop();
+            }
 
-        MongoIterable<String> collectionNamesToDelete = database.listCollectionNames();
-        for (String collectionName : collectionNamesToDelete) {
-            database.getCollection(collectionName).drop();
-        }
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, List<Map<String, Object>>> importData = mapper.readValue(file.getInputStream(), Map.class);
 
-        // Читаем JSON-файл
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, List<Map<String, Object>>> importData = mapper.readValue(file.getInputStream(), Map.class);
+            for (Map.Entry<String, List<Map<String, Object>>> entry : importData.entrySet()) {
+                String collectionName = entry.getKey();
+                List<Map<String, Object>> documents = entry.getValue();
 
-        // Заполняем базу данных
-        for (Map.Entry<String, List<Map<String, Object>>> entry : importData.entrySet()) {
-            String collectionName = entry.getKey();
-            List<Map<String, Object>> documents = entry.getValue();
-
-            // Проверяем, существует ли коллекция
-            MongoIterable<String> collectionNames = database.listCollectionNames();
-            boolean collectionExists = false;
-            for (String name : collectionNames) {
-                if (name.equals(collectionName)) {
-                    collectionExists = true;
-                    break;
+                MongoCollection<Document> collection = database.getCollection(collectionName);
+                if (collection == null) {
+                    database.createCollection(collectionName);
+                    collection = database.getCollection(collectionName);
                 }
-            }
 
-            // Создаем коллекцию, если она не существует
-            if (!collectionExists) {
-                database.createCollection(collectionName);
-            }
-
-            // Заполняем коллекцию
-            MongoCollection<Document> collection = database.getCollection(collectionName);
-            for (Map<String, Object> document : documents) {
-                Document doc = new Document();
-                for (Map.Entry<String, Object> entryDoc : document.entrySet()) {
-                    if (entryDoc.getKey().equals("_id")) {
-                        // Если ключ "_id" существует, устанавливаем его как ObjectId
-                        doc.put(entryDoc.getKey(), new ObjectId((String) entryDoc.getValue()));
-                    } else {
-                        doc.put(entryDoc.getKey(), entryDoc.getValue());
-                    }
+                for (Map<String, Object> document : documents) {
+                    Document doc = new Document();
+                    for (Map.Entry<String, Object> entryDoc : document.entrySet()) {
+                        if (entryDoc.getKey().equals("_id")) {
+                            doc.put(entryDoc.getKey(), new ObjectId((String) entryDoc.getValue()));
+                        } else {
+                            Object transformedValue = transformValueIfDate(entryDoc.getKey(), entryDoc.getValue());
+                            doc.put(entryDoc.getKey(), transformedValue);
+                        }
                 }
                 if (!doc.containsKey("_id")) {
-                    // Если ключ "_id" не существует, устанавливаем его как новый ObjectId
                     doc.put("_id", new ObjectId());
                 }
                 collection.insertOne(doc);
             }
-        }
+            }
 
-        // Возвращаем ответ
-        return ResponseEntity.status(HttpStatus.OK).body("База данных успешно заполнена");
+            return ResponseEntity.ok("База данных успешно заполнена");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при импорте базы данных: " + e.getMessage());
+        }
+    }
+
+    private Object transformValueIfDate(String key, Object value) {
+        if (value instanceof String) {
+            try {
+                LocalDateTime dateTime = LocalDateTime.parse((String) value, DateTimeFormatter.ISO_DATE_TIME);
+                return dateTime;
+            } catch (DateTimeParseException e) {
+            }
+        }
+        return value;
     }
  
 }

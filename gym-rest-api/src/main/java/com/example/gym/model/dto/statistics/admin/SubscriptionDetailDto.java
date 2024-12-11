@@ -1,6 +1,7 @@
 package com.example.gym.model.dto.statistics.admin;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.example.gym.model.client.ClientPojo;
 import com.example.gym.model.subscription.SubscriptionStatus;
@@ -20,9 +21,9 @@ public class SubscriptionDetailDto {
 
     private ClientPojo client;
     @Schema(description = "Дата покупки", example = "2023-10-01")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @Schema(description = "Дата окончания", example = "2023-12-01")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     @Schema(description = "Статус", enumAsRef = true)
     private SubscriptionStatus status;
 
