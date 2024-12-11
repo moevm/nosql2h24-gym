@@ -2,6 +2,7 @@ package com.example.gym.model.user.pojo;
 
 import java.time.LocalDateTime;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

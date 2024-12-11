@@ -17,7 +17,7 @@ import lombok.Setter;
 public class ClientInfo {
 
     @Schema(name = "Баллы лояльности", description = "100")
-    private Integer loyaltyPoints;
+    private Integer loyaltyPoints = 0;
     @ArraySchema(
            schema = @Schema(name = "Абонементы", implementation = Subscription.class)
     )
