@@ -26,6 +26,8 @@ services:
     restart: always
     env_file:
       - .env
+    ports:
+      - "27017:27017"
     expose:
       - 27017
     volumes:
