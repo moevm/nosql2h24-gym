@@ -17,7 +17,6 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore();
     const token = authStore.getAuthToken(); // Получаем токен из localStorage или другого места
-    
     if (token) {
       // Добавляем токен в заголовки запроса
       config.headers['Authorization'] = `Bearer ${token}`;

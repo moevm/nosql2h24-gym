@@ -22,6 +22,7 @@ export function getRoleName(role: Roles): string {
 export interface IUserData {
 	email: string;
 	roles: Roles[];
+	id: string;
 }
 
 export class AuthController {
@@ -66,6 +67,7 @@ export class AuthController {
 			this.user = {
 				email: decodedToken.email,
 				roles: decodedToken.roles,
+				id: decodedToken.sub
 			};
 		} catch (error) {
 			console.error("Ошибка при декодировании токена:", error);
