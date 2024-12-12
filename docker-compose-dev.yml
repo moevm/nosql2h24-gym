@@ -10,19 +10,14 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     depends_on:
-      - mongo
-
-  frontend:
-    build: ./frontend
-    env_file:
-      - .env
-    image: gym-frontend-1.0.0
-    container_name: gym-frontend
-    ports:
-      - "127.0.0.1:3000:3000"
+      - db
 
   db:
-    image: mongo:8.0
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    image: mongo-custom:8.0
+    container_name: gym-mongo
     restart: always
     env_file:
       - .env
@@ -32,10 +27,17 @@ services:
       - 27017
     volumes:
       - mongo-gym-db:/data/db
-      - ./gym-rest-api/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
 
+  frontend:
+    build: ./frontend
+    env_file:
+      - .env
+    image: gym-frontend-1.0.0
+    container_name: gym-frontend
+    ports:
+      - "127.0.0.1:3000:3000"
 volumes:
   mongo-gym-db:
