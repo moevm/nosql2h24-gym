@@ -60,7 +60,7 @@
       <!-- Сообщение об ошибке при неверном периоде -->
       <p v-if="!isValidDateRange" style="color:red">Дата начала не может быть больше даты окончания.</p>
 
-      <spacer></spacer>
+      <Spacer></Spacer>
 
       <el-table :data="subscriptions" style="width:100%">
         <el-table-column prop="id" label="ID Абонемента" width="200" sortable/>
@@ -82,7 +82,7 @@
         layout="total, sizes, prev, pager, next"
       ></el-pagination>
 
-      <spacer></spacer>
+      <Spacer></Spacer>
     </el-container>
 
     <!-- Вкладка статистики по занятиям -->
@@ -124,12 +124,11 @@
       <!-- Сообщение об ошибке при неверном периоде -->
       <p v-if="!isValidDateRangeTrainings" style="color:red">Дата начала не может быть больше даты окончания.</p>
 
-      <spacer></spacer>
-
+      <Spacer></Spacer>
       <el-table :data="trainingsData" style="width:100%">
-        <el-table-column prop="trainingType" label="Тип тренировки" sortable/>
-        <el-table-column prop="countSessions" label="Количество проведенных" sortable/>
-        <el-table-column prop="countClients" label="Количество клиентов" sortable/>
+        <el-table-column prop="sectionName" label="Тип тренировки" sortable/>
+        <el-table-column prop="trainingCount" label="Количество проведенных" sortable/>
+        <el-table-column prop="clientCount" label="Количество клиентов" sortable/>
         <el-table-column prop="loadPercentage" label="Загруженность" sortable/>
       </el-table>
 
@@ -149,7 +148,6 @@
 </template>
 
 <script setup lang="ts">
-import loginRoutes from '@/app/router/routes/login.routes.ts';
 import axiosInstance from '@/widgets/axios/index.ts';
 import Spacer from '@/shared/components/Spacer.vue';
 import { ElNotification } from 'element-plus';
@@ -158,17 +156,29 @@ import dayjs from 'dayjs';
 
 const currentTab = ref<'abonements' | 'trainings' | null>(null);
 
-// Общие функции для получения даты начала и конца года
-const getDefaultDateRange = () => {
-  return [
-    dayjs().startOf('year').format("DD-MM-YYYY 00:00:00"),
-    dayjs().endOf('year').format("DD-MM-YYYY 23:59:59")
-  ]
+const changeTab = (tab: 'abonements' | 'trainings') => {
+  currentTab.value = tab;
+  localStorage.setItem('currentTab', tab);
+  if (tab === 'abonements') {
+    fetchDataAbonements();
+  } else if (tab === 'trainings') {
+    fetchDataTrainings();
+  }
 };
+
+const savedTab = localStorage.getItem('currentTab');
+if (savedTab === 'trainings') {
+  currentTab.value = 'trainings';
+} else {
+  currentTab.value = 'abonements';
+}
 
 // -------------------- Статистика по абонементам --------------------
 const clientId = ref<string | null>(null);
-const dateRange = ref<(string | null)[]>(getDefaultDateRange());
+const dateRange = ref<(string | null)[]>([
+  dayjs().startOf('year').format("DD-MM-YYYY 00:00:00"),
+  dayjs().endOf('year').format("DD-MM-YYYY 23:59:59")
+]);
 const status = ref<string>('');
 const page = ref<number>(0);
 const size = ref<number>(10);
@@ -176,7 +186,6 @@ const subscriptions = ref<any[]>([]);
 const total = ref<number>(0);
 const clients = ref<any[]>([]);
 
-// Валидация дат по абонементам
 const isValidDateRange = computed(() => {
   if (!dateRange.value || !dateRange.value[0] || !dateRange.value[1]) {
     return true;
@@ -186,7 +195,6 @@ const isValidDateRange = computed(() => {
   return start.isSameOrBefore(end);
 });
 
-// Параметры запроса по абонементам
 const requestParams = computed(() => {
   let formattedStart = '';
   let formattedEnd = '';
@@ -243,7 +251,10 @@ const fetchDataAbonements = () => {
 };
 
 const handleDateRangeClear = () => {
-  dateRange.value = getDefaultDateRange();
+  dateRange.value = [
+    dayjs().startOf('year').format("DD-MM-YYYY 00:00:00"),
+    dayjs().endOf('year').format("DD-MM-YYYY 23:59:59")
+  ];
 };
 
 const handlePageChangeAbonements = (val: number) => {
@@ -259,13 +270,15 @@ const handleSizeChangeAbonements = (val: number) => {
 
 // -------------------- Статистика по занятиям --------------------
 const trainingType = ref<string>('');
-const dateRangeTrainings = ref<(string | null)[]>(getDefaultDateRange());
+const dateRangeTrainings = ref<(string | null)[]>([
+  dayjs().startOf('year').format("DD-MM-YYYY 00:00:00"),
+  dayjs().endOf('year').format("DD-MM-YYYY 23:59:59")
+]);
 const pageTrainings = ref<number>(0);
 const sizeTrainings = ref<number>(10);
 const trainingsData = ref<any[]>([]);
 const totalTrainings = ref<number>(0);
 
-// Валидация дат по занятиям
 const isValidDateRangeTrainings = computed(() => {
   if (!dateRangeTrainings.value || !dateRangeTrainings.value[0] || !dateRangeTrainings.value[1]) {
     return true;
@@ -275,7 +288,6 @@ const isValidDateRangeTrainings = computed(() => {
   return start.isSameOrBefore(end);
 });
 
-// Параметры запроса по занятиям
 const requestParamsTrainings = computed(() => {
   let formattedStart = '';
   let formattedEnd = '';
@@ -307,7 +319,12 @@ const fetchDataTrainings = () => {
     .then(res => {
       const data = res.data;
       totalTrainings.value = data.count;
-      trainingsData.value = data;
+      trainingsData.value = data.map((d:any) => {
+        return {
+          ...d,
+          loadPercentage: Math.round(d.loadPercentage) // Округляем до целого числа
+        }
+      });
     })
     .catch(error => {
       ElNotification.error({
@@ -319,7 +336,10 @@ const fetchDataTrainings = () => {
 };
 
 const handleDateRangeClearTrainings = () => {
-  dateRangeTrainings.value = getDefaultDateRange();
+  dateRangeTrainings.value = [
+    dayjs().startOf('year').format("DD-MM-YYYY 00:00:00"),
+    dayjs().endOf('year').format("DD-MM-YYYY 23:59:59")
+  ];
 };
 
 const handlePageChangeTrainings = (val: number) => {
@@ -333,16 +353,6 @@ const handleSizeChangeTrainings = (val: number) => {
   fetchDataTrainings();
 };
 
-// Изменение вкладки
-const changeTab = (tab: 'abonements' | 'trainings') => {
-  currentTab.value = tab;
-  if (tab === 'abonements') {
-    fetchDataAbonements();
-  } else if (tab === 'trainings') {
-    fetchDataTrainings();
-  }
-};
-
 const loadClients = () => {
   axiosInstance.get('/clients').then(res => {
     clients.value = res.data;
@@ -353,10 +363,15 @@ const loadClients = () => {
 
 onMounted(() => {
   loadClients();
+  const savedTab = localStorage.getItem('currentTab');
+  if (savedTab === 'trainings') {
+    currentTab.value = 'trainings';
+    fetchDataTrainings();
+  } else {
+    currentTab.value = 'abonements';
+    fetchDataAbonements();
+  }
 });
-
-currentTab.value = 'abonements';
-fetchDataAbonements();
 </script>
 
 <style scoped lang="scss">
