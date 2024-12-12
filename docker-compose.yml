@@ -21,7 +21,7 @@ services:
     ports:
       - "127.0.0.1:3000:3000"
 
-  mongo:
+  db:
     image: mongo:8.0
     restart: always
     env_file:
