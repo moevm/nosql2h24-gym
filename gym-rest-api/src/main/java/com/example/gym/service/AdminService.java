@@ -283,7 +283,7 @@ public class AdminService {
             int currentClientCount = training.getClients().size();
             sectionStats.setClientCount(sectionStats.getClientCount() == null ? currentClientCount : sectionStats.getClientCount() + currentClientCount);
     
-            int totalSlots = training.getAvailableSlots();
+            int totalSlots = training.getRoom().getCapacity();
             double loadPercentage = totalSlots > 0 ? (currentClientCount / (double) totalSlots) * 100 : 0;
             sectionStats.setLoadPercentage(loadPercentage);
     
