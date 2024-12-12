@@ -3,7 +3,7 @@ version: '3.8'
 services:
   backend:
     build: ./gym-rest-api
-    image: gym-rest-1.0.0
+    image: gym-rest:1.0.0
     container_name: gym-rest
     env_file:
       - .env
@@ -33,7 +33,7 @@ services:
     build: ./frontend
     env_file:
       - .env
-    image: gym-frontend-1.0.0
+    image: gym-frontend:1.0.0
     container_name: gym-frontend
     ports:
       - "127.0.0.1:3000:3000"
