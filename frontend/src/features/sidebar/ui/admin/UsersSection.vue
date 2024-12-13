@@ -47,6 +47,18 @@
           </el-select>
         </el-col>
 
+        <el-col>
+          <el-date-picker
+            v-model="filters.createdAt"
+            type="daterange"
+            range-separator="до"
+            start-placeholder="Начало"
+            end-placeholder="Конец"
+            format="DD.MM.YYYY"
+            clearable
+          />
+        </el-col>
+
         <!-- Фильтр по комментариям -->
         <el-col :span="6">
           <el-input v-model="filters.comment" placeholder="Фильтр по комментариям" clearable />
@@ -91,11 +103,13 @@
             <spacer></spacer>
             <p>Роль: {{ user.roles.join(', ') }}</p>
             <spacer></spacer>
+            <p>Дата регистрации: {{ new Date(user.createdAt).toLocaleDateString('ru-RU') }}</p>
+            <spacer></spacer>
+            <p v-if="user.comment">Комментарий: {{ user.comment }}</p>
+            <spacer></spacer>
             <el-tag v-if="user.gender === 'MALE'" type="success">Мужчина</el-tag>
             <el-tag v-else-if="user.gender === 'FEMALE'" type="warning">Женщина</el-tag>
             <el-tag v-else type="info">Не указано</el-tag>
-            <spacer></spacer>
-            <p v-if="user.comment">Комментарий: {{ user.comment }}</p>
           </div>
           <el-container direction="vertical" style="gap: 15px;">
             <el-button type="primary" @click="handleInfoSectionCLick(user)">Подробнее</el-button>
@@ -128,7 +142,8 @@ const filters = ref({
   phoneNumber: '',
   roles: [] as string[],
   gender: '',
-  comment: ''
+  comment: '',
+  createdAt: null,
 });
 
 // Сортировка
@@ -181,7 +196,7 @@ onMounted(() => {
 });
 
 // Фильтрация и сортировка
-const filteredSortedUsers = computed(() => {
+const filteredSortedUsers = computed<any>(() => {
   let filtered = users.value;
 
   // Фильтрация по каждому полю
@@ -225,6 +240,14 @@ const filteredSortedUsers = computed(() => {
     filtered = filtered.filter(user =>
       user.comment && user.comment.toLowerCase().includes(filters.value.comment.toLowerCase())
     );
+  }
+
+  if (filters.value.createdAt) {
+    const [start, end] = filters.value.createdAt;
+    filtered = filtered.filter(user => {
+      const createdDate = new Date(user.createdAt);
+      return createdDate >= new Date(start) && createdDate <= new Date(end);
+    });
   }
 
   // Сортировка

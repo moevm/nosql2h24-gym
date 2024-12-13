@@ -7,6 +7,10 @@
     </el-text>
     <spacer></spacer>
     <el-text :type="'info'">
+      Квалификация: {{ trainer.qualification }}
+    </el-text>
+    <spacer></spacer>
+    <el-text :type="'info'">
       Связь {{ trainer.phoneNumber ?? trainer.email }}
     </el-text>
     <spacer></spacer>
@@ -25,6 +29,7 @@ const props = defineProps({
       email?: string,
       name: string,
       surname: string,
+      qualification: string,
     }>,
     required: true
   }

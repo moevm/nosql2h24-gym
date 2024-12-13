@@ -3,7 +3,7 @@
     <el-button type="danger" @click="logout" style="position: fixed; left: 15px; bottom: 15px;">Выйти</el-button>
     <div class="profile__sidebar">
       <div class="profile__sidebar-header">
-        <img width="30px" height="30px" src="../../shared/assets/icons/anonim.svg" alt="">
+        <UserRoleIcon :role="resolvedProfileIcon" />
         <Spacer></Spacer>
         <div class="profile__sidebar-header-info">
           <p style="font-size:18px; word-break: break-word">
@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import UserRoleIcon from '@/shared/components/UserRoleIcon.vue';
 import axiosInstance from '@/widgets/axios/index.ts';
 import { computed, onMounted, ref } from 'vue';
 
@@ -78,13 +79,17 @@ const userEmail = computed(() => {
   return userInfo.value?.email ?? ''
 })
 
+const resolvedProfileIcon = ref('client');
+
 const sidebarSections = computed(() => {
   if (!userInfo.value) return [];
 
   switch (userInfo.value?.roles[0]) {
     case Roles.ROLE_ADMIN:
+      resolvedProfileIcon.value = 'admin';
       return adminSections
     case Roles.ROLE_TRAINER:
+      resolvedProfileIcon.value = 'trainer';
       return trainerSections
     case Roles.ROLE_USER:
       return clientSections
