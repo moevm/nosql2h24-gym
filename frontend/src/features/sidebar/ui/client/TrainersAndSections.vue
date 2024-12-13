@@ -17,6 +17,10 @@
         </el-col>
 
         <el-col :span="6">
+          <el-input v-model="filters.qualification" placeholder="Поиск по квалификации" clearable />
+        </el-col>
+
+        <el-col :span="6">
           <el-select
             v-model="filters.specialization"
             multiple
@@ -92,6 +96,7 @@ const isLoading = ref(false);
 
 const filters = ref({
   name: '',
+  qualification: '',
   surname: '',
   gender: '',
   birthday: null as string | null,
@@ -132,8 +137,11 @@ const filteredSortedTrainers = computed(() => {
     const specializationMatch = filters.value.specialization.length
       ? filters.value.specialization.some(spec => trainer.sections?.includes(spec))
       : true;
+    const qualificationMatch = filters.value.qualification
+      ? trainer.qualification.toLowerCase().includes(filters.value.qualification.toLowerCase())
+      : true;
 
-    return nameMatch && surnameMatch && genderMatch && specializationMatch;
+    return nameMatch && surnameMatch && genderMatch && specializationMatch && qualificationMatch;
   });
 
   if (sortBy.value) {

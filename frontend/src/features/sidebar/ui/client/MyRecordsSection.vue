@@ -5,9 +5,18 @@
 
     <!-- Фильтрация и сортировка -->
     <el-button v-if="filteredSortedTrainings.length > 0" @click="handleOpenFilter">{{ `${isFilterOpened ? 'Закрыть' : 'Открыть'} фильтрацию и поиск` }}</el-button>
+    <spacer></spacer>
     <el-row v-if="isFilterOpened" style="margin-bottom: 20px; gap: 15px; " >
       <el-col >
         <el-input v-model="filterTrainer" placeholder="Поиск по тренеру" clearable />
+      </el-col>
+
+      <el-col>
+        <el-input v-model="filterRoom" placeholder="Поиск по залу" clearable />
+      </el-col>
+
+      <el-col>
+        <el-input v-model="filterQualification" placeholder="Поиск по квалификации" clearable />
       </el-col>
 
       <el-col>
@@ -59,6 +68,9 @@
       <el-container direction="vertical" class="training-info" >
         <p>
           <el-text type="primary" size="large" style="font-weight: 700">{{ training.trainer.name }} {{ training.trainer.surname }}</el-text>
+        </p>
+        <p>
+          <el-text type="primary">Квалификация: </el-text> {{ training.trainer.qualification }}
         </p>
         <p>
           <el-text type="primary">Секция:</el-text>
@@ -123,12 +135,15 @@ interface Training {
 const trainings = ref<Training[]>([]);
 const filterTrainer = ref('');
 const filterSections = ref<string[]>([]);
+const filterRoom = ref('');
+const filterQualification = ref('');
 const filterTimeRange = ref<[string, string] | null>(null);
 const sortBy = ref('trainer');
 const sortOrder = ref('asc');
 
 const resetFilters = () => {
   filterTrainer.value = '';
+  filterRoom.value = '';
   filterSections.value = [];
   filterTimeRange.value = null;
   sortBy.value = 'trainer';
@@ -190,6 +205,18 @@ const filteredSortedTrainings = computed(() => {
 
   if (filterSections.value.length) {
     filtered = filtered.filter(training => filterSections.value.includes(training.section.name));
+  }
+
+  if (filterRoom.value) {
+    filtered = filtered.filter(training =>
+      training.room.name.toLowerCase().includes(filterRoom.value.toLowerCase())
+    );
+  }
+
+  if (filterQualification.value) {
+    filtered = filtered.filter(training =>
+      training.trainer.qualification?.toLowerCase().includes(filterQualification.value.toLowerCase())
+    );
   }
 
   if (filterTimeRange.value) {

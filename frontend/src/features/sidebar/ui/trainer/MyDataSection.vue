@@ -18,10 +18,12 @@
           <el-input v-model="trainerInfo.comment" />
         </el-form-item>
         <el-form-item label="Ставка (час)" label-position="top">
-          <el-input v-model="trainerInfo.trainerInfo.hourlyRate" type="number" />
+          <el-input-number v-model="trainerInfo.trainerInfo.hourlyRate" :min="250" :step="250" />
         </el-form-item>
         <el-form-item label="Квалификация" label-position="top">
-          <el-input v-model="trainerInfo.trainerInfo.qualification" />
+          <el-select v-model="trainerInfo.trainerInfo.qualification" placeholder="Выберите квалификацию">
+            <el-option v-for="qualification in qualifications" :key="qualification" :label="qualification" :value="qualification" />
+          </el-select>
         </el-form-item>
 
         <el-form-item :label="`Секции${editMode ? '(для ввода значения нужно нажать enter)' : ''}`" label-position="top">
@@ -61,6 +63,15 @@ const trainerInfo = ref<any | null>(null);
 const editMode = ref(false);
 const originalTrainerInfo = ref<any | null>(null);
 const newSection = ref('');
+
+const qualifications = ref([
+  '1 разряд',
+  '2 разряд',
+  '3 разряд',
+  'Кандидат в мастера спорта',
+  'Мастер спорта',
+  'Заслуженный мастер спорта'
+]);
 
 const toggleEdit = () => {
   editMode.value = true;
@@ -106,5 +117,3 @@ onMounted(() => {
   });
 });
 </script>
-
-<style scoped lang="scss"></style>

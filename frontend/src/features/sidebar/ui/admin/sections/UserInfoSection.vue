@@ -16,7 +16,10 @@
           <el-input v-model="userInfo.email" />
         </el-form-item>
         <el-form-item label="Пароль" label-position="top">
-          <el-input v-model="userInfo.password" type="password" />
+          <el-input v-model="userInfo.password" :type="editMode ? 'text' : 'password'" />
+        </el-form-item>
+        <el-form-item label="Дата регистрации" label-position="top">
+          <el-date-picker v-model="userInfo.createdDate" disabled readonly format="DD-MM-YYYY"/>
         </el-form-item>
         <el-form-item label="Пол" label-position="top">
           <el-select v-model="userInfo.gender" placeholder="Выберите пол">
@@ -25,7 +28,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Дата рождения" label-position="top">
-          <el-date-picker v-model="userInfo.birthday" type="date" placeholder="Выберите дату" />
+          <el-date-picker v-model="userInfo.birthday" type="date" placeholder="Выберите дату" format="DD-MM-YYYY"/>
         </el-form-item>
 
         <template v-if="props.role === 'ROLE_TRAINER'">
