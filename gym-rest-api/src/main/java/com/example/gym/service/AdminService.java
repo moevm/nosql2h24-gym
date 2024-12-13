@@ -352,7 +352,7 @@ public class AdminService {
                 .reduce(0.0, Double::sum);
 
         purchasedSubcriptions.setTotalPrice(totalPrice);
-        purchasedSubcriptions.setCount(filteredClients.size());
+//        purchasedSubcriptions.setCount(filteredClients.size());
 
         List<User> active = filteredClients.stream()
                 .filter(client -> client.getClientInfo().getSubscriptions()
@@ -382,6 +382,7 @@ public class AdminService {
         }
 
         System.out.println("Total Subscriptions Count: " + subscriptions.size());
+        purchasedSubcriptions.setCount(subscriptions.size());
         return purchasedSubcriptions;
     } 
 
