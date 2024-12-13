@@ -11,14 +11,24 @@ db.users.insertMany([
         "comment": "Frequent client",
         "createdAt": ISODate("2023-08-20T10:00:00Z"),
         "updatedAt": ISODate("2024-08-20T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("2002-08-20T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 200,
             "subscriptions": [
                 {
-                    "startDate": ISODate("2023-10-01T00:00:00Z"),
-                    "endDate": ISODate("2024-10-01T00:00:00Z"),
+                    "startDate": ISODate("2024-10-01T00:00:00Z"),
+                    "endDate": ISODate("2025-10-01T00:00:00Z"),
                     "status": "ACTIVE",
+                    "price": NumberDecimal("1500.00"),
+                    "createdAt": ISODate("2023-10-01T00:00:00Z"),
+                    "updatedAt": ISODate("2023-10-05T00:00:00Z")
+                },
+                {
+                    "startDate": ISODate("2022-10-01T00:00:00Z"),
+                    "endDate": ISODate("2023-10-01T00:00:00Z"),
+                    "status": "INACTIVE",
                     "price": NumberDecimal("1500.00"),
                     "createdAt": ISODate("2023-10-01T00:00:00Z"),
                     "updatedAt": ISODate("2023-10-05T00:00:00Z")
@@ -37,14 +47,24 @@ db.users.insertMany([
         "comment": "New client",
         "createdAt": ISODate("2023-09-01T10:00:00Z"),
         "updatedAt": ISODate("2024-09-01T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1996-04-01T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 100,
             "subscriptions": [
                 {
-                    "startDate": ISODate("2023-11-01T00:00:00Z"),
-                    "endDate": ISODate("2024-11-01T00:00:00Z"),
+                    "startDate": ISODate("2024-11-01T00:00:00Z"),
+                    "endDate": ISODate("2025-11-01T00:00:00Z"),
                     "status": "ACTIVE",
+                    "price": NumberDecimal("1000.00"),
+                    "createdAt": ISODate("2023-11-01T00:00:00Z"),
+                    "updatedAt": ISODate("2023-11-10T00:00:00Z")
+                },
+                {
+                    "startDate": ISODate("2022-11-01T00:00:00Z"),
+                    "endDate": ISODate("2023-11-01T00:00:00Z"),
+                    "status": "INACTIVE",
                     "price": NumberDecimal("1000.00"),
                     "createdAt": ISODate("2023-11-01T00:00:00Z"),
                     "updatedAt": ISODate("2023-11-10T00:00:00Z")
@@ -63,14 +83,24 @@ db.users.insertMany([
         "comment": "Has an ongoing subscription",
         "createdAt": ISODate("2023-07-15T10:00:00Z"),
         "updatedAt": ISODate("2024-07-15T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("2000-04-01T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 300,
             "subscriptions": [
                 {
-                    "startDate": ISODate("2023-07-01T00:00:00Z"),
-                    "endDate": ISODate("2024-07-01T00:00:00Z"),
+                    "startDate": ISODate("2024-07-01T00:00:00Z"),
+                    "endDate": ISODate("2025-07-01T00:00:00Z"),
                     "status": "ACTIVE",
+                    "price": NumberDecimal("1800.00"),
+                    "createdAt": ISODate("2023-07-01T00:00:00Z"),
+                    "updatedAt": ISODate("2023-07-05T00:00:00Z")
+                },
+                {
+                    "startDate": ISODate("2022-07-01T00:00:00Z"),
+                    "endDate": ISODate("2023-07-01T00:00:00Z"),
+                    "status": "INACTIVE",
                     "price": NumberDecimal("1800.00"),
                     "createdAt": ISODate("2023-07-01T00:00:00Z"),
                     "updatedAt": ISODate("2023-07-05T00:00:00Z")
@@ -89,14 +119,24 @@ db.users.insertMany([
         "comment": "Prefers group classes",
         "createdAt": ISODate("2023-06-10T10:00:00Z"),
         "updatedAt": ISODate("2024-06-10T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1995-02-01T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 250,
             "subscriptions": [
                 {
-                    "startDate": ISODate("2023-06-01T00:00:00Z"),
-                    "endDate": ISODate("2024-06-01T00:00:00Z"),
+                    "startDate": ISODate("2024-06-01T00:00:00Z"),
+                    "endDate": ISODate("2025-06-01T00:00:00Z"),
                     "status": "ACTIVE",
+                    "price": NumberDecimal("1300.00"),
+                    "createdAt": ISODate("2023-06-01T00:00:00Z"),
+                    "updatedAt": ISODate("2023-06-05T00:00:00Z")
+                },
+                {
+                    "startDate": ISODate("2022-06-01T00:00:00Z"),
+                    "endDate": ISODate("2023-06-01T00:00:00Z"),
+                    "status": "INACTIVE",
                     "price": NumberDecimal("1300.00"),
                     "createdAt": ISODate("2023-06-01T00:00:00Z"),
                     "updatedAt": ISODate("2023-06-05T00:00:00Z")
@@ -115,14 +155,24 @@ db.users.insertMany([
         "comment": "Regular visitor",
         "createdAt": ISODate("2023-05-05T10:00:00Z"),
         "updatedAt": ISODate("2024-05-05T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1991-02-01T00:00:00Z"),
         "roles": ["ROLE_USER"],
         "clientInfo": {
             "loyaltyPoints": 180,
             "subscriptions": [
                 {
-                    "startDate": ISODate("2023-05-01T00:00:00Z"),
-                    "endDate": ISODate("2024-05-01T00:00:00Z"),
+                    "startDate": ISODate("2024-05-01T00:00:00Z"),
+                    "endDate": ISODate("2025-01-01T00:00:00Z"),
                     "status": "ACTIVE",
+                    "price": NumberDecimal("1600.00"),
+                    "createdAt": ISODate("2023-05-01T00:00:00Z"),
+                    "updatedAt": ISODate("2023-05-05T00:00:00Z")
+                },
+                {
+                    "startDate": ISODate("2022-05-01T00:00:00Z"),
+                    "endDate": ISODate("2023-05-01T00:00:00Z"),
+                    "status": "INACTIVE",
                     "price": NumberDecimal("1600.00"),
                     "createdAt": ISODate("2023-05-01T00:00:00Z"),
                     "updatedAt": ISODate("2023-05-05T00:00:00Z")
@@ -144,14 +194,16 @@ db.users.insertMany([
         "comment": "Specializes in basketball training",
         "createdAt": ISODate("2023-01-10T10:00:00Z"),
         "updatedAt": ISODate("2024-01-10T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("2000-02-01T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "Professional Basketball Coach",
             "hourlyRate": NumberDecimal("200.00"),
             "sections": [
-                { "name": "Basketball Skills" },
-                { "name": "Team Strategy" }
+                "Basketball Skills",
+                "Team Strategy"
             ]
         }
     },
@@ -165,14 +217,16 @@ db.users.insertMany([
         "comment": "Expert in tennis training",
         "createdAt": ISODate("2023-02-15T10:00:00Z"),
         "updatedAt": ISODate("2024-02-15T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1993-01-12T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "Grand Slam Winner",
             "hourlyRate": NumberDecimal("250.00"),
             "sections": [
-                { "name": "Tennis Fundamentals" },
-                { "name": "Advanced Techniques" }
+                "Tennis Fundamentals",
+                "Advanced Techniques"
             ]
         }
     },
@@ -186,14 +240,16 @@ db.users.insertMany([
         "comment": "Specialist in sprint training",
         "createdAt": ISODate("2023-03-20T10:00:00Z"),
         "updatedAt": ISODate("2024-03-20T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1990-01-12T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "Olympic Sprinting Champion",
             "hourlyRate": NumberDecimal("300.00"),
             "sections": [
-                { "name": "Sprint Training" },
-                { "name": "Endurance Building" }
+                "Sprint Training",
+                "Endurance Building"
             ]
         }
     },
@@ -207,14 +263,16 @@ db.users.insertMany([
         "comment": "Focuses on gymnastics coaching",
         "createdAt": ISODate("2023-04-25T10:00:00Z"),
         "updatedAt": ISODate("2024-04-25T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("2001-01-12T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "World Champion Gymnast",
             "hourlyRate": NumberDecimal("220.00"),
             "sections": [
-                { "name": "Gymnastics Basics" },
-                { "name": "Floor Exercises" }
+                "Gymnastics Basics",
+                "Floor Exercises"
             ]
         }
     },
@@ -228,14 +286,16 @@ db.users.insertMany([
         "comment": "Specializes in football coaching",
         "createdAt": ISODate("2023-05-10T10:00:00Z"),
         "updatedAt": ISODate("2024-05-10T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("2001-01-12T00:00:00Z"),
         "roles": ["ROLE_TRAINER"],
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "NFL MVP",
             "hourlyRate": NumberDecimal("250.00"),
             "sections": [
-                { "name": "Football Techniques" },
-                { "name": "Team Leadership" }
+                "Football Techniques",
+                "Team Leadership"
             ]
         }
     }
@@ -252,6 +312,8 @@ db.users.insertMany([
         "comment": "Main administrator",
         "createdAt": ISODate("2023-01-01T10:00:00Z"),
         "updatedAt": ISODate("2024-01-01T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1994-11-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -266,6 +328,8 @@ db.users.insertMany([
         "comment": "Handles user issues",
         "createdAt": ISODate("2023-02-10T10:00:00Z"),
         "updatedAt": ISODate("2024-02-10T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1995-11-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -280,6 +344,8 @@ db.users.insertMany([
         "comment": "Manages schedules",
         "createdAt": ISODate("2023-03-15T10:00:00Z"),
         "updatedAt": ISODate("2024-03-15T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1995-12-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -294,6 +360,8 @@ db.users.insertMany([
         "comment": "Supervises finances",
         "createdAt": ISODate("2023-04-20T10:00:00Z"),
         "updatedAt": ISODate("2024-04-20T10:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1992-12-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -308,6 +376,8 @@ db.users.insertMany([
         "comment": "In charge of HR",
         "createdAt": ISODate("2023-05-25T10:00:00Z"),
         "updatedAt": ISODate("2024-05-25T10:00:00Z"),
+        "gender": "FEMALE",
+        "birthday": ISODate("1997-12-12T00:00:00Z"),
         "roles": ["ROLE_ADMIN"],
         "clientInfo": null,
         "trainerInfo": null
@@ -317,48 +387,144 @@ db.users.insertMany([
 db.rooms.insertMany([
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
-        "name": "Downtown Fitness Center",
+        "_class": "com.example.gym.model.room.Room",
         "capacity": 25,
         "location": {
             "address": "Moscow, Tverskaya Street, 12",
             "number": 3
-        }
+        },
+        "name": "Downtown Fitness Center",
+        "openingTime": ISODate("2024-12-13T06:30:00.000Z"),
+        "closingTime": ISODate("2024-12-13T15:00:00.000Z"),
+        "sections": ["Sprint Training", "Endurance Building", "Gymnastics Basics", "Floor Exercises"],
+        "trainers": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf2003"),
+                "name": "Usain",
+                "surname": "Bolt",
+                "gender": "MALE",
+                "qualification": "Olympic Sprinting Champion",
+                "hourlyRate": 300
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf2004"),
+                "name": "Simone",
+                "surname": "Biles",
+                "gender": "MALE",
+                "qualification": "World Champion Gymnast",
+                "hourlyRate": 220
+            }
+        ],
+        "updatedAt": ISODate("2024-12-12T22:32:35.780Z"),
+        "workingDays": "ВТ, ЧТ, СБ"
     },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf4002"),
-        "name": "Northern Athletic Hall",
+        "_class": "com.example.gym.model.room.Room",
         "capacity": 15,
         "location": {
             "address": "Saint-Petersburg, Liteyny Avenue, 45",
             "number": 2
-        }
+        },
+        "name": "Northern Athletic Hall",
+        "openingTime": ISODate("2024-12-13T08:00:00.000Z"),
+        "closingTime": ISODate("2024-12-13T16:30:00.000Z"),
+        "sections": ["Basketball Skills", "Team Strategy"],
+        "trainers": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf2001"),
+                "name": "Michael",
+                "surname": "Jordan",
+                "gender": "MALE",
+                "qualification": "Professional Basketball Coach",
+                "hourlyRate": 200
+            }
+        ],
+        "updatedAt": ISODate("2024-12-12T22:34:08.486Z"),
+        "workingDays": "ПН, ВТ, СР, ЧТ, ПТ, СБ"
     },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
-        "name": "Central Power Gym",
+        "_class": "com.example.gym.model.room.Room",
         "capacity": 30,
         "location": {
             "address": "Kazan, Pushkin Street, 18",
             "number": 1
-        }
+        },
+        "name": "Central Power Gym",
+        "openingTime": ISODate("2024-12-13T07:00:00.000Z"),
+        "closingTime": ISODate("2024-12-13T16:00:00.000Z"),
+        "sections": ["Basketball Skills", "Team Strategy", "Tennis Fundamentals", "Advanced Techniques"],
+        "trainers": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf2001"),
+                "name": "Michael",
+                "surname": "Jordan",
+                "gender": "MALE",
+                "qualification": "Professional Basketball Coach",
+                "hourlyRate": 200
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf2002"),
+                "name": "Serena",
+                "surname": "Williams",
+                "gender": "FEMALE",
+                "qualification": "Grand Slam Winner",
+                "hourlyRate": 250
+            }
+        ],
+        "updatedAt": ISODate("2024-12-12T22:30:03.896Z"),
+        "workingDays": "ПН, СР, ПТ"
     },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf4004"),
-        "name": "Southern Training Hall",
+        "_class": "com.example.gym.model.room.Room",
         "capacity": 20,
         "location": {
             "address": "Sochi, Kurortny Avenue, 99",
             "number": 4
-        }
+        },
+        "name": "Southern Training Hall",
+        "openingTime": ISODate("2024-12-13T05:00:00.000Z"),
+        "closingTime": ISODate("2024-12-13T14:00:00.000Z"),
+        "sections": ["Sprint Training", "Endurance Building"],
+        "trainers": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf2003"),
+                "name": "Usain",
+                "surname": "Bolt",
+                "gender": "MALE",
+                "qualification": "Olympic Sprinting Champion",
+                "hourlyRate": 300
+            }
+        ],
+        "updatedAt": ISODate("2024-12-12T22:34:58.388Z"),
+        "workingDays": "СР, ЧТ, ПТ, ВТ, ПН"
     },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf4005"),
-        "name": "Eastern Fitness Arena",
+        "_class": "com.example.gym.model.room.Room",
         "capacity": 18,
         "location": {
             "address": "Vladivostok, Svetlanskaya Street, 8",
             "number": 5
-        }
+        },
+        "name": "Eastern Fitness Arena",
+        "openingTime": ISODate("2024-12-13T07:00:00.000Z"),
+        "closingTime": ISODate("2024-12-13T15:00:00.000Z"),
+        "sections": ["Football Techniques", "Team Leadership"],
+        "trainers": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf2005"),
+                "name": "Tom",
+                "surname": "Brady",
+                "gender": "MALE",
+                "qualification": "NFL MVP",
+                "hourlyRate": 250
+            }
+        ],
+        "updatedAt": ISODate("2024-12-12T22:33:26.177Z"),
+        "workingDays": "ПН, ВТ, СР, ЧТ, ПТ"
     }
 ]);
 
@@ -438,25 +604,8 @@ db.promotions.insertMany([
 db.training_sessions.insertMany([
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf3001"),
-        "trainer": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf2001"),
-            "name": "Michael",
-            "surname": "Jordan",
-            "qualification": "Professional Basketball Coach",
-            "hourlyRate": NumberDecimal("200.00")
-        },
-        "section": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
-            "name": "Basketball Skills"
-        },
-        "room": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf5001"),
-            "name": "Basketball Court A",
-            "capacity": 15
-        },
-        "startTime": ISODate("2024-11-02T10:00:00Z"),
-        "endTime": ISODate("2024-11-02T11:30:00Z"),
-        "availableSlots": 5,
+        "_class": "com.example.gym.model.training.Training",
+        "availableSlots": 4,
         "clients": [
             {
                 "_id": ObjectId("653ef3a8a3e34567bcdf1001"),
@@ -469,31 +618,38 @@ db.training_sessions.insertMany([
                 "name": "Bob",
                 "surname": "Johnson",
                 "loyaltyPoints": 100
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
+                "name": "Иван",
+                "surname": "Петров",
+                "loyaltyPoints": 50,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
             }
         ],
-        "createdAt": ISODate("2024-10-15T00:00:00Z"),
-        "updatedAt": ISODate("2024-10-20T00:00:00Z")
+        "createdAt": ISODate("2024-10-15T00:00:00.000Z"),
+        "endTime": ISODate("2024-11-02T11:30:00.000Z"),
+        "hasFreeRegistration": true,
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf5001"),
+            "name": "Downtown Fitness Center",
+            "capacity": 25
+        },
+        "section": {
+            "name": "Basketball Skills"
+        },
+        "startTime": ISODate("2024-11-02T10:00:00.000Z"),
+        "trainer": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf2001"),
+            "name": "Michael",
+            "surname": "Jordan",
+            "qualification": "Professional Basketball Coach",
+            "hourlyRate": 200
+        },
+        "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
     },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf3002"),
-        "trainer": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf2002"),
-            "name": "Serena",
-            "surname": "Williams",
-            "qualification": "Grand Slam Winner",
-            "hourlyRate": NumberDecimal("250.00")
-        },
-        "section": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf4002"),
-            "name": "Tennis Fundamentals"
-        },
-        "room": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf5002"),
-            "name": "Tennis Court B",
-            "capacity": 10
-        },
-        "startTime": ISODate("2024-11-03T14:00:00Z"),
-        "endTime": ISODate("2024-11-03T15:30:00Z"),
         "availableSlots": 4,
         "clients": [
             {
@@ -503,55 +659,65 @@ db.training_sessions.insertMany([
                 "loyaltyPoints": 300
             }
         ],
-        "createdAt": ISODate("2024-10-16T00:00:00Z"),
-        "updatedAt": ISODate("2024-10-21T00:00:00Z")
+        "createdAt": ISODate("2024-10-16T00:00:00.000Z"),
+        "endTime": ISODate("2024-11-03T15:30:00.000Z"),
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf5002"),
+            "name": "Eastern Fitness Arena",
+            "capacity": 18
+        },
+        "section": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf4002"),
+            "name": "Tennis Fundamentals"
+        },
+        "startTime": ISODate("2024-11-03T14:00:00.000Z"),
+        "trainer": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf2002"),
+            "name": "Serena",
+            "surname": "Williams",
+            "qualification": "Grand Slam Winner",
+            "hourlyRate": NumberDecimal("250.00")
+        },
+        "updatedAt": ISODate("2024-10-21T00:00:00.000Z")
     },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf3003"),
+        "_class": "com.example.gym.model.training.Training",
+        "availableSlots": 9,
+        "clients": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
+                "name": "Иван",
+                "surname": "Петров",
+                "loyaltyPoints": 50,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            }
+        ],
+        "createdAt": ISODate("2024-10-17T00:00:00.000Z"),
+        "endTime": ISODate("2024-11-04T09:30:00.000Z"),
+        "hasFreeRegistration": true,
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf5003"),
+            "name": "Southern Training Hall",
+            "capacity": 20
+        },
+        "section": {
+            name: "Sprint Training"
+        },
+        "startTime": ISODate("2024-11-04T08:00:00.000Z"),
         "trainer": {
             "_id": ObjectId("653ef3a8a3e34567bcdf2003"),
             "name": "Usain",
             "surname": "Bolt",
             "qualification": "Olympic Sprinting Champion",
-            "hourlyRate": NumberDecimal("300.00")
+            "hourlyRate": 300
         },
-        "section": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
-            "name": "Sprint Training"
-        },
-        "room": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf5003"),
-            "name": "Outdoor Track",
-            "capacity": 20
-        },
-        "startTime": ISODate("2024-11-04T08:00:00Z"),
-        "endTime": ISODate("2024-11-04T09:30:00Z"),
-        "availableSlots": 10,
-        "clients": [],
-        "createdAt": ISODate("2024-10-17T00:00:00Z"),
-        "updatedAt": ISODate("2024-10-22T00:00:00Z")
+        "updatedAt": ISODate("2024-12-12T23:10:23.885Z")
     },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf3004"),
-        "trainer": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf2004"),
-            "name": "Simone",
-            "surname": "Biles",
-            "qualification": "World Champion Gymnast",
-            "hourlyRate": NumberDecimal("220.00")
-        },
-        "section": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf4004"),
-            "name": "Gymnastics Basics"
-        },
-        "room": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf5004"),
-            "name": "Gymnastics Hall",
-            "capacity": 12
-        },
-        "startTime": ISODate("2024-11-05T16:00:00Z"),
-        "endTime": ISODate("2024-11-05T17:30:00Z"),
-        "availableSlots": 3,
+        "_class": "com.example.gym.model.training.Training",
+        "availableSlots": 2,
         "clients": [
             {
                 "_id": ObjectId("653ef3a8a3e34567bcdf1004"),
@@ -564,35 +730,69 @@ db.training_sessions.insertMany([
                 "name": "Eve",
                 "surname": "Adams",
                 "loyaltyPoints": 180
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
+                "name": "Иван",
+                "surname": "Петров",
+                "loyaltyPoints": 50,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
             }
         ],
-        "createdAt": ISODate("2024-10-18T00:00:00Z"),
-        "updatedAt": ISODate("2024-10-23T00:00:00Z")
+        "createdAt": ISODate("2024-10-18T00:00:00.000Z"),
+        "endTime": ISODate("2024-11-05T17:30:00.000Z"),
+        "hasFreeRegistration": true,
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf5004"),
+            "name": "Central Power Gym",
+            "capacity": 30
+        },
+        "section": {
+            name: "Gymnastics Basics"
+        },
+        "startTime": ISODate("2024-11-05T16:00:00.000Z"),
+        "trainer": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf2004"),
+            "name": "Simone",
+            "surname": "Biles",
+            "qualification": "World Champion Gymnast",
+            "hourlyRate": 220
+        },
+        "updatedAt": ISODate("2024-12-12T23:10:15.991Z")
     },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf3005"),
+        "_class": "com.example.gym.model.training.Training",
+        "availableSlots": 7,
+        "clients": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
+                "name": "Иван",
+                "surname": "Петров",
+                "loyaltyPoints": 50,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            }
+        ],
+        "createdAt": ISODate("2024-10-19T00:00:00.000Z"),
+        "endTime": ISODate("2024-11-06T19:30:00.000Z"),
+        "hasFreeRegistration": true,
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf5005"),
+            "name": "Northern Athletic Hall",
+            "capacity": 15
+        },
+        "section": {
+            name: "Football Techniques"
+        },
+        "startTime": ISODate("2024-11-06T18:00:00.000Z"),
         "trainer": {
             "_id": ObjectId("653ef3a8a3e34567bcdf2005"),
             "name": "Tom",
             "surname": "Brady",
             "qualification": "NFL MVP",
-            "hourlyRate": NumberDecimal("250.00")
+            "hourlyRate": 250
         },
-        "section": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf4005"),
-            "name": "Football Techniques"
-        },
-        "room": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf5005"),
-            "name": "Football Field",
-            "capacity": 25
-        },
-        "startTime": ISODate("2024-11-06T18:00:00Z"),
-        "endTime": ISODate("2024-11-06T19:30:00Z"),
-        "availableSlots": 8,
-        "clients": [],
-        "createdAt": ISODate("2024-10-19T00:00:00Z"),
-        "updatedAt": ISODate("2024-10-24T00:00:00Z")
+        "updatedAt": ISODate("2024-12-12T23:07:26.068Z")
     }
 ]);
 
@@ -617,6 +817,22 @@ db.users.insertMany([
                     "endDate": ISODate("2025-01-01T00:00:00Z"),
                     "status": "ACTIVE",
                     "price": NumberDecimal("1000.00"),
+                    "createdAt": ISODate("2024-01-01T00:00:00Z"),
+                    "updatedAt": ISODate("2024-01-02T00:00:00Z")
+                },
+                {
+                    "startDate": ISODate("2022-01-01T00:00:00Z"),
+                    "endDate": ISODate("2023-01-01T00:00:00Z"),
+                    "status": "INACTIVE",
+                    "price": NumberDecimal("15000.00"),
+                    "createdAt": ISODate("2024-01-01T00:00:00Z"),
+                    "updatedAt": ISODate("2024-01-02T00:00:00Z")
+                },
+                {
+                    "startDate": ISODate("2021-01-01T00:00:00Z"),
+                    "endDate": ISODate("2022-01-01T00:00:00Z"),
+                    "status": "INACTIVE",
+                    "price": NumberDecimal("13000.00"),
                     "createdAt": ISODate("2024-01-01T00:00:00Z"),
                     "updatedAt": ISODate("2024-01-02T00:00:00Z")
                 }
@@ -658,8 +874,8 @@ db.users.insertMany([
             "qualification": "Кандидат в мастера спорта",
             "hourlyRate": NumberDecimal("150.00"),
             "sections": [
-                { "name": "Функциональная тренировка" },
-                { "name": "Кардио тренировка" }
+                "Функциональная тренировка",
+                "Кардио тренировка"
             ]
         }
     }

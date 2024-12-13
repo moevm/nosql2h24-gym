@@ -3,8 +3,7 @@ package com.example.gym.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,51 +18,51 @@ import com.example.gym.model.subscription.dto.CreateSubscriptionDto;
 import com.example.gym.model.subscription.dto.ResponseSubscriptionDto;
 import com.example.gym.model.subscription.dto.UpdateSubscriptionDto;
 import com.example.gym.service.SubscriptionService;
-import com.example.gym.util.ResponseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/subscriptions")
 @RequiredArgsConstructor
 @Tag(name = "Subscription", description = "Операции связанные с абонементами.")
+@Validated
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
     @PostMapping("/client/{clientId}")
     @Operation(summary = "Создать абонемент по идентификатору клиента.",
-                description = "Создает абонемент по идентификатору клиента.",
-                responses = {
-                        @ApiResponse(
-                                responseCode = "201",
-                                description = "Абонемент успешно создана.",
-                                content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseClientDto.class))
-                        ),
-                        @ApiResponse(
-                            responseCode = "400",
-                            description = "Неккоректные данные.",
+            description = "Создает абонемент по идентификатору клиента.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Абонемент успешно создана.",
                             content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseError.class))
-                        ),
-                        @ApiResponse(
-                                responseCode = "404",
-                                description = "Клиент с указанным идентификатором не найден.",
-                                content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseError.class))
-                        )
+                                    schema = @Schema(implementation = ResponseClientDto.class))
+                    ),
+                    @ApiResponse(
+                        responseCode = "400",
+                        description = "Неккоректные данные.",
+                        content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Клиент с указанным идентификатором не найден.",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseError.class))
+                    )
     })
     public ResponseEntity<?> createSubscription(
             @RequestBody @Parameter(description = "Сущность абонемента, которого необходимо создать")
-            CreateSubscriptionDto dto,
+            @Valid CreateSubscriptionDto dto,
             @PathVariable @Parameter(description = "Идентификатор клиента, для которого создается абонемент.")
             String clientId
     ) throws ResourceNotFoundException {
@@ -123,78 +122,99 @@ public class SubscriptionController {
 //         return ResponseEntity.ok().body(null);
 //     }
 
-//     @GetMapping("/{subscriptionId}")
-//     @Operation(summary = "Получить абонемент по его идентификатору.",
-//                     description = "Возвращает абонемент по его идентификатору.",
-//                     responses = {
-//                             @ApiResponse(
-//                                     responseCode = "200",
-//                                     description = "Абонемент успешно получен.",
-//                                     content = @Content(mediaType = "application/json",
-//                                             schema = @Schema(implementation = ResponseSubscriptionDto.class))
-//                             ),
-//                             @ApiResponse(
-//                                 responseCode = "400",
-//                                 description = "Неккоректные данные.",
-//                                 content = @Content(mediaType = "application/json",
-//                                             schema = @Schema(implementation = ResponseError.class))
-//                             ),
-//                             @ApiResponse(
-//                                     responseCode = "404",
-//                                     description = "Абонемент с указанным id не найден.",
-//                                     content = @Content(mediaType = "application/json",
-//                                             schema = @Schema(implementation = ResponseError.class))
-//                             )
-//     })
-//     private ResponseEntity<?> findSubscriptionById(
-//             @PathVariable @Parameter(description = "Идентификатор абонемента, который необходимо получить.")
-//             String subscriptionId
-//     ) {
-//         try {
-//             ResponseSubscriptionDto subscription = subscriptionService.findById(subscriptionId);
-//             return ResponseEntity.ok().body(subscription);
-//         } catch (NoResultException exception) {
-//             return responseService.getBadRequestResponseEntity(exception.getMessage());
-//         }
-//     }
+    // @GetMapping("/{clientId}")
+    // @Operation(summary = "Получить абонемент по идентификатору клиента.",
+    //                 description = "Возвращает абонемент по идентификатору клиента.",
+    //                 responses = {
+    //                         @ApiResponse(
+    //                                 responseCode = "200",
+    //                                 description = "Абонемент успешно получен.",
+    //                                 content = @Content(mediaType = "application/json",
+    //                                         schema = @Schema(implementation = ResponseSubscriptionDto.class))
+    //                         ),
+    //                         @ApiResponse(
+    //                             responseCode = "400",
+    //                             description = "Неккоректные данные.",
+    //                             content = @Content(mediaType = "application/json",
+    //                                         schema = @Schema(implementation = ResponseError.class))
+    //                         ),
+    //                         @ApiResponse(
+    //                                 responseCode = "404",
+    //                                 description = "Абонемент с указанным id не найден.",
+    //                                 content = @Content(mediaType = "application/json",
+    //                                         schema = @Schema(implementation = ResponseError.class))
+    //                         )
+    // })
+    // private ResponseEntity<?> findSubscriptionById(
+    //         @PathVariable @Parameter(description = "Идентификатор клиента абонимент, которого необходимо получить.")
+    //         String clientId
+    // ) {
+    //     ResponseSubscriptionDto subscription = subscriptionService.findByClientId(clientId);
+    //     return ResponseEntity.ok().body(subscription);
+    // }
 
-//     @PutMapping("/{subscriptionId}/extend")
-//     @Operation(summary = "Продлить абонимент по его идентификатору.",
-//                 description = "Продливает идентификатор по его идентификатору.",
-//                 responses = {
-//                         @ApiResponse(
-//                                 responseCode = "200",
-//                                 description = "Абонемент успешно продлен.",
-//                                 content = @Content(mediaType = "application/json",
-//                                         schema = @Schema(implementation = ResponseSubscriptionDto.class))
-//                         ),
-//                         @ApiResponse(
-//                             responseCode = "400",
-//                             description = "Неккоректные данные.",
-//                             content = @Content(mediaType = "application/json",
-//                                         schema = @Schema(implementation = ResponseError.class))
-//                         ),
-//                         @ApiResponse(
-//                                 responseCode = "404",
-//                                 description = "Абонемент с указанным id не найден.",
-//                                 content = @Content(mediaType = "application/json",
-//                                         schema = @Schema(implementation = ResponseError.class))
-//                         )
-//     })
-//     public ResponseEntity<?> extendSubscription(
-//             @RequestBody @Parameter(description = "Сущность для продления абонемента.")
-//             UpdateSubscriptionDto dto,
-//             @PathVariable @Parameter(description = "Идентификатор абонtмента, который необходимо продлить.")
-//             String subscriptionId
-//     ) {
-//         try {
-//             ResponseSubscriptionDto updatedSubscription = subscriptionService.extendSubscription(dto, subscriptionId);
-//             return ResponseEntity.ok().body(updatedSubscription);
-//         } catch (NoResultException exception) {
-//             return responseService.getNotFoundResponseEntity(exception.getMessage());
-//         } catch (Exception exception) {
-//             return responseService.getBadRequestResponseEntity(exception.getMessage());
-//         }
-//     }
+    @PutMapping("/{clientId}/extend")
+    @Operation(summary = "Продлить абонемент по идентификатору клиента.",
+            description = "Продливает идентификатор по идентификатору клиента.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Абонемент успешно продлен.",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseSubscriptionDto.class))
+                    ),
+                    @ApiResponse(
+                        responseCode = "400",
+                        description = "Неккоректные данные.",
+                        content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Клиент с указанным id не найден.",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseError.class))
+                    )
+    })
+    public ResponseEntity<?> extendSubscription(
+            @RequestBody @Parameter(description = "Сущность для продления абонемента.")
+            UpdateSubscriptionDto dto,
+            @PathVariable @Parameter(description = "Идентификатор клиента абонемент, которого необходимо продлить.")
+            String clientId
+    ) {
+        ResponseSubscriptionDto updatedSubscription = subscriptionService.extendSubscription(dto, clientId);
+        return ResponseEntity.ok().body(updatedSubscription);
+    }
+
+    @PutMapping("/{clientId}/freeze")
+    @Operation(summary = "Заморозить абонемент по идентификатору клиента.",
+            description = "Замораживает абонемент по идентификатору клиента.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Абонемент успешно заморожен.",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseSubscriptionDto.class))
+                    ),
+                    @ApiResponse(
+                        responseCode = "400",
+                        description = "Неккоректные данные.",
+                        content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Абонемент с указанным id не найден.",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseError.class))
+                    )
+    })
+    public ResponseEntity<?> freezeSubscription(
+        @PathVariable @Parameter(description = "Идентификатор клиента абонемент, которого необходимо заморозить.")
+        String clientId
+    ) {
+        ResponseSubscriptionDto subscription = subscriptionService.freezeSubscription(clientId);
+        return ResponseEntity.ok().body(subscription);
+    }
 
 }

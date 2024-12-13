@@ -8,7 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,11 +40,33 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/export").permitAll()
+                        .requestMatchers("/import").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers(
+                            "/trainers", 
+                            "/trainers/{trainerId}/trainings",
+                            "/trainers/{trainerId}").hasAnyRole("USER", "TRAINER", "ADMIN")
+                        .requestMatchers(
+                                "/trainings", 
+                                "/trainings/{trainingId}", 
+                                "/tarinigs/{trainingId}/registration/{clientId}").hasAnyRole("USER", "TRAINER", "ADMIN")
+                        .requestMatchers("/clients", "/clients/{clientId}").hasAnyRole("USER", "TRAINER", "ADMIN")
                         .requestMatchers("/trainers/**").hasAnyRole("TRAINER", "ADMIN")
                         .requestMatchers("/clients/**").hasAnyRole("USER", "ADMIN")
-                        .anyRequest().permitAll())
+                        .requestMatchers("/subscriptions/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admins/**").hasAnyRole("ADMIN")
+                        .anyRequest().authenticated())
                 .addFilterBefore(JwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build(); 
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+          .requestMatchers("/swagger-ui/**", "/v3/api-docs*/**");
     }
 
     @Bean

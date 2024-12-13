@@ -8,7 +8,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.example.gym.model.user.pojo.ClientInfo;
+import com.example.gym.model.user.pojo.GenderType;
 import com.example.gym.model.user.pojo.TrainerInfo;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -26,6 +30,7 @@ import lombok.ToString;
 public class User {
 
     @Id
+    @JsonProperty("_id")
     private String id;
 
     private String name;
@@ -34,9 +39,14 @@ public class User {
     private String email;
     private String phoneNumber;
     private String comment;
-    private List<String> roles; 
+    private List<String> roles;
+    
+    private GenderType gender;
+    private LocalDateTime birthday;
 
+    @JsonProperty("trainerInfo")
     private TrainerInfo trainerInfo;
+    @JsonProperty("clientInfo")
     private ClientInfo clientInfo;
 
     @CreatedDate

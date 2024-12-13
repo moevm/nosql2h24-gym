@@ -3,39 +3,40 @@ version: '3.8'
 services:
   backend:
     build: ./gym-rest-api
-    image: gym-rest-1.0.0
+    image: gym-rest:1.0.0
     container_name: gym-rest
     env_file:
       - .env
     ports:
-      - "127.0.0.1:${BACKEND_PORT}:8080"
+      - "127.0.0.1:8080:8080"
     depends_on:
-      - mongo
+      - db
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    image: mongo-custom:8.0
+    container_name: gym-mongo
+    restart: always
+    env_file:
+      - .env
+    expose:
+      - 27017
+    volumes:
+      - mongo-gym-db:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
 
   frontend:
     build: ./frontend
     env_file:
       - .env
-    image: gym-frontend-1.0.0
+    image: gym-frontend:1.0.0
     container_name: gym-frontend
     ports:
-      - "127.0.0.1:${FRONTEND_PORT}:3000"
-
-  mongo:
-    image: mongo:8.0
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - "27017"
-    expose:
-      - 27017
-    volumes:
-      - mongo-gym-db:/data/db
-      - ./gym-rest-api/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      - "127.0.0.1:3000:3000"
 
 volumes:
   mongo-gym-db:

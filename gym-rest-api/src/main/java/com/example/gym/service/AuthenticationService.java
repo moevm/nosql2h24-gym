@@ -28,7 +28,7 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final UniquenessCheckService uniquenessCheckService;
-    private final AuthenticationManager ayAuthenticationManager;
+    private final AuthenticationManager authenticationManager;
     private final MyUserDetailService userDetailService;
     private final JwtTokenUtils jwtTokenUtils;
 
@@ -58,8 +58,11 @@ public class AuthenticationService {
     }
 
     public JwtResponse login(LoginUserDto dto) throws AuthenticationException {
+        System.out.println(userRepository.findByEmail(dto.getEmail()).get());
+        System.out.println(dto.getEmail());
+        System.out.println(dto.getPassword());
         try {
-            ayAuthenticationManager.authenticate(
+            authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
         } catch (Exception exception) {
             throw new AuthenticationException("Неверные логин или пароль");

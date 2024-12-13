@@ -13,7 +13,21 @@
         <el-input v-model="filters.name" placeholder="Фильтр по названию" clearable />
       </el-col>
       <el-col :span="6">
-        <el-input v-model="filters.capacity" placeholder="Фильтр по емкости" clearable type="number" />
+        <el-input
+            v-model="filters.minCapacity"
+            placeholder="Больше чем"
+            clearable
+            type="number"
+        />
+      </el-col>
+
+      <el-col :span="6">
+        <el-input
+            v-model="filters.maxCapacity"
+            placeholder="Меньше чем"
+            clearable
+            type="number"
+        />
       </el-col>
       <el-col :span="6">
         <el-input v-model="filters.address" placeholder="Фильтр по адресу" clearable />
@@ -190,14 +204,16 @@ const editingMode = ref(false);
 
 const filters = ref({
   name: '',
-  capacity: '',
+  minCapacity: '',
+  maxCapacity: '',
   address: '',
-  workingDays: [] as string[], // ПН,ВТ, ...
+  workingDays: [] as string[], // ПН, ВТ, ...
   openingTime: '',
   closingTime: '',
   trainers: [] as string[],
   sections: [] as string[],
 });
+
 
 const sortBy = ref('name');
 const sortOrder = ref('asc');
@@ -377,8 +393,12 @@ const displayedRooms = computed(() => {
     filtered = filtered.filter(r => (r.name ?? '').toLowerCase().includes(filters.value.name.toLowerCase()));
   }
 
-  if (filters.value.capacity) {
-    filtered = filtered.filter(r => String(r.capacity ?? '').includes(filters.value.capacity.toString()));
+  if (filters.value.minCapacity) {
+    filtered = filtered.filter(r => r.capacity >= Number(filters.value.minCapacity));
+  }
+
+  if (filters.value.maxCapacity) {
+    filtered = filtered.filter(r => r.capacity <= Number(filters.value.maxCapacity));
   }
 
   if (filters.value.address) {
@@ -393,27 +413,27 @@ const displayedRooms = computed(() => {
   // Фильтрация по рабочим дням
   if (filters.value.workingDays.length > 0) {
     filtered = filtered.filter(r => {
-      if(!Array.isArray(r.workingDays) || r.workingDays.length===0) return false;
+      if (!Array.isArray(r.workingDays) || r.workingDays.length === 0) return false;
       // Проверяем, что все выбранные в фильтре дни присутствуют в массиве r.workingDays
       return filters.value.workingDays.every(dayFilter => r.workingDays.includes(dayFilter));
     });
   }
 
   // Фильтрация по секциям
-  if (filters.value.sections.length>0) {
+  if (filters.value.sections.length > 0) {
     filtered = filtered.filter(r => {
-      if(!Array.isArray(r.sections) || r.sections.length===0) return false;
-      return filters.value.sections.every(sec=> r.sections.includes(sec));
-    })
+      if (!Array.isArray(r.sections) || r.sections.length === 0) return false;
+      return filters.value.sections.every(sec => r.sections.includes(sec));
+    });
   }
 
   // Сортировка
   if (sortBy.value) {
     filtered.sort((a, b) => {
-      let aValue:any = '';
-      let bValue:any = '';
+      let aValue: any = '';
+      let bValue: any = '';
 
-      switch(sortBy.value) {
+      switch (sortBy.value) {
         case 'name':
           aValue = (a.name ?? '').toLowerCase(); bValue = (b.name ?? '').toLowerCase();
           break;
@@ -422,14 +442,14 @@ const displayedRooms = computed(() => {
           bValue = b.capacity ?? Number.MAX_SAFE_INTEGER;
           break;
         case 'address':
-          const aAddr = ((a.location?.address ?? '') + ', ' + (a.location?.number??'')).toLowerCase();
-          const bAddr = ((b.location?.address ?? '') + ', ' + (b.location?.number??'')).toLowerCase();
+          const aAddr = ((a.location?.address ?? '') + ', ' + (a.location?.number ?? '')).toLowerCase();
+          const bAddr = ((b.location?.address ?? '') + ', ' + (b.location?.number ?? '')).toLowerCase();
           aValue = aAddr; bValue = bAddr;
           break;
         case 'workingDays':
           // workingDays - массив, для сравнения превращаем в строку
-          aValue = Array.isArray(a.workingDays)? a.workingDays.join(', ').toLowerCase():'';
-          bValue = Array.isArray(b.workingDays)? b.workingDays.join(', ').toLowerCase():'';
+          aValue = Array.isArray(a.workingDays) ? a.workingDays.join(', ').toLowerCase() : '';
+          bValue = Array.isArray(b.workingDays) ? b.workingDays.join(', ').toLowerCase() : '';
           break;
         case 'openingTime':
           aValue = a.openingTime ?? '';
@@ -444,22 +464,22 @@ const displayedRooms = computed(() => {
           bValue = '';
       }
 
-      if (typeof aValue==='string') aValue = aValue.toLowerCase();
-      if (typeof bValue==='string') bValue = bValue.toLowerCase();
+      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
 
-      if (aValue<bValue) return sortOrder.value==='asc'?-1:1;
-      if (aValue>bValue) return sortOrder.value==='asc'?1:-1;
+      if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1;
       return 0;
     });
   }
 
   // Преобразуем данные для отображения
-  return filtered.map((room:any)=> {
-    const wd = Array.isArray(room.workingDays) && room.workingDays.length>0 ? room.workingDays.join(', ') : 'Не указано';
+  return filtered.map((room: any) => {
+    const wd = Array.isArray(room.workingDays) && room.workingDays.length > 0 ? room.workingDays.join(', ') : 'Не указано';
     const opening = room.openingTime || 'Не указано';
     const closing = room.closingTime || 'Не указано';
     const trainerNames = getTrainerNames(room.trainers);
-    const sec = Array.isArray(room.sections) && room.sections.length>0 ? room.sections.join(', ') : 'Не указано';
+    const sec = Array.isArray(room.sections) && room.sections.length > 0 ? room.sections.join(', ') : 'Не указано';
 
     return {
       name: room.name ?? 'Не указано',
@@ -472,7 +492,7 @@ const displayedRooms = computed(() => {
       trainers: trainerNames,
       sections: sec,
       id: room.id ?? ''
-    }
+    };
   });
 });
 

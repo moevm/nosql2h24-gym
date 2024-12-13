@@ -3,6 +3,7 @@ package com.example.gym.model.trainer;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.gym.model.user.pojo.GenderType;
 import com.example.gym.model.user.pojo.TrainerInfo;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -43,11 +44,13 @@ public class ResponseTrainerDto {
             schema = @Schema(description = "Роль", example = "ROLE_USER")
     )
     private List<String> roles; 
-
-    @Schema(description = "Индекс роли", example = "1")
-    private Integer roleIndex;
     
     private TrainerInfo trainerInfo;
+
+    @Schema(description = "Пол", enumAsRef = true)
+    private GenderType gender;
+    @Schema(description = "Дата рождения", example = "2002-08-15T00:00:00Z")
+    private LocalDateTime birthday;
 
     @Schema(description = "Дата создания")
     private LocalDateTime createdDate;

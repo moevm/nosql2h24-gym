@@ -129,7 +129,7 @@
         <el-table-column prop="sectionName" label="Тип тренировки" sortable/>
         <el-table-column prop="trainingCount" label="Количество проведенных" sortable/>
         <el-table-column prop="clientCount" label="Количество клиентов" sortable/>
-        <el-table-column prop="loadPercentage" label="Загруженность" sortable/>
+        <el-table-column prop="loadPercentage" label="Загруженность, %" sortable/>
       </el-table>
 
       <el-pagination

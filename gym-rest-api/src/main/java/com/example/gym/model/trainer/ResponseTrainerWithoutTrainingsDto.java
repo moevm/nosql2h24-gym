@@ -1,6 +1,9 @@
 package com.example.gym.model.trainer;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.example.gym.model.user.pojo.GenderType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -35,5 +38,13 @@ public class ResponseTrainerWithoutTrainingsDto {
     private String specialization;
     @Schema(description = "Список названий секций, в которых преподает тренер", example = "['Name1', 'Name2']")
     private List<String> sections;
+    @Schema(description = "Пол", enumAsRef = true)
+    private GenderType gender;
+    @Schema(description = "Дата рождения", example = "2002-08-15T00:00:00Z")
+    private LocalDateTime birthday;
+    @Schema(description = "Дата создания")
+    private LocalDateTime createdDate;
+    @Schema(description = "Дата последнего обновления")
+    private LocalDateTime updatedDate;
 
 }

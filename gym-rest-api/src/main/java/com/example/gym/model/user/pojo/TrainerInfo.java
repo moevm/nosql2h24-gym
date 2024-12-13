@@ -17,12 +17,6 @@ public class TrainerInfo {
     private Double hourlyRate = 0.0;
     private String qualification;
     private boolean free = true;
-    private List<Section> sections;
-
-    public List<String> getSectionNames() {
-        return sections.stream()
-                .map(Section::getName)
-                .toList();
-    }
+    private List<String> sections;
 
 }
