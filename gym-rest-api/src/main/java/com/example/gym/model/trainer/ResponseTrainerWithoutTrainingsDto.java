@@ -32,10 +32,10 @@ public class ResponseTrainerWithoutTrainingsDto {
     private String phoneNumber;
     @Schema(description = "Опыт работы", example = "2")
     private Integer experience;
-    @Schema(description = "Почасовая ставка в рублях", example = "500")
-    private Integer hourlyRate;
-    @Schema(description = "Специализация", example = "")
-    private String specialization;
+    @Schema(description = "Почасовая ставка в рублях", example = "500.00")
+    private Double hourlyRate;
+    @Schema(description = "Квалификация", example = "Мастер спорта")
+    private String qualification;
     @Schema(description = "Список названий секций, в которых преподает тренер", example = "['Name1', 'Name2']")
     private List<String> sections;
     @Schema(description = "Пол", enumAsRef = true)

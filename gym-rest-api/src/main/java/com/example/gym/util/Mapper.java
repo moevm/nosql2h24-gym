@@ -71,6 +71,11 @@ public class Mapper {
     public ResponseTrainerWithoutTrainingsDto toDtoWithoutTraining(User trainer) {
         ResponseTrainerWithoutTrainingsDto trainerDto = modelMapper.map(trainer, ResponseTrainerWithoutTrainingsDto.class);
         trainerDto.setSections(trainer.getTrainerInfo().getSections());
+        if (trainer.getTrainerInfo() != null) {
+            trainerDto.setQualification(trainer.getTrainerInfo().getQualification());
+            trainerDto.setHourlyRate(trainer.getTrainerInfo().getHourlyRate());
+            trainerDto.setExperience(trainer.getTrainerInfo().getExperience());
+        }
         return trainerDto;
     }
 
