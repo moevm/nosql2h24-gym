@@ -1,96 +1,6 @@
 <template>
-  <div v-loading="isLoading" >
+  <div v-loading="isLoading">
     <el-container v-if="!userInfoSectionClicked" direction="vertical" class="user-cards" style="gap: 15px;">
-
-      <!-- Кнопка для открытия/закрытия фильтров -->
-      <el-button @click="toggleFilters">
-        {{ isFilterOpened ? 'Закрыть фильтрацию и поиск' : 'Открыть фильтрацию и поиск' }}
-      </el-button>
-      <!-- Фильтрация и сортировка -->
-      <el-row v-if="isFilterOpened" style="margin-bottom: 20px; gap: 15px;" type="flex" justify="start">
-        <!-- Фильтр по имени -->
-        <el-col :span="6">
-          <el-input v-model="filters.name" placeholder="Фильтр по имени" clearable />
-        </el-col>
-
-        <!-- Фильтр по фамилии -->
-        <el-col :span="6">
-          <el-input v-model="filters.surname" placeholder="Фильтр по фамилии" clearable />
-        </el-col>
-
-        <!-- Фильтр по Email -->
-        <el-col :span="6">
-          <el-input v-model="filters.email" placeholder="Фильтр по Email" clearable />
-        </el-col>
-
-        <!-- Фильтр по телефону -->
-        <el-col :span="6">
-          <el-input v-model="filters.phoneNumber" placeholder="Фильтр по телефону" clearable />
-        </el-col>
-
-        <!-- Фильтр по ролям -->
-        <el-col :span="6">
-          <el-select v-model="filters.roles" placeholder="Фильтр по ролям" style="width: 100%;" multiple clearable>
-            <el-option label="Администратор" value="ROLE_ADMIN" />
-            <el-option label="Тренер" value="ROLE_TRAINER" />
-            <el-option label="Клиент" value="ROLE_USER" />
-            <!-- Добавьте другие роли по необходимости -->
-          </el-select>
-        </el-col>
-
-        <!-- Фильтр по полу -->
-        <el-col :span="6">
-          <el-select v-model="filters.gender" placeholder="Фильтр по полу" style="width: 100%;" clearable>
-            <el-option label="Мужчина" value="MALE" />
-            <el-option label="Женщина" value="FEMALE" />
-            <el-option label="Не указано" value="" />
-          </el-select>
-        </el-col>
-
-        <el-col>
-          <el-date-picker
-            v-model="filters.createdAt"
-            type="daterange"
-            range-separator="до"
-            start-placeholder="Начало"
-            end-placeholder="Конец"
-            format="DD.MM.YYYY"
-            clearable
-          />
-        </el-col>
-
-        <!-- Фильтр по комментариям -->
-        <el-col :span="6">
-          <el-input v-model="filters.comment" placeholder="Фильтр по комментариям" clearable />
-        </el-col>
-
-        <!-- Сортировка по полям -->
-        <el-col :span="6">
-          <el-select v-model="sortBy" placeholder="Сортировать по" style="width: 100%;">
-            <el-option label="Имя" value="name" />
-            <el-option label="Фамилия" value="surname" />
-            <el-option label="Email" value="email" />
-            <el-option label="Телефон" value="phoneNumber" />
-            <el-option label="Роль" value="roles" />
-            <el-option label="Пол" value="gender" />
-            <el-option label="Комментарий" value="comment" />
-          </el-select>
-        </el-col>
-
-        <el-col :span="6">
-          <el-select v-model="sortOrder" placeholder="Порядок" style="width: 100%;">
-            <el-option label="По возрастанию" value="asc" />
-            <el-option label="По убыванию" value="desc" />
-          </el-select>
-        </el-col>
-
-        <!-- Кнопка сброса фильтров -->
-        <el-col :span="6">
-          <el-button type="primary" @click="resetFilters">Сбросить фильтры</el-button>
-        </el-col>
-      </el-row>
-      <spacer></spacer>
-
       <!-- Карточки пользователей -->
       <el-card v-for="user in filteredSortedUsers" :key="user.id" shadow="hover">
         <el-container style="display: grid; grid-template-columns: 1fr auto">
@@ -113,7 +23,7 @@
           </div>
           <el-container direction="vertical" style="gap: 15px;">
             <el-button type="primary" @click="handleInfoSectionCLick(user)">Подробнее</el-button>
-            <el-button type="danger">Удалить</el-button>
+            <el-button type="danger" @click="handleUserDelete(user)">Удалить</el-button>
           </el-container>
         </el-container>
       </el-card>
@@ -127,10 +37,11 @@ import UserInfoSection from '@/features/sidebar/ui/admin/sections/UserInfoSectio
 import Spacer from '@/shared/components/Spacer.vue';
 import axiosInstance from '@/widgets/axios/index.ts';
 import { onMounted, ref, computed } from 'vue';
+import { ElNotification } from 'element-plus';
 
-const isLoading = ref(true)
+const isLoading = ref(true);
 const userInfoSectionClicked = ref(false);
-const clickedUser = ref();
+const clickedUser = ref(null);
 const users = ref([]);
 const isFilterOpened = ref(false);
 
@@ -190,13 +101,13 @@ onMounted(() => {
     users.value = res.data;
   }).catch(error => {
     console.error('Ошибка при загрузке пользователей:', error);
+  }).finally(() => {
+    isLoading.value = false;
   });
-
-  isLoading.value = false;
 });
 
 // Фильтрация и сортировка
-const filteredSortedUsers = computed<any>(() => {
+const filteredSortedUsers = computed(() => {
   let filtered = users.value;
 
   // Фильтрация по каждому полю
@@ -298,8 +209,60 @@ const filteredSortedUsers = computed<any>(() => {
 
   return filtered;
 });
-</script>
 
-<style scoped lang="scss">
-/* Можно добавить кастомные стили для фильтра и сортировки */
-</style>
+// Функция для удаления пользователя
+const handleUserDelete = (user) => {
+  if (user.roles.includes('ROLE_USER')) {
+    // Для пользователей с ролью ROLE_USER проверяем статус абонемента
+    axiosInstance.get(`/clients/${user.id}/subscription`).then((res) => {
+      const subscription = res.data;
+      if (subscription.status === 'active') {
+        ElNotification({
+          title: 'Ошибка',
+          message: 'У этого пользователя есть активный абонемент. Удаление невозможно.',
+          type: 'error'
+        });
+      } else {
+        deleteUser(user);
+      }
+    }).catch((error) => {
+      ElNotification({
+        title: 'Ошибка',
+        message: error.response.data?.errors || 'Неизвестная ошибка',
+        type: 'error'
+      });
+    });
+  } else {
+    deleteUser(user);
+  }
+};
+
+// Функция для отправки запроса на удаление пользователя
+const deleteUser = (user) => {
+  let deleteUrl = '';
+
+  if (user.roles.includes('ROLE_USER')) {
+    deleteUrl = `/clients/${user.id}`;
+  } else if (user.roles.includes('ROLE_TRAINER')) {
+    deleteUrl = `/trainers/${user.id}`;
+  } else if (user.roles.includes('ROLE_ADMIN')) {
+    deleteUrl = `/admins/${user.id}`;
+  }
+
+  axiosInstance.delete(deleteUrl).then(() => {
+    ElNotification({
+      title: 'Успех',
+      message: `Пользователь ${user.name} ${user.surname} успешно удалён.`,
+      type: 'success'
+    });
+    // Обновить список пользователей
+    users.value = users.value.filter(u => u.id !== user.id);
+  }).catch((error) => {
+    ElNotification({
+      title: 'Ошибка',
+      message: error.response.data?.errors || 'Неизвестная ошибка',
+      type: 'error'
+    });
+  });
+};
+</script>

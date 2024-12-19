@@ -5,7 +5,6 @@
     <el-button @click="toggleFilters">
       {{ isFilterOpened ? 'Закрыть фильтрацию и поиск' : 'Открыть фильтрацию и поиск' }}
     </el-button>
-    <spacer></spacer>
 
     <!-- Фильтры и сортировка -->
     <el-row v-if="isFilterOpened" style="margin-bottom: 20px; gap: 15px;" type="flex" justify="start">
@@ -87,24 +86,18 @@
         <el-button type="primary" @click="resetFilters">Сбросить</el-button>
       </el-col>
     </el-row>
-    <spacer></spacer>
 
     <!-- Таблица с залами -->
-    <el-table
-      :data="displayedRooms"
-      highlight-current-row
-      style="width: 100%;cursor:pointer;"
-      @row-click="handleRowClick"
-    >
-      <el-table-column label="Название" prop="name" sortable/>
-      <el-table-column label="Емкость" prop="capacity" sortable/>
-      <el-table-column label="Адрес" prop="address" sortable/>
-      <el-table-column label="Рабочие дни" prop="workingDays" sortable/>
-      <el-table-column label="Часы открытия" prop="openingTime" sortable/>
-      <el-table-column label="Часы закрытия" prop="closingTime" sortable/>
-      <el-table-column label="Тренеры" prop="trainers" sortable/>
-      <el-table-column label="Секции" prop="sections" sortable/>
-    </el-table>
+    <el-card v-for="room of displayedRooms" style="cursor: pointer" @click="handleRowClick(room)">
+      <div><strong>Название:</strong> {{ room.name }}</div>
+      <div><strong>Емкость:</strong> {{ room.capacity }}</div>
+      <div><strong>Адрес:</strong> {{ room.address }}</div>
+      <div><strong>Рабочие дни:</strong> {{ room.workingDays }}</div>
+      <div><strong>Часы открытия:</strong> {{ room.openingTime }}</div>
+      <div><strong>Часы закрытия:</strong> {{ room.closingTime }}</div>
+      <div><strong>Тренеры:</strong> {{ room.trainers }}</div>
+      <div><strong>Секции:</strong> {{ room.sections }}</div>
+    </el-card>
 
     <!-- Модальное окно для просмотра/редактирования зала -->
     <el-dialog

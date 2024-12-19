@@ -62,7 +62,25 @@
           display: 'grid',
           gridTemplateColumns: '1fr auto'
         }">
-        <TrainerInfo :trainer="trainer"/>
+        <div>
+          <el-text
+            size="large" :type="'primary'" style="font-weight: 700">{{ `${trainer.name} ${trainer.surname}` }}
+            <el-button @click="handleTrainerNameClick(trainer)" type="primary" style="margin-left:15px;">Подробнее</el-button>
+          </el-text>
+          <spacer></spacer>
+          <el-text v-if="trainer.sections" :type="'info'">
+            Специализация {{ trainer.sections.join(', ') }}
+          </el-text>
+          <spacer></spacer>
+          <el-text :type="'info'">
+            Квалификация: {{ trainer.qualification }}
+          </el-text>
+          <spacer></spacer>
+          <el-text :type="'info'">
+            Связь {{ trainer.phoneNumber ?? trainer.email }}
+          </el-text>
+          <spacer></spacer>
+        </div>
         <el-button
           @click="handleAssignToTrainerClick(trainer)"
           :type="'primary'"
@@ -74,14 +92,21 @@
 
   <assign-to-train-modal
     v-if="trainerIdToAssign"
-    :is-opened="isModalOpened"
+    :is-opened="isAssignTrainModalOpened"
     :trainer-id="trainerIdToAssign"
-    @close="handleModalClose"
+    @close="handleAssignTrainModalClose"
+  />
+
+  <trainer-info-modal
+    :is-opened="isTrainerInfoModalOpened"
+    :trainer-data="selectedTrainerData"
+    @close="handleTrainerInfoModalClose"
   />
 </template>
 
 <script setup lang="ts">
 import TrainerInfo from '@/features/sidebar/ui/trainer/components/TrainerInfo.vue';
+import TrainerInfoModal from '@/shared/components/modals/TrainerInfoModal.vue';
 import { ITrainerForClient } from '../../../../features/sidebar/config/trainerConfig.ts';
 import AssignToTrainModal from '../../../../shared/components/modals/AssignToTrainModal.vue';
 import Spacer from '../../../../shared/components/Spacer.vue';
@@ -89,7 +114,9 @@ import { onMounted, ref, computed } from 'vue';
 import axiosInstance from '../../../../widgets/axios/index.ts';
 
 const trainers = ref<ITrainerForClient[]>([]);
-const isModalOpened = ref(false);
+const isAssignTrainModalOpened = ref(false);
+const isTrainerInfoModalOpened = ref(false);
+const selectedTrainerData = ref();
 const trainerIdToAssign = ref<string | null>(null);
 const isFilterOpened = ref(false);
 const isLoading = ref(false);
@@ -176,14 +203,25 @@ const handleOpenFilter = () => {
 };
 
 const handleAssignToTrainerClick = (trainer: ITrainerForClient) => {
-  isModalOpened.value = true;
+  isAssignTrainModalOpened.value = true;
   trainerIdToAssign.value = trainer.id;
 };
 
-const handleModalClose = () => {
-  isModalOpened.value = false;
+const handleAssignTrainModalClose = () => {
+  isAssignTrainModalOpened.value = false;
   trainerIdToAssign.value = null;
 };
+
+const handleTrainerNameClick = (trainer: ITrainerForClient) => {
+  isTrainerInfoModalOpened.value = true;
+  selectedTrainerData.value = trainer;
+}
+
+const handleTrainerInfoModalClose = () => {
+  isTrainerInfoModalOpened.value = false;
+  selectedTrainerData.value = null;
+};
+
 </script>
 
 <style scoped lang="scss">

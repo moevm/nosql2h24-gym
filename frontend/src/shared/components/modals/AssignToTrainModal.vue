@@ -106,12 +106,41 @@ const emits = defineEmits([ 'close' ]);
 const selectedTrainingId = ref<string | null>(null); // Хранит id выбранной тренировки
 
 // Функция для обработки подтверждения записи на тренировку
+import { ElNotification } from 'element-plus';
+
 const handleConfirmAssignToTraining = (training: ITraining) => {
-  axiosInstance.post(`/trainings/${training.id}/registration/${userInfo.value?.id}`).then(() => {
-    alert('Запись успешна');
-    emits('close')
-  });
-}
+  axiosInstance.post(`/trainings/${training.id}/registration/${userInfo.value?.id}`)
+    .then(() => {
+      ElNotification.success({
+        title: 'Успех',
+        message: 'Запись успешна',
+        duration: 3000,  // Продолжительность уведомления (в миллисекундах)
+      });
+      emits('close');
+    })
+    .catch((error) => {
+      if (error.response) {
+        ElNotification.error({
+          title: 'Ошибка',
+          message: error.response.data?.errors || 'Неизвестная ошибка',
+          duration: 3000,
+        });
+      } else if (error.request) {
+        ElNotification.error({
+          title: 'Ошибка сети',
+          message: 'Нет ответа от сервера',
+          duration: 3000,
+        });
+      } else {
+        ElNotification.error({
+          title: 'Ошибка',
+          message: error.message,
+          duration: 3000,
+        });
+      }
+    });
+};
+
 
 // Переключение состояния выбора тренировки
 const toggleSelect = (trainingId: string) => {

@@ -122,14 +122,16 @@
             <strong>Время:</strong> {{ formatDate(training.startTime) }} {{ formatTime(training.startTime) }} - {{ formatTime(training.endTime) }}
           </p>
           <p><strong>Доступные места:</strong> {{ training.availableSlots }}</p>
-          <p>
-            <strong>Статус: </strong>
-            <span :style="{ color: getStatusColor(training.status), fontWeight: 700 }">
-              {{ training.status }}
-            </span>
-          </p>
         </div>
-        <el-button type="danger" @click="handleDeleteTraining(training)">Удалить</el-button>
+        <el-container direction="vertical" style="gap: 15px;  ">
+          <el-button style="margin-left:0" type="danger" @click="handleDeleteTraining(training)">Удалить</el-button>
+          <el-button style="margin-left:0" type="primary" @click="handleEditTraining(training)">
+            Редактировать
+          </el-button>
+          <el-button style="margin-left:0" type="primary" @click="handleWatchClientsOnTraining(training)">
+            Просмотреть клиентов
+          </el-button>
+        </el-container>
       </el-card>
       <el-text v-else>Запланированных тренировок нет</el-text>
     </el-container>
@@ -189,8 +191,51 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleModalClose">Отмена</el-button>
-        <el-button type="primary" @click="addTraining" :disabled="!isTrainingFormValid">Добавить</el-button>
+        <el-button type="primary" @click="addTraining" :disabled="!isTrainingFormValid">{{ isEditMode ? 'Отредактировать' : 'Добавить' }}</el-button>
       </div>
+    </el-dialog>
+    <el-dialog :model-value="isClientsModalOpen" @close="handleClientsModalClose" title="Клиенты на тренировке">
+      <el-container direction="vertical" style="gap: 15px;">
+        <el-row style="gap: 15px;">
+          <el-col>
+            <el-input
+              v-model="searchName"
+              placeholder="Поиск по имени"
+              clearable
+            />
+          </el-col>
+          <el-col>
+            <el-input
+              v-model="searchEmail"
+              placeholder="Поиск по email"
+              clearable
+            />
+          </el-col>
+          <el-col>
+            <el-input
+              v-model="searchPhone"
+              placeholder="Поиск по телефону"
+              clearable
+            />
+          </el-col>
+        </el-row>
+        <el-card
+          v-for="client in filteredClients"
+          :key="client.id"
+          :body-style="{
+          display:'grid',
+          gridTemplateColumns: '1fr',
+        }"
+        >
+          <div>
+            <p><strong>Имя:</strong> {{ client.details.name }} {{ client.details.surname }}</p>
+            <p><strong>Email:</strong> {{ client.details.email }}</p>
+            <p><strong>Телефон:</strong> {{ client.details.phoneNumber }}</p>
+          </div>
+        </el-card>
+        <el-button type="primary" @click="handleClientsModalClose">Закрыть</el-button>
+      </el-container>
+      <span v-if="clients.length === 0">Еще никто не записался...</span>
     </el-dialog>
   </div>
 </template>
@@ -273,6 +318,86 @@ const handleModalOpen = () => {
 };
 const handleModalClose = () => {
   isAddTrainModalOpen.value = false;
+  isEditMode.value = false;  // Сброс состояния редактирования
+  newTraining.value = { section: '', roomId: '', startTime: '', endTime: '', hours: null, availableSlots: 0 };
+};
+
+const isClientsModalOpen = ref(false); // Состояние модального окна
+const clients = ref<any[]>([]); // Список клиентов
+
+const searchName = ref('');
+const searchEmail = ref('');
+const searchPhone = ref('');
+
+const filteredClients = computed(() => {
+  return clients.value.filter(client => {
+    const nameMatches = searchName.value
+      ? `${client.details.name} ${client.details.surname}`.toLowerCase().includes(searchName.value.toLowerCase())
+      : true;
+    const emailMatches = searchEmail.value
+      ? client.details.email.toLowerCase().includes(searchEmail.value.toLowerCase())
+      : true;
+    const phoneMatches = searchPhone.value
+      ? client.details.phoneNumber.includes(searchPhone.value)
+      : true;
+
+    return nameMatches && emailMatches && phoneMatches;
+  });
+});
+
+
+// Функция для открытия модального окна с клиентами
+const handleWatchClientsOnTraining = (training: Training) => {
+  axiosInstance.get(`/trainings/${training.id}/registration`)
+    .then(res => {
+      // Сохраняем список клиентов на тренировке
+      isClientsModalOpen.value = true; // Открываем модальное окно
+
+      // Массив клиентов из ответа
+      const clientIds = res.data;
+
+      // Массив запросов для каждого клиента
+      const clientRequests = clientIds.map(client =>
+        axiosInstance.get(`/clients/${client.id}`)
+          .then(res2 => {
+            // Добавляем подробную информацию о клиенте в результат
+            return { ...client, details: res2.data };
+          })
+          .catch(error => {
+            console.error(`Ошибка при загрузке данных клиента ${client.id}:`, error);
+            return { ...client, details: null }; // Если ошибка, клиент без данных
+          })
+      );
+
+      // Используем Promise.all для параллельной загрузки всех клиентов
+      Promise.all(clientRequests)
+        .then(clientsDetails => {
+          clients.value = clientsDetails;
+        })
+        .catch(error => {
+          console.error('Ошибка при загрузке подробной информации о клиентах:', error);
+          ElNotification({
+            title: 'Ошибка',
+            message: 'Не удалось загрузить подробную информацию о клиентах.',
+            type: 'error',
+            duration: 3000,
+          });
+        });
+    })
+    .catch(error => {
+      ElNotification({
+        title: 'Ошибка',
+        message: 'Не удалось загрузить список клиентов.',
+        type: 'error',
+        duration: 3000,
+      });
+    });
+};
+
+// Функция для закрытия модального окна
+const handleClientsModalClose = () => {
+  isClientsModalOpen.value = false;
+  clients.value = []; // Сброс списка клиентов
 };
 
 // Новая тренировка
@@ -474,7 +599,6 @@ const addTraining = () => {
     newTraining.value.endTime = endTime.toISOString();
   }
 
-  // Проверка, что время начала тренировки не в прошлом
   const currentTime = dayjs();
   const trainingStartTime = dayjs(newTraining.value.startTime);
 
@@ -485,39 +609,67 @@ const addTraining = () => {
       type: 'error',
       duration: 3000,
     });
-    return; // Прекращаем выполнение функции
+    return;
   }
 
-  // Добавляем смещение в 3 часа перед отправкой данных
   const startTimeWithOffset = dayjs(newTraining.value.startTime).add(3, 'hour').toISOString();
   const endTimeWithOffset = dayjs(newTraining.value.endTime).add(3, 'hour').toISOString();
 
-  // Отправляем запрос с обновленными временем
-  axiosInstance.post(`/trainers/${userInfo.value?.id}/trainings`, {
-    ...newTraining.value,
+  const requestData = {
+    section: newTraining.value.section,
+    roomId: newTraining.value.roomId,
     startTime: startTimeWithOffset,
     endTime: endTimeWithOffset,
-  })
-    .then(() => {
-      ElNotification({
-        title: 'Успех',
-        message: 'Тренировка успешно добавлена',
-        type: 'success',
-        duration: 3000,
+    hours: newTraining.value.hours,
+    availableSlots: newTraining.value.availableSlots,
+  };
+
+  if (isEditMode.value) {
+    // Если режим редактирования, отправляем PUT-запрос
+    axiosInstance.put(`/trainings/${newTraining.value.trainingId}`, requestData)
+      .then(() => {
+        ElNotification({
+          title: 'Успех',
+          message: 'Тренировка успешно обновлена',
+          type: 'success',
+          duration: 3000,
+        });
+        isAddTrainModalOpen.value = false;
+        isEditMode.value = false;
+        loadTrainings(); // Обновляем список тренировок
+      })
+      .catch(error => {
+        console.error('Ошибка при обновлении тренировки:', error);
+        ElNotification({
+          title: 'Ошибка',
+          message: 'Не удалось обновить тренировку. Попробуйте еще раз.',
+          type: 'error',
+          duration: 3000,
+        });
       });
-      isAddTrainModalOpen.value = false;
-      newTraining.value = { section: '', roomId: '', startTime: '', endTime: '', hours: null, availableSlots: 0 };
-      loadTrainings(); // Обновляем список тренировок
-    })
-    .catch(error => {
-      console.error('Ошибка при добавлении тренировки:', error);
-      ElNotification({
-        title: 'Ошибка',
-        message: 'Не удалось добавить тренировку. Попробуйте еще раз.',
-        type: 'error',
-        duration: 3000,
+  } else {
+    // Если режим добавления, отправляем POST-запрос
+    axiosInstance.post(`/trainers/${userInfo.value?.id}/trainings`, requestData)
+      .then(() => {
+        ElNotification({
+          title: 'Успех',
+          message: 'Тренировка успешно добавлена',
+          type: 'success',
+          duration: 3000,
+        });
+        isAddTrainModalOpen.value = false;
+        loadTrainings(); // Обновляем список тренировок
+      })
+      .catch(error => {
+        console.error('Ошибка при добавлении тренировки:', error);
+        ElNotification({
+          title: 'Ошибка',
+          message: error.response.data?.errors || 'Неизвестная ошибка',
+          type: 'error',
+          duration: 3000,
+        });
       });
-    });
+  }
 };
 
 // Удаление тренировки
@@ -543,6 +695,23 @@ const handleDeleteTraining = (training: Training) => {
     });
 };
 
+const isEditMode = ref(false); // Новый флаг для режима редактирования
+
+const handleEditTraining = (training: Training) => {
+  // Инициализация данных для редактирования
+  newTraining.value = {
+    trainingId: training.id,
+    section: training.section.name,  // Убедитесь, что это только имя секции
+    roomId: training.room.id,        // Идентификатор комнаты
+    startTime: dayjs(training.startTime).format('YYYY-MM-DD HH:mm:ss'),  // Форматируем время
+    endTime: dayjs(training.endTime).format('YYYY-MM-DD HH:mm:ss'),      // Форматируем время окончания
+    hours: dayjs(training.endTime).diff(dayjs(training.startTime), 'hour'), // Рассчитываем количество часов
+    availableSlots: training.availableSlots  // Количество доступных мест
+  };
+  isEditMode.value = true; // Включаем режим редактирования
+  isAddTrainModalOpen.value = true;
+};
+
 // Загрузка данных при монтировании
 onMounted(() => {
   authStore.loadUserDataFromToken();
@@ -559,6 +728,15 @@ onMounted(() => {
 }
 
 .training-info p {
+  margin: 0 0 10px;
+}
+
+.client-card {
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.client-info p {
   margin: 0 0 10px;
 }
 </style>

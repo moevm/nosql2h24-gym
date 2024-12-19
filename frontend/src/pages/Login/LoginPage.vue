@@ -46,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import { ElNotification } from 'element-plus';
 import { reactive, ref } from "vue";
 import axiosInstance from "../../widgets/axios";
 import router from "../../app/router";
@@ -81,7 +82,13 @@ const handleSubmit = async () => {
         email: formData.email,
         phoneNumber: formData.phoneNumber,
       });
-      
+
+      ElNotification.success({
+        title: 'Успех',
+        message: 'Регистрация прошла успешно. Перенаправляем на страницу входа...',
+        duration: 3000,
+      });
+
       await router.push('/login');
     } else {
       // Режим входа
@@ -93,16 +100,42 @@ const handleSubmit = async () => {
           accessToken: string,
           refreshToken: string,
         } = res.data;
-        
-        authStore.setAuthToken(tokens.accessToken)
+
+        authStore.setAuthToken(tokens.accessToken);
+
+        ElNotification.success({
+          title: 'Успех',
+          message: 'Вход выполнен успешно. Перенаправляем на ваш профиль...',
+          duration: 3000,
+        });
       });
-      
+
       await router.push('/profile');
     }
-    
-    // Переход на главную после успешного запроса
   } catch (error) {
     console.error("Ошибка при отправке формы:", error);
+    if (error.response) {
+      // Ошибка от сервера
+      ElNotification.error({
+        title: 'Ошибка',
+        message: error.response.data?.errors || 'Неизвестная ошибка',
+        duration: 3000,
+      });
+    } else if (error.request) {
+      // Ошибка при отсутствии ответа от сервера
+      ElNotification.error({
+        title: 'Ошибка сети',
+        message: 'Нет ответа от сервера',
+        duration: 3000,
+      });
+    } else {
+      // Ошибка в настройке запроса
+      ElNotification.error({
+        title: 'Ошибка',
+        message: error.message,
+        duration: 3000,
+      });
+    }
   }
 };
 </script>

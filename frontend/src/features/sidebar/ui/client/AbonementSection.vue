@@ -2,11 +2,9 @@
   <div>
     <h2>Информация об абонементе</h2>
     <spacer></spacer>
-    <el-card
-      v-if="userAbonementInfo"
-    >
+    <el-card v-if="userAbonementInfo">
       <p>
-        <el-text type="primary" >Статус: </el-text>
+        <el-text type="primary">Статус: </el-text>
         <span :style="{
           color: getStatusColor(userAbonementInfo.status),
           fontWeight: 700
@@ -14,19 +12,19 @@
       </p>
       <spacer/>
       <p>
-        <el-text type="primary" >Дата начала:</el-text> {{ formatDate(userAbonementInfo.startDate) }}
+        <el-text type="primary">Дата начала:</el-text> {{ formatDate(userAbonementInfo.startDate) }}
       </p>
       <spacer/>
       <p>
-        <el-text type="primary" >Дата окончания:</el-text> {{ formatDate(userAbonementInfo.endDate) }}
+        <el-text type="primary">Дата окончания:</el-text> {{ formatDate(userAbonementInfo.endDate) }}
       </p>
       <spacer/>
       <p>
-        <el-text type="primary" >Оставшиеся дни:</el-text> {{ userAbonementInfo.restDays }}
+        <el-text type="primary">Оставшиеся дни:</el-text> {{ userAbonementInfo.restDays }}
       </p>
       <spacer/>
       <p>
-        <el-text type="primary" >Длительность:</el-text> {{ userAbonementInfo.duration }} дней
+        <el-text type="primary">Длительность:</el-text> {{ userAbonementInfo.duration }} дней
       </p>
 
       <div style="display: flex; gap: 10px; margin-top: 15px">
@@ -38,12 +36,9 @@
         </el-button>
       </div>
       <spacer></spacer>
+
       <!-- Форма продления -->
-      <el-card
-        class="card-dark"
-        v-if="showExtendForm"
-        @close="closeExtendForm"
-      >
+      <el-card class="card-dark" v-if="showExtendForm" @close="closeExtendForm">
         <h3>Продление абонемента</h3>
         <el-form :model="extendForm">
           <el-form-item label="Выберите длительность" :label-position="'top'">
@@ -68,9 +63,7 @@
       <spacer></spacer>
 
       <!-- Форма заморозки -->
-      <el-dialog
-        :model-value="isFreezeModalOpen"
-      >
+      <el-dialog :model-value="isFreezeModalOpen">
         <el-text>
           {{ userAbonementInfo.status === 'FREEZE' ? 'Вы уверены что хотите разморозить абонемент?' : 'Вы уверены что хотите заморозить абонемент?' }}
         </el-text>
@@ -172,6 +165,17 @@ const submitExtend = () => {
 };
 
 const submitFreeze = () => {
+  // Проверяем, если оставшиеся дни меньше или равны 7
+  if (userAbonementInfo.value?.restDays <= 7) {
+    ElNotification({
+      title: 'Ошибка',
+      message: 'Заморозка недоступна, так как абонемент истекает менее чем через 7 дней.',
+      type: 'warning',
+      duration: 3000
+    });
+    return; // Не отправляем запрос
+  }
+
   axiosInstance
     .put(`/subscriptions/${userInfo.value?.id}/freeze`)
     .then((res) => {

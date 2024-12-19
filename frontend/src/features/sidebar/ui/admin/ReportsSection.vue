@@ -82,8 +82,12 @@
         layout="total, sizes, prev, pager, next"
       ></el-pagination>
 
+      <div>
+        <el-button @click="exportAbonementsToJson" type="success" style="margin-top: 15px;">Экспортировать в JSON</el-button>
+      </div>
       <Spacer></Spacer>
     </el-container>
+
 
     <!-- Вкладка статистики по занятиям -->
     <el-container v-else-if="currentTab === 'trainings'" style="margin-top: 20px; gap: 15px;" direction="vertical">
@@ -143,6 +147,11 @@
         :page-sizes="[5,10,20,50]"
         layout="total, sizes, prev, pager, next"
       ></el-pagination>
+
+      <!-- Кнопка экспорта JSON для тренингов -->
+      <div>
+        <el-button @click="exportTrainingsToJson" type="success" style="margin-top: 15px;">Экспортировать в JSON</el-button>
+      </div>
     </el-container>
   </div>
 </template>
@@ -235,8 +244,8 @@ const fetchDataAbonements = () => {
         return {
           id: item.client.id,
           clientName: item.client.name + ' ' + item.client.surname,
-          startDate: item.startDate ? item.startDate : 'Не указано',
-          endDate: item.endDate ? item.endDate : 'Не указано',
+          startDate: item.startDate ? dayjs(item.startDate).format('DD.MM.YYYY') : 'Не указано',
+          endDate: item.endDate ? dayjs(item.endDate).format('DD.MM.YYYY') : 'Не указано',
           status: item.status
         }
       });
@@ -318,7 +327,7 @@ const fetchDataTrainings = () => {
   axiosInstance.get('/admins/statistics/trainings', { params: requestParamsTrainings.value })
     .then(res => {
       const data = res.data;
-      totalTrainings.value = data.count;
+      totalTrainings.value = data.length;
       trainingsData.value = data.map((d:any) => {
         return {
           ...d,
@@ -359,6 +368,26 @@ const loadClients = () => {
   }).catch(error => {
     console.error('Ошибка при загрузке клиентов', error);
   });
+};
+
+// Функция экспорта данных абонементов в JSON
+const exportAbonementsToJson = () => {
+  const dataStr = JSON.stringify(subscriptions.value, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'abonements_data.json';
+  link.click();
+};
+
+// Функция экспорта данных по тренингам в JSON
+const exportTrainingsToJson = () => {
+  const dataStr = JSON.stringify(trainingsData.value, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'trainings_data.json';
+  link.click();
 };
 
 onMounted(() => {
