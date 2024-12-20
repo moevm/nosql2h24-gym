@@ -386,7 +386,7 @@ db.users.insertMany([
 
 db.rooms.insertMany([
     {
-        "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
+        "_id": ObjectId("653ef3a8a3e34567bcdf4201"),
         "_class": "com.example.gym.model.room.Room",
         "capacity": 25,
         "location": {
@@ -444,7 +444,7 @@ db.rooms.insertMany([
         "workingDays": "ПН, ВТ, СР, ЧТ, ПТ, СБ"
     },
     {
-        "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+        "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
         "_class": "com.example.gym.model.room.Room",
         "capacity": 30,
         "location": {
@@ -649,7 +649,7 @@ db.training_sessions.insertMany([
         "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
     },
     {
-        "_id": ObjectId("653ef3a8a3e34567bcdf3002"),
+        "_id": ObjectId("653ef3a8a3e34567bcdf3902"),
         "availableSlots": 4,
         "clients": [
             {
@@ -681,7 +681,7 @@ db.training_sessions.insertMany([
         "updatedAt": ISODate("2024-10-21T00:00:00.000Z")
     },
     {
-        "_id": ObjectId("653ef3a8a3e34567bcdf3003"),
+        "_id": ObjectId("653ef3a8a3e34587bcdf3003"),
         "_class": "com.example.gym.model.training.Training",
         "availableSlots": 9,
         "clients": [
@@ -715,7 +715,7 @@ db.training_sessions.insertMany([
         "updatedAt": ISODate("2024-12-12T23:10:23.885Z")
     },
     {
-        "_id": ObjectId("653ef3a8a3e34567bcdf3004"),
+        "_id": ObjectId("653ef3a8a3e34567bcdf3334"),
         "_class": "com.example.gym.model.training.Training",
         "availableSlots": 2,
         "clients": [
@@ -793,7 +793,192 @@ db.training_sessions.insertMany([
             "hourlyRate": 250
         },
         "updatedAt": ISODate("2024-12-12T23:07:26.068Z")
+    },
+    {
+        "_id": ObjectId("653ef3a8a3e34567bcdf1462"),
+        "_class": "com.example.gym.model.training.Training",
+        "availableSlots": 12,
+        "clients": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf1001"),
+                "name": "Alice",
+                "surname": "Smith",
+                "loyaltyPoints": 200,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf1002"),
+                "name": "Bob",
+                "surname": "Johnson",
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z"),
+                "loyaltyPoints": 100
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
+                "name": "Иван",
+                "surname": "Петров",
+                "loyaltyPoints": 50,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf1003"),
+                "name": "Charlie",
+                "surname": "Brown",
+                "loyaltyPoints": 120,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            }
+        ],
+        // 1
+        "createdAt": ISODate("2024-12-20T00:00:00.000Z"),
+        "startTime": ISODate("2024-12-20T10:00:00.000Z"),
+        "endTime": ISODate("2024-12-20T12:00:00.000Z"),
+        "hasFreeRegistration": true,
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf5001"),
+            "name": "Downtown Fitness Center",
+            "capacity": 25
+        },
+        "section": {
+            "name": "Функциональная тренировка"
+        },
+        "trainer": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+            "name": "Дмитрий",
+            "surname": "Иванов",
+            "qualification": "Кандидат в мастера спорта",
+            "hourlyRate": 350
+        },
+        "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+    },
+    {
+        "_id": ObjectId("653ef3a8a3e34567bcff1462"),
+        "_class": "com.example.gym.model.training.Training",
+        "availableSlots": 15,
+        "clients": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf3002"),
+                "name": "Brian",
+                "surname": "Taylor",
+                "loyaltyPoints": 200,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf3003"),
+                "name": "Catherine",
+                "surname": "Johnson",
+                "loyaltyPoints": 100,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf3004"),
+                "name": "David",
+                "surname": "Brown",
+                "loyaltyPoints": 50,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            }
+        ],
+        // 2
+        "createdAt": ISODate("2024-12-15T00:00:00.000Z"),
+        "startTime": ISODate("2024-12-15T10:00:00.000Z"),
+        "endTime": ISODate("2024-12-15T12:00:00.000Z"),
+        "hasFreeRegistration": true,
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+            "name": "Central Power Gym",
+            "capacity": 30
+        },
+        "section": {
+            "name": "Кардио тренировка"
+        },
+        "trainer": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+            "name": "Дмитрий",
+            "surname": "Иванов",
+            "qualification": "Кандидат в мастера спорта",
+            "hourlyRate": 350
+        },
+        "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+    },
+
+    {
+        "_id": ObjectId("653ef3a8a3e34567bcff1466"),
+        "_class": "com.example.gym.model.training.Training",
+        "availableSlots": 9,
+        "clients": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf1005"),
+                "name": "Eve",
+                "surname": "Adams",
+                "loyaltyPoints": 180,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            },
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf1004"),
+                "name": "Diana",
+                "surname": "Prince",
+                "loyaltyPoints": 250,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            }
+        ],
+        // 3
+        "createdAt": ISODate("2024-12-01T00:00:00.000Z"),
+        "startTime": ISODate("2024-12-01T10:00:00.000Z"),
+        "endTime": ISODate("2024-12-01T12:00:00.000Z"),
+        "hasFreeRegistration": true,
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+            "name": "Central Power Gym",
+            "capacity": 30
+        },
+        "section": {
+            "name": "Кардио тренировка"
+        },
+        "trainer": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+            "name": "Дмитрий",
+            "surname": "Иванов",
+            "qualification": "Кандидат в мастера спорта",
+            "hourlyRate": 350
+        },
+        "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+    },
+
+    {
+        "_id": ObjectId("653ef3a8a3e34567bcff1467"),
+        "_class": "com.example.gym.model.training.Training",
+        "availableSlots": 5,
+        "clients": [
+            {
+                "_id": ObjectId("653ef3a8a3e34567bcdf1002"),
+                "name": "Bob",
+                "surname": "Johnson",
+                "loyaltyPoints": 180,
+                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            }
+        ],
+        // 4
+        "createdAt": ISODate("2024-10-15T00:00:00.000Z"),
+        "startTime": ISODate("2024-10-15T10:00:00.000Z"),
+        "endTime": ISODate("2024-10-15T12:00:00.000Z"),
+        "hasFreeRegistration": true,
+        "room": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+            "name": "Central Power Gym",
+            "capacity": 30
+        },
+        "section": {
+            "name": "Кардио тренировка"
+        },
+        "trainer": {
+            "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+            "name": "Дмитрий",
+            "surname": "Иванов",
+            "qualification": "Кандидат в мастера спорта",
+            "hourlyRate": 350
+        },
+        "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
     }
+
 ]);
 
 db.users.insertMany([
@@ -872,7 +1057,7 @@ db.users.insertMany([
         "clientInfo": null,
         "trainerInfo": {
             "qualification": "Кандидат в мастера спорта",
-            "hourlyRate": NumberDecimal("150.00"),
+            "hourlyRate": NumberDecimal("350.00"),
             "sections": [
                 "Функциональная тренировка",
                 "Кардио тренировка"
@@ -880,5 +1065,613 @@ db.users.insertMany([
         }
     }
 ]);
+
+
+// новые клиенты
+db.training_sessions.insertMany([
+    {
+        "_id": ObjectId("613ef3a8a3e34567bcdf1002"),
+        "name": "Bob",
+        "surname": "Johnson",
+        "email": "bob.johnson@example.com",
+        "password": "hashed_password_2",
+        "phoneNumber": "+1234567002",
+        "comment": "New client",
+        "createdAt": ISODate("2023-09-01T12:00:00Z"),
+        "updatedAt": ISODate("2024-09-01T12:00:00Z"),
+        "gender": "MALE",
+        "birthday": ISODate("1990-01-15T00:00:00Z"),
+        "roles": ["ROLE_USER"],
+        "clientInfo": {
+            "loyaltyPoints": 50,
+            "subscriptions": [
+                {
+                    "startDate": ISODate("2024-11-01T00:00:00Z"),
+                    "endDate": ISODate("2025-11-01T00:00:00Z"),
+                    "status": "ACTIVE",
+                    "price": NumberDecimal("1200.00"),
+                    "createdAt": ISODate("2023-11-01T00:00:00Z"),
+                    "updatedAt": ISODate("2023-11-05T00:00:00Z")
+                }
+            ]
+        },
+        "trainerInfo": null
+    },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1003"),
+            "name": "Carol",
+            "surname": "Williams",
+            "email": "carol.williams@example.com",
+            "password": "hashed_password_3",
+            "phoneNumber": "+1234567003",
+            "comment": "Prefers morning sessions",
+            "createdAt": ISODate("2023-05-15T08:00:00Z"),
+            "updatedAt": ISODate("2024-05-15T08:00:00Z"),
+            "gender": "FEMALE",
+            "birthday": ISODate("1985-05-25T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 300,
+                "subscriptions": [
+                    {
+                        "startDate": ISODate("2023-01-01T00:00:00Z"),
+                        "endDate": ISODate("2024-01-01T00:00:00Z"),
+                        "status": "INACTIVE",
+                        "price": NumberDecimal("1500.00"),
+                        "createdAt": ISODate("2023-01-01T00:00:00Z"),
+                        "updatedAt": ISODate("2023-01-10T00:00:00Z")
+                    }
+                ]
+            },
+            "trainerInfo": null
+        },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1004"),
+            "name": "David",
+            "surname": "Brown",
+            "email": "david.brown@example.com",
+            "password": "hashed_password_4",
+            "phoneNumber": "+1234567004",
+            "comment": "Active participant in group classes",
+            "createdAt": ISODate("2023-03-20T15:00:00Z"),
+            "updatedAt": ISODate("2024-03-20T15:00:00Z"),
+            "gender": "MALE",
+            "birthday": ISODate("1988-03-30T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 150,
+                "subscriptions": [
+                    {
+                        "startDate": ISODate("2024-06-01T00:00:00Z"),
+                        "endDate": ISODate("2025-06-01T00:00:00Z"),
+                        "status": "ACTIVE",
+                        "price": NumberDecimal("1700.00"),
+                        "createdAt": ISODate("2024-06-01T00:00:00Z"),
+                        "updatedAt": ISODate("2024-06-05T00:00:00Z")
+                    }
+                ]
+            },
+            "trainerInfo": null
+        },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1005"),
+            "name": "Emily",
+            "surname": "Davis",
+            "email": "emily.davis@example.com",
+            "password": "hashed_password_5",
+            "phoneNumber": "+1234567005",
+            "comment": "Regular yoga practitioner",
+            "createdAt": ISODate("2023-07-10T10:00:00Z"),
+            "updatedAt": ISODate("2024-07-10T10:00:00Z"),
+            "gender": "FEMALE",
+            "birthday": ISODate("1995-07-20T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 400,
+                "subscriptions": [
+                    {
+                        "startDate": ISODate("2024-09-01T00:00:00Z"),
+                        "endDate": ISODate("2025-09-01T00:00:00Z"),
+                        "status": "ACTIVE",
+                        "price": NumberDecimal("2000.00"),
+                        "createdAt": ISODate("2024-09-01T00:00:00Z"),
+                        "updatedAt": ISODate("2024-09-05T00:00:00Z")
+                    }
+                ]
+            },
+            "trainerInfo": null
+        },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1006"),
+            "name": "Frank",
+            "surname": "Miller",
+            "email": "frank.miller@example.com",
+            "password": "hashed_password_6",
+            "phoneNumber": "+1234567006",
+            "comment": "Occasional visitor",
+            "createdAt": ISODate("2023-11-01T09:00:00Z"),
+            "updatedAt": ISODate("2024-11-01T09:00:00Z"),
+            "gender": "MALE",
+            "birthday": ISODate("1980-11-05T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 30,
+                "subscriptions": []
+            },
+            "trainerInfo": null
+        },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1007"),
+            "name": "Grace",
+            "surname": "Taylor",
+            "email": "grace.taylor@example.com",
+            "password": "hashed_password_7",
+            "phoneNumber": "+1234567007",
+            "comment": "Prefers personal training",
+            "createdAt": ISODate("2023-01-15T11:00:00Z"),
+            "updatedAt": ISODate("2024-01-15T11:00:00Z"),
+            "gender": "FEMALE",
+            "birthday": ISODate("1992-01-20T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 500,
+                "subscriptions": [
+                    {
+                        "startDate": ISODate("2023-08-01T00:00:00Z"),
+                        "endDate": ISODate("2024-08-01T00:00:00Z"),
+                        "status": "ACTIVE",
+                        "price": NumberDecimal("2200.00"),
+                        "createdAt": ISODate("2023-08-01T00:00:00Z"),
+                        "updatedAt": ISODate("2023-08-05T00:00:00Z")
+                    }
+                ]
+            },
+            "trainerInfo": null
+        },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1008"),
+            "name": "Henry",
+            "surname": "Wilson",
+            "email": "henry.wilson@example.com",
+            "password": "hashed_password_8",
+            "phoneNumber": "+1234567008",
+            "comment": "Focuses on cardio workouts",
+            "createdAt": ISODate("2023-03-05T07:00:00Z"),
+            "updatedAt": ISODate("2024-03-05T07:00:00Z"),
+            "gender": "MALE",
+            "birthday": ISODate("1998-03-15T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 250,
+                "subscriptions": [
+                    {
+                        "startDate": ISODate("2024-04-01T00:00:00Z"),
+                        "endDate": ISODate("2025-04-01T00:00:00Z"),
+                        "status": "ACTIVE",
+                        "price": NumberDecimal("1800.00"),
+                        "createdAt": ISODate("2024-04-01T00:00:00Z"),
+                        "updatedAt": ISODate("2024-04-05T00:00:00Z")
+                    }
+                ]
+            },
+            "trainerInfo": null
+        },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1009"),
+            "name": "Ivy",
+            "surname": "Moore",
+            "email": "ivy.moore@example.com",
+            "password": "hashed_password_9",
+            "phoneNumber": "+1234567009",
+            "comment": "Enjoys group fitness",
+            "createdAt": ISODate("2023-06-25T13:00:00Z"),
+            "updatedAt": ISODate("2024-06-25T13:00:00Z"),
+            "gender": "FEMALE",
+            "birthday": ISODate("2000-06-15T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 100,
+                "subscriptions": [
+                    {
+                        "startDate": ISODate("2024-07-01T00:00:00Z"),
+                        "endDate": ISODate("2025-07-01T00:00:00Z"),
+                        "status": "ACTIVE",
+                        "price": NumberDecimal("1400.00"),
+                        "createdAt": ISODate("2024-07-01T00:00:00Z"),
+                        "updatedAt": ISODate("2024-07-05T00:00:00Z")
+                    }
+                ]
+            },
+            "trainerInfo": null
+        },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1010"),
+            "name": "Jack",
+            "surname": "Anderson",
+            "email": "jack.anderson@example.com",
+            "password": "hashed_password_10",
+            "phoneNumber": "+1234567010",
+            "comment": "Looking to improve strength",
+            "createdAt": ISODate("2023-04-30T18:00:00Z"),
+            "updatedAt": ISODate("2024-04-30T18:00:00Z"),
+            "gender": "MALE",
+            "birthday": ISODate("1991-04-20T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 200,
+                "subscriptions": [
+                    {
+                        "startDate": ISODate("2024-05-01T00:00:00Z"),
+                        "endDate": ISODate("2025-05-01T00:00:00Z"),
+                        "status": "ACTIVE",
+                        "price": NumberDecimal("1600.00"),
+                        "createdAt": ISODate("2024-05-01T00:00:00Z"),
+                        "updatedAt": ISODate("2024-05-05T00:00:00Z")
+                    }
+                ]
+            },
+            "trainerInfo": null
+        },
+        {
+            "_id": ObjectId("613ef3a8a3e34567bcdf1011"),
+            "name": "Katie",
+            "surname": "White",
+            "email": "katie.white@example.com",
+            "password": "hashed_password_11",
+            "phoneNumber": "+1234567011",
+            "comment": "Prefers weekend sessions",
+            "createdAt": ISODate("2023-12-01T10:00:00Z"),
+            "updatedAt": ISODate("2024-12-01T10:00:00Z"),
+            "gender": "FEMALE",
+            "birthday": ISODate("1993-12-15T00:00:00Z"),
+            "roles": ["ROLE_USER"],
+            "clientInfo": {
+                "loyaltyPoints": 350,
+                "subscriptions": [
+                    {
+                        "startDate": ISODate("2024-01-01T00:00:00Z"),
+                        "endDate": ISODate("2025-01-01T00:00:00Z"),
+                        "status": "ACTIVE",
+                        "price": NumberDecimal("1900.00"),
+                        "createdAt": ISODate("2024-01-01T00:00:00Z"),
+                        "updatedAt": ISODate("2024-01-05T00:00:00Z")
+                    }
+                ]
+            },
+            "trainerInfo": null
+        }
+    ])
+
+db.training_sessions.insertMany(
+    [
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1467"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1002"),
+                    "name": "Bob",
+                    "surname": "Johnson",
+                    "loyaltyPoints": 180,
+                    "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+                }
+            ],
+            "createdAt": ISODate("2024-10-15T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-15T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-15T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        },
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1468"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1003"),
+                    "name": "Carol",
+                    "surname": "Williams",
+                    "loyaltyPoints": 250,
+                    "registrationDate": ISODate("2024-01-15T10:00:00.000Z")
+                },
+                {
+                    "_id": ObjectId("653ef3a8a3e34567bcdf3002"),
+                    "name": "Brian",
+                    "surname": "Taylor",
+                    "loyaltyPoints": 250,
+                    "registrationDate": ISODate("2024-01-15T10:00:00.000Z")
+                },
+
+            ],
+            "createdAt": ISODate("2024-10-16T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-16T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-16T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        },
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1469"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1004"),
+                    "name": "David",
+                    "surname": "Brown",
+                    "loyaltyPoints": 200,
+                    "registrationDate": ISODate("2024-01-20T10:00:00.000Z")
+                }
+            ],
+            "createdAt": ISODate("2024-10-17T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-17T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-17T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        },
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1470"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1005"),
+                    "name": "Emily",
+                    "surname": "Davis",
+                    "loyaltyPoints": 400,
+                    "registrationDate": ISODate("2024-01-25T10:00:00.000Z")
+                }
+            ],
+            "createdAt": ISODate("2024-10-18T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-18T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-18T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        },
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1471"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1006"),
+                    "name": "Frank",
+                    "surname": "Miller",
+                    "loyaltyPoints": 30,
+                    "registrationDate": ISODate("2024-02-01T10:00:00.000Z")
+                }
+            ],
+            "createdAt": ISODate("2024-10-19T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-19T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-19T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        },
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1472"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1007"),
+                    "name": "Grace",
+                    "surname": "Taylor",
+                    "loyaltyPoints": 500,
+                    "registrationDate": ISODate("2024-02-05T10:00:00.000Z")
+                }
+            ],
+            "createdAt": ISODate("2024-10-20T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-20T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-20T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        },
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1473"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1008"),
+                    "name": "Henry",
+                    "surname": "Wilson",
+                    "loyaltyPoints": 250,
+                    "registrationDate": ISODate("2024-02-10T10:00:00.000Z")
+                },
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1009"),
+                    "name": "Ivy",
+                    "surname": "Moore",
+                    "loyaltyPoints": 250,
+                    "registrationDate": ISODate("2024-02-10T10:00:00.000Z")
+                },
+
+            ],
+            "createdAt": ISODate("2024-10-21T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-21T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-21T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        },
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1474"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1009"),
+                    "name": "Ivy",
+                    "surname": "Moore",
+                    "loyaltyPoints": 100,
+                    "registrationDate": ISODate("2024-02-15T10:00:00.000Z")
+                }
+            ],
+            "createdAt": ISODate("2024-10-22T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-22T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-22T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        },
+        {
+            "_id": ObjectId("693ef3a8a3e34567bcff1475"),
+            "_class": "com.example.gym.model.training.Training",
+            "availableSlots": 5,
+            "clients": [
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1010"),
+                    "name": "Jack",
+                    "surname": "Anderson",
+                    "loyaltyPoints": 200,
+                    "registrationDate": ISODate("2024-02-20T10:00:00.000Z")
+                },
+                {
+                    "_id": ObjectId("613ef3a8a3e34567bcdf1011"),
+                    "name": "Katie",
+                    "surname": "White",
+                    "loyaltyPoints": 200,
+                    "registrationDate": ISODate("2024-02-20T10:00:00.000Z")
+                }
+            ],
+            "createdAt": ISODate("2024-10-23T00:00:00.000Z"),
+            "startTime": ISODate("2024-10-23T10:00:00.000Z"),
+            "endTime": ISODate("2024-10-23T12:00:00.000Z"),
+            "hasFreeRegistration": true,
+            "room": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4303"),
+                "name": "Central Power Gym",
+                "capacity": 30
+            },
+            "section": {
+                "name": "Кардио тренировка"
+            },
+            "trainer": {
+                "_id": ObjectId("653ef3a8a3e34567bcdf4003"),
+                "name": "Дмитрий",
+                "surname": "Иванов",
+                "qualification": "Кандидат в мастера спорта",
+                "hourlyRate": 350
+            },
+            "updatedAt": ISODate("2024-12-12T23:06:43.713Z")
+        }])
 
 
