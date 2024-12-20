@@ -4,6 +4,8 @@ package com.example.gym.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -44,7 +46,14 @@ public interface TrainingRepository extends MongoRepository<Training, String> {
 
     @Query("{ 'endTime': { $lt: ?0 } }")
     List<Training> findAllByEndTimeBefore(LocalDateTime now);
-            
+
+    Page<Training> findAllByTrainerIdAndEndTimeBetween(
+            String trainerId,
+            LocalDateTime dateRangeFrom,
+            LocalDateTime dateRangeTo,
+            Pageable pageable
+    );
+
     // Optional<Training> findByIdAndTrainerId(String id, String trainingId);
 
 }

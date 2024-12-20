@@ -210,7 +210,7 @@ public class SubscriptionController {
                     )
     })
     public ResponseEntity<?> freezeSubscription(
-        @PathVariable @Parameter(description = "Идентификатор клиента абонемент, которого необходимо заморозить.")
+        @PathVariable @Parameter(description = "Идентификатор клиента абонемент которого необходимо заморозить.")
         String clientId
     ) {
         ResponseSubscriptionDto subscription = subscriptionService.freezeSubscription(clientId);

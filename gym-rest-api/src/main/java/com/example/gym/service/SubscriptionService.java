@@ -170,8 +170,9 @@ public class SubscriptionService {
         if (subscription.getStatus() == SubscriptionStatus.ACTIVE) {
             subscription.setStatus(SubscriptionStatus.FREEZE);
             subscription.setFreezeDate(LocalDateTime.now());
-    
-            clientInfo.setSubscriptions(List.of(subscription));
+
+            subscriptions.set(0, subscription);
+            clientInfo.setSubscriptions(subscriptions);
             user.setClientInfo(clientInfo);
             userRepository.save(user);
         } else if (subscription.getStatus() == SubscriptionStatus.FREEZE) {
@@ -182,8 +183,9 @@ public class SubscriptionService {
             LocalDateTime now = LocalDateTime.now();
             long daysBetween = ChronoUnit.DAYS.between(freezeDate, now);
             subscription.setEndDate(oldEndDate.plusDays(daysBetween));
-            
-            clientInfo.setSubscriptions(List.of(subscription));
+
+            subscriptions.set(0, subscription);
+            clientInfo.setSubscriptions(subscriptions);
             user.setClientInfo(clientInfo);
             userRepository.save(user);
         }

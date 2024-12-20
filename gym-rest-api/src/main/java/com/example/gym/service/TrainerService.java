@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -62,7 +66,7 @@ public class TrainerService {
         Map<String, Double> previousMonthsProfit = new HashMap<>();
 
         LocalDate today = LocalDate.now();
-        LocalDate startOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
+        LocalDate startOfWeek = today.minusDays(today.getDayOfWeek().getValue());
         LocalDate startOfMonth = today.withDayOfMonth(1);
 
         for (Training training : trainings) {
@@ -82,9 +86,10 @@ public class TrainerService {
                 profitStatistics.put("this_month", profitStatistics.get("this_month") + trainingProfit);
             }
 
-            if (trainingDate.isBefore(startOfMonth)) {
+            if (trainingDate.getYear() == today.getYear() && (trainingDate.isBefore(startOfMonth) || trainingDate.getMonth() == today.getMonth())) {
                 String monthYearKey = trainingDate.getYear() + "-" + trainingDate.getMonthValue();
                 previousMonthsProfit.put(monthYearKey, previousMonthsProfit.getOrDefault(monthYearKey, 0.0) + trainingProfit);
+                previousMonthsProfit.put("total", previousMonthsProfit.getOrDefault("total", 0.0) + trainingProfit);
             }
         }
 
@@ -95,27 +100,48 @@ public class TrainerService {
         return result;
     }
 
-    public List<TrainingDetailDto> getTrainingsStatistics(String trainerId) {
-        // LocalDateTime startDateTime = startDate.atStartOfDay();
-        // LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
-        List<Training> trainings = trainingRepository.findAllByEndTimeBeforeAndTrainerId(
-                LocalDateTime.now(),
-                trainerId);
+    public Page<TrainingDetailDto> getTrainingsStatistics(
+            String trainerId,
+            int page,
+            int size,
+            LocalDateTime dateRangeFrom,
+            LocalDateTime dateRangeTo,
+            Double aboveProfit,
+            Integer aboveClients
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
 
-        return trainings.stream()
-            .map(t -> {
-                Integer clientCount = t.getClients().size();
-                Double hourlyRate = t.getTrainer().getHourlyRate();
-                Double duration = t.getDurationInHours();
-                Double profit = clientCount * hourlyRate * duration;
+        // Получаем данные из репозитория
+        Page<Training> trainingsPage = trainingRepository.findAllByTrainerIdAndEndTimeBetween(
+                trainerId,
+                dateRangeFrom,
+                dateRangeTo,
+                Pageable.unpaged() // Забираем все записи для последующей фильтрации
+        );
 
-                LocalDate date = t.getStartTime().toLocalDate();
-                LocalTime time = t.getStartTime().toLocalTime();
+        // Фильтрация данных
+        List<TrainingDetailDto> filteredTrainings = trainingsPage.getContent().stream()
+                .map(t -> {
+                    Integer clientCount = t.getClients().size();
+                    Double hourlyRate = t.getTrainer().getHourlyRate();
+                    Double duration = t.getDurationInHours();
+                    Double profit = clientCount * hourlyRate * duration;
 
-                System.out.println(t.getStartTime());
-                return new TrainingDetailDto(date, time, clientCount, profit, t.getId());
-            })
-            .collect(Collectors.toList());
+                    LocalDate date = t.getStartTime().toLocalDate();
+                    LocalTime time = t.getStartTime().toLocalTime();
+
+                    return new TrainingDetailDto(date, time, clientCount, profit, t.getId());
+                })
+                .filter(dto -> (aboveProfit == null || dto.getProfit() >= aboveProfit))
+                .filter(dto -> (aboveClients == null || dto.getClientCount() >= aboveClients))
+                .collect(Collectors.toList());
+
+        // Пагинация результата
+        int start = Math.min(page * size, filteredTrainings.size());
+        int end = Math.min((page + 1) * size, filteredTrainings.size());
+        List<TrainingDetailDto> paginatedTrainings = filteredTrainings.subList(start, end);
+
+        return new PageImpl<>(paginatedTrainings, pageable, filteredTrainings.size());
     }
 
     public ResponseTrainingForStatistics getTrainingStatistics(String trainerId, String trainingId) {
@@ -304,7 +330,7 @@ public class TrainerService {
 
     public List<ResponseTrainingDto> findTrainigs(String id) {
         getById(id);
-        return trainingService.findTrainingsByTrainerId(id);
+        return trainingService.findActualTrainingsByTrainerId(id);
     }
 
     @Transactional

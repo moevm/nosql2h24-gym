@@ -50,11 +50,12 @@ public class TrainingService {
         return modelMapper.toDto(training);
     }
 
-    
-    public List<ResponseTrainingDto> findTrainingsByTrainerId(String trainerId) {
+
+    public List<ResponseTrainingDto> findActualTrainingsByTrainerId(String trainerId) {
         List<Training> trainings = trainingRepository.findAllByTrainerId(trainerId);
-        return trainings.stream()
-                .map(s -> modelMapper.toDto(s))
+        return trainings.stream().filter((training) ->
+                        training.getStartTime().isAfter(LocalDateTime.now()))
+                .map(modelMapper::toDto)
                 .toList();
     }
 
@@ -76,9 +77,9 @@ public class TrainingService {
     //     List<String> clientIds = clientPojos.stream()
     //             .map(ClientPojo::getId)
     //             .toList();
-        
+
     //     List<User> clients = userRepository.findAllById(clientIds);
-        
+
     //     List<LoyaltySettings> loyaltySettings = loyaltySettingsRepository.findAll();
 
     //     if (!loyaltySettings.isEmpty()) {
@@ -192,7 +193,7 @@ public class TrainingService {
         //     TrainerInfo trainerInfo = trainer.getTrainerInfo();
         //     trainerInfo.setFree(trainingRepository.findAllByTrainerId(trainer.getId()).stream()
         //         .anyMatch(trainig -> trainig.isHasFreeRegistration() == true));
-            
+
         //     User savedTrainer = userRepository.save(trainer);
         //     TrainerPojo savedTrainerPojo = modelMapper.toPojo(savedTrainer);
 
@@ -204,7 +205,7 @@ public class TrainingService {
 
     @Transactional
     public ResponseTrainingDto updateTraining(
-            String trainingId, 
+            String trainingId,
             UpdateTrainingDto dto
     ) throws ResourceNotFoundException, InvalidDataException {
         Training training = getById(trainingId);
@@ -232,7 +233,7 @@ public class TrainingService {
                     roomRepository.findById(dto.getRoomId()).get()
             ));
         }
-        
+
         Training updatedTraining = trainingRepository.save(training);
         return modelMapper.toDto(updatedTraining);
     }
@@ -263,7 +264,7 @@ public class TrainingService {
     ) {
 
         MyUserDetail user = myUserDetailService.loadUserByUsername(principal.getName());
-    
+
         Query query = new Query();
 
         if (section != null && !section.isEmpty() && !section.isBlank()) {
@@ -302,8 +303,8 @@ public class TrainingService {
         }
 
         return trainings.stream()
-            .map(t -> modelMapper.toDto(t))
-            .toList();
+                .map(t -> modelMapper.toDto(t))
+                .toList();
     }
 
     public List<Training> findAll() {
@@ -324,11 +325,11 @@ public class TrainingService {
     private void validateOverlapping(LocalDateTime startTime, LocalDateTime endTime, String trainerId) throws InvalidDataException {
         List<Training> overlappingTrainings = findAll().stream()
                 .filter(training -> training.getTrainer().getId().equals(trainerId))
-                .filter(training -> 
-                    (startTime.isBefore(training.getEndTime()) && endTime.isAfter(training.getStartTime()))
+                .filter(training ->
+                        (startTime.isBefore(training.getEndTime()) && endTime.isAfter(training.getStartTime()))
                 )
                 .collect(Collectors.toList());
-        
+
         if (!overlappingTrainings.isEmpty()) {
             throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
         }

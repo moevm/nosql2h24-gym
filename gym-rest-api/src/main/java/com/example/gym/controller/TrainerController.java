@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,15 +56,15 @@ public class TrainerController {
     @Operation(summary = "Получить всех тренеров",
             description = "Возвращает всех тренеров.",
             responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "Список тренеров успешно получен.",
-                        content = @Content(mediaType = "application/json",
-                                array = @ArraySchema(
-                                        schema = @Schema(implementation = ResponseTrainerWithoutTrainingsDto.class) 
-                                ))
-                )
-    })
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Список тренеров успешно получен.",
+                            content = @Content(mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = ResponseTrainerWithoutTrainingsDto.class)
+                                    ))
+                    )
+            })
     public ResponseEntity<?> findAllTrainers(
             @Parameter(description = "Название секции для фильтрации", required = false)
             @RequestParam(name = "section", required = false) String section,
@@ -120,7 +121,7 @@ public class TrainerController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> findTrainerById(
             @Parameter(description = "Идентификатор тренера, которого нужно получить", required = true)
             @PathVariable String id
@@ -140,9 +141,9 @@ public class TrainerController {
                                     schema = @Schema(implementation = ResponseTrainerDto.class))
                     ),
                     @ApiResponse(
-                    responseCode = "400",
-                    description = "Неккоректные данные.",
-                    content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -151,7 +152,7 @@ public class TrainerController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> updateTrainer(
             @PathVariable @Parameter(description = "Идентификатор тренера, которого необходимо обновить", required = true)
             String trainerId,
@@ -172,7 +173,7 @@ public class TrainerController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseTrainerDto.class))
                     )
-    })
+            })
     public ResponseEntity<?> deleteTrainer(
             @PathVariable @Parameter(description = "Идентификатор тренера, которого необходимо удалить", required = true)
             String trainerId
@@ -189,9 +190,9 @@ public class TrainerController {
                             responseCode = "200",
                             description = "Тренировки успешно получены.",
                             content = @Content(mediaType = "application/json",
-                                array = @ArraySchema(
-                                        schema = @Schema(implementation = ResponseTrainingDto.class) 
-                                ))
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = ResponseTrainingDto.class)
+                                    ))
                     ),
                     @ApiResponse(
                             responseCode = "404",
@@ -199,7 +200,7 @@ public class TrainerController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> findTrainerTrainings(
             @Parameter(description = "Идентификатор тренера, список тренировок которого нужно получить", required = true)
             @PathVariable String id
@@ -219,9 +220,9 @@ public class TrainerController {
                                     schema = @Schema(implementation = ResponseTrainingDto.class))
                     ),
                     @ApiResponse(
-                        responseCode = "400",
-                        description = "Неккоректные данные.",
-                        content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -230,7 +231,7 @@ public class TrainerController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> createTraining(
             @Parameter(description = "Идентификатор тренера, для которого необходимо добавить тренировку", required = true)
             @PathVariable String id,
@@ -249,20 +250,35 @@ public class TrainerController {
                             responseCode = "200",
                             description = "Статистика успешно получена.",
                             content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = TrainingDetailDto.class) 
-                            ))
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = TrainingDetailDto.class)
+                                    ))
                     )
-    })
-    public ResponseEntity<List<TrainingDetailDto>> getTrainingsStatistics(
+            })
+    public ResponseEntity<Page<TrainingDetailDto>> getTrainingsStatistics(
             @Parameter(description = "Идентификатор тренера", required = true)
-            @PathVariable String id
+            @PathVariable String id,
+            @RequestParam(defaultValue = "0") int page, // Номер страницы
+            @RequestParam(defaultValue = "10") int size, // Размер страницы
+            @RequestParam(required = false) String dateRangeFrom,
+            @RequestParam(required = false) String dateRangeTo,
+            @RequestParam(required = false) Double aboveProfit,
+            @RequestParam(required = false) Integer aboveClients
+
             // @ApiParam(value = "Начальная дата", required = true)
             // @RequestParam LocalDate startDate,
             // @ApiParam(value = "Конечная дата", required = true)
             // @RequestParam LocalDate endDate
     ) {
-        List<TrainingDetailDto> statistics = trainerService.getTrainingsStatistics(id);
+        LocalDateTime from = dateRangeFrom != null
+                ? LocalDateTime.parse(dateRangeFrom.replace("Z", ""))
+                : LocalDateTime.of(1970, 1, 1, 0, 0);
+        LocalDateTime to = dateRangeTo != null
+                ? LocalDateTime.parse(dateRangeTo.replace("Z", ""))
+                : LocalDateTime.of(9999, 12, 31, 23, 59);
+
+        Page<TrainingDetailDto> statistics = trainerService.getTrainingsStatistics(
+                id, page, size, from, to, aboveProfit, aboveClients);
         return ResponseEntity.ok(statistics);
     }
 
@@ -276,7 +292,7 @@ public class TrainerController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = Map.class))
                     )
-    })
+            })
     public ResponseEntity<Map<String, Object>> getProfitStatistics(
             @Parameter(description = "Идентификатор тренера", required = true)
             @PathVariable String id
@@ -295,7 +311,7 @@ public class TrainerController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseTrainingForStatistics.class))
                     )
-    })
+            })
     public ResponseEntity<?> getTrainingStatistics(
             @Parameter(description = "Идентификатор тренера", required = true)
             @PathVariable String id,
