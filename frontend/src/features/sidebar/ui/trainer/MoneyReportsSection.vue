@@ -34,7 +34,7 @@ function formatStatistics(data: any) {
     { period: 'Сегодня', value: data.profitStatistics.today },
     { period: 'На этой неделе', value: data.profitStatistics.this_week },
     { period: 'В этом месяце', value: data.profitStatistics.this_month },
-    { period: 'В прошлых месяцах', value: data.previous_months_profit.total || 0 }
+    { period: 'В этом году', value: data.previous_months_profit.total || 0 }
   ];
 }
 

@@ -76,15 +76,23 @@
               <el-text type="primary">Дата окончания:</el-text> {{ formatDate(subscription.endDate) }}
             </p>
             <p>
-              <el-text type="primary">Оставшиеся дни:</el-text> {{ subscription.restDays }}
+              <el-text type="primary">
+                Оставшиеся дни:
+              </el-text>
+              {{ subscription.restDays >= 0 ? subscription.restDays : 'Истек' }}
             </p>
             <div style="display: flex; gap: 10px; margin-top: 15px">
               <el-button @click="openExtendForm(subscription)" type="primary">
                 Продлить
               </el-button>
-              <el-button @click="toggleFreeze" type="danger">
-                Заморозить
+              <el-button
+                  v-if="subscription.status !== 'INACTIVE'"
+                  @click="toggleFreeze"
+                  type="danger"
+              >
+                {{ subscription.status === 'FREEZE' ? 'Разморозить' : 'Заморозить' }}
               </el-button>
+
             </div>
             <!-- Форма продления -->
             <el-card

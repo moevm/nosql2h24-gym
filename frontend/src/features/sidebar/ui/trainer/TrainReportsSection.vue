@@ -144,13 +144,14 @@ const fetchStatistics = () => {
     requestBody.dateRangeTo = dayjs(filters.value.dataRanges[1]).toISOString();
   }
 
-  axiosInstance.post(`/trainers/${userInfo.value?.id}/statistics/trainings`, requestBody)
+  axiosInstance
+      .get(`/trainers/${userInfo.value?.id}/statistics/trainings`, {
+        params: { ...requestBody }
+      })
       .then((res) => {
-        // Предполагается, что API возвращает данные в формате:
-        // { count: number, data: Array<{ date: string, time: string, clientCount: number, profit: number }> }
         const data = res.data;
-        total.value = data.count;
-        statistics.value = data.data;
+        statistics.value = data.content; // Извлечение данных для таблицы
+        total.value = data.totalElements; // Установка общего количества элементов
       })
       .catch((error) => {
         console.error('Ошибка при загрузке статистики:', error);
@@ -161,6 +162,7 @@ const fetchStatistics = () => {
         });
       });
 };
+
 
 // Обработка изменения страницы
 const handlePageChange = (newPage: number) => {

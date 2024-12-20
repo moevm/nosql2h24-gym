@@ -1,6 +1,94 @@
 <template>
   <div v-loading="isLoading">
     <el-container v-if="!userInfoSectionClicked" direction="vertical" class="user-cards" style="gap: 15px;">
+      <!-- Кнопка для открытия/закрытия фильтров -->
+      <el-button @click="toggleFilters">
+        {{ isFilterOpened ? 'Закрыть фильтрацию и поиск' : 'Открыть фильтрацию и поиск' }}
+      </el-button>
+      <!-- Фильтрация и сортировка -->
+      <el-row v-if="isFilterOpened" style="margin-bottom: 20px; gap: 15px;" type="flex" justify="start">
+        <!-- Фильтр по имени -->
+        <el-col :span="6">
+          <el-input v-model="filters.name" placeholder="Фильтр по имени" clearable />
+        </el-col>
+
+        <!-- Фильтр по фамилии -->
+        <el-col :span="6">
+          <el-input v-model="filters.surname" placeholder="Фильтр по фамилии" clearable />
+        </el-col>
+
+        <!-- Фильтр по Email -->
+        <el-col :span="6">
+          <el-input v-model="filters.email" placeholder="Фильтр по Email" clearable />
+        </el-col>
+
+        <!-- Фильтр по телефону -->
+        <el-col :span="6">
+          <el-input v-model="filters.phoneNumber" placeholder="Фильтр по телефону" clearable />
+        </el-col>
+
+        <!-- Фильтр по ролям -->
+        <el-col :span="6">
+          <el-select v-model="filters.roles" placeholder="Фильтр по ролям" style="width: 100%;" multiple clearable>
+            <el-option label="Администратор" value="ROLE_ADMIN" />
+            <el-option label="Тренер" value="ROLE_TRAINER" />
+            <el-option label="Клиент" value="ROLE_USER" />
+            <!-- Добавьте другие роли по необходимости -->
+          </el-select>
+        </el-col>
+
+        <!-- Фильтр по полу -->
+        <el-col :span="6">
+          <el-select v-model="filters.gender" placeholder="Фильтр по полу" style="width: 100%;" clearable>
+            <el-option label="Мужчина" value="MALE" />
+            <el-option label="Женщина" value="FEMALE" />
+            <el-option label="Не указано" value="" />
+          </el-select>
+        </el-col>
+
+        <el-col>
+          <el-date-picker
+              v-model="filters.createdAt"
+              type="daterange"
+              range-separator="до"
+              start-placeholder="Начало"
+              end-placeholder="Конец"
+              format="DD.MM.YYYY"
+              clearable
+          />
+        </el-col>
+
+        <!-- Фильтр по комментариям -->
+        <el-col :span="6">
+          <el-input v-model="filters.comment" placeholder="Фильтр по комментариям" clearable />
+        </el-col>
+
+        <!-- Сортировка по полям -->
+        <el-col :span="6">
+          <el-select v-model="sortBy" placeholder="Сортировать по" style="width: 100%;">
+            <el-option label="Имя" value="name" />
+            <el-option label="Фамилия" value="surname" />
+            <el-option label="Email" value="email" />
+            <el-option label="Телефон" value="phoneNumber" />
+            <el-option label="Роль" value="roles" />
+            <el-option label="Пол" value="gender" />
+            <el-option label="Комментарий" value="comment" />
+          </el-select>
+        </el-col>
+
+        <el-col :span="6">
+          <el-select v-model="sortOrder" placeholder="Порядок" style="width: 100%;">
+            <el-option label="По возрастанию" value="asc" />
+            <el-option label="По убыванию" value="desc" />
+          </el-select>
+        </el-col>
+
+        <!-- Кнопка сброса фильтров -->
+        <el-col :span="6">
+          <el-button type="primary" @click="resetFilters">Сбросить фильтры</el-button>
+        </el-col>
+      </el-row>
+      <spacer></spacer>
       <!-- Карточки пользователей -->
       <el-card v-for="user in filteredSortedUsers" :key="user.id" shadow="hover">
         <el-container style="display: grid; grid-template-columns: 1fr auto">
