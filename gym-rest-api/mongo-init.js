@@ -303,7 +303,7 @@ db.users.insertMany([
 
 db.users.insertMany([
     {
-        "_id": ObjectId("653ef3a8a3e34567bcdf3001"),
+        "_id": ObjectId("653ef3a8a3e34567bfff3001"),
         "name": "Anna",
         "surname": "Smith",
         "email": "anna.smith@example.com",
@@ -367,7 +367,7 @@ db.users.insertMany([
         "trainerInfo": null
     },
     {
-        "_id": ObjectId("653ef3a8a3e34567bcdf3005"),
+        "_id": ObjectId("653ff3a8a3e34567bcdf3005"),
         "name": "Emily",
         "surname": "Davis",
         "email": "emily.davis@example.com",
@@ -618,17 +618,18 @@ db.training_sessions.insertMany([
                 "name": "Bob",
                 "surname": "Johnson",
                 "loyaltyPoints": 100
-            },
-            {
-                "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
-                "name": "Иван",
-                "surname": "Петров",
-                "loyaltyPoints": 50,
-                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
             }
+            // {
+            //     "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
+            //     "name": "Иван",
+            //     "surname": "Петров",
+            //     "loyaltyPoints": 50,
+            //     "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+            // }
         ],
+        "startTime": ISODate("2024-12-29T10:00:00.000Z"),
+        "endTime": ISODate("2024-12-29T11:30:00.000Z"),
         "createdAt": ISODate("2024-10-15T00:00:00.000Z"),
-        "endTime": ISODate("2024-11-02T11:30:00.000Z"),
         "hasFreeRegistration": true,
         "room": {
             "_id": ObjectId("653ef3a8a3e34567bcdf5001"),
@@ -638,7 +639,6 @@ db.training_sessions.insertMany([
         "section": {
             "name": "Basketball Skills"
         },
-        "startTime": ISODate("2024-11-02T10:00:00.000Z"),
         "trainer": {
             "_id": ObjectId("653ef3a8a3e34567bcdf2001"),
             "name": "Michael",
@@ -659,8 +659,9 @@ db.training_sessions.insertMany([
                 "loyaltyPoints": 300
             }
         ],
-        "createdAt": ISODate("2024-10-16T00:00:00.000Z"),
-        "endTime": ISODate("2024-11-03T15:30:00.000Z"),
+        "createdAt": ISODate("2024-12-28T00:00:00.000Z"),
+        "startTime": ISODate("2024-12-28T14:00:00.000Z"),
+        "endTime": ISODate("2024-12-28T15:30:00.000Z"),
         "room": {
             "_id": ObjectId("653ef3a8a3e34567bcdf5002"),
             "name": "Eastern Fitness Arena",
@@ -670,7 +671,6 @@ db.training_sessions.insertMany([
             "_id": ObjectId("653ef3a8a3e34567bcdf4002"),
             "name": "Tennis Fundamentals"
         },
-        "startTime": ISODate("2024-11-03T14:00:00.000Z"),
         "trainer": {
             "_id": ObjectId("653ef3a8a3e34567bcdf2002"),
             "name": "Serena",
@@ -680,40 +680,40 @@ db.training_sessions.insertMany([
         },
         "updatedAt": ISODate("2024-10-21T00:00:00.000Z")
     },
-    {
-        "_id": ObjectId("653ef3a8a3e34587bcdf3003"),
-        "_class": "com.example.gym.model.training.Training",
-        "availableSlots": 9,
-        "clients": [
-            {
-                "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
-                "name": "Иван",
-                "surname": "Петров",
-                "loyaltyPoints": 50,
-                "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
-            }
-        ],
-        "createdAt": ISODate("2024-10-17T00:00:00.000Z"),
-        "endTime": ISODate("2024-11-04T09:30:00.000Z"),
-        "hasFreeRegistration": true,
-        "room": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf5003"),
-            "name": "Southern Training Hall",
-            "capacity": 20
-        },
-        "section": {
-            name: "Sprint Training"
-        },
-        "startTime": ISODate("2024-11-04T08:00:00.000Z"),
-        "trainer": {
-            "_id": ObjectId("653ef3a8a3e34567bcdf2003"),
-            "name": "Usain",
-            "surname": "Bolt",
-            "qualification": "Olympic Sprinting Champion",
-            "hourlyRate": 300
-        },
-        "updatedAt": ISODate("2024-12-12T23:10:23.885Z")
-    },
+    // {
+    //     "_id": ObjectId("653ef3a8a3e34587bcdf3003"),
+    //     "_class": "com.example.gym.model.training.Training",
+    //     "availableSlots": 9,
+    //     "clients": [
+    //         {
+    //             "_id": ObjectId("653ef3a8a3e34567bcdf4001"),
+    //             "name": "Иван",
+    //             "surname": "Петров",
+    //             "loyaltyPoints": 50,
+    //             "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
+    //         }
+    //     ],
+    //     "createdAt": ISODate("2024-12-17T00:00:00.000Z"),
+    //     "startTime": ISODate("2024-11-04T08:00:00.000Z"),
+    //     "endTime": ISODate("2024-12-04T09:30:00.000Z"),
+    //     "hasFreeRegistration": true,
+    //     "room": {
+    //         "_id": ObjectId("653ef3a8a3e34567bcdf5003"),
+    //         "name": "Southern Training Hall",
+    //         "capacity": 20
+    //     },
+    //     "section": {
+    //         name: "Sprint Training"
+    //     },
+    //     "trainer": {
+    //         "_id": ObjectId("653ef3a8a3e34567bcdf2003"),
+    //         "name": "Usain",
+    //         "surname": "Bolt",
+    //         "qualification": "Olympic Sprinting Champion",
+    //         "hourlyRate": 300
+    //     },
+    //     "updatedAt": ISODate("2024-12-12T23:10:23.885Z")
+    // },
     {
         "_id": ObjectId("653ef3a8a3e34567bcdf3334"),
         "_class": "com.example.gym.model.training.Training",
@@ -739,8 +739,9 @@ db.training_sessions.insertMany([
                 "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
             }
         ],
-        "createdAt": ISODate("2024-10-18T00:00:00.000Z"),
-        "endTime": ISODate("2024-11-05T17:30:00.000Z"),
+        "createdAt": ISODate("2024-12-27T00:00:00.000Z"),
+        "startTime": ISODate("2024-12-27T16:00:00.000Z"),
+        "endTime": ISODate("2024-12-27T17:30:00.000Z"),
         "hasFreeRegistration": true,
         "room": {
             "_id": ObjectId("653ef3a8a3e34567bcdf5004"),
@@ -750,7 +751,6 @@ db.training_sessions.insertMany([
         "section": {
             name: "Gymnastics Basics"
         },
-        "startTime": ISODate("2024-11-05T16:00:00.000Z"),
         "trainer": {
             "_id": ObjectId("653ef3a8a3e34567bcdf2004"),
             "name": "Simone",
@@ -773,8 +773,9 @@ db.training_sessions.insertMany([
                 "registrationDate": ISODate("2024-01-01T10:00:00.000Z")
             }
         ],
-        "createdAt": ISODate("2024-10-19T00:00:00.000Z"),
-        "endTime": ISODate("2024-11-06T19:30:00.000Z"),
+        "createdAt": ISODate("2024-12-29T00:00:00.000Z"),
+        "startTime": ISODate("2024-12-29T08:00:00.000Z"),
+        "endTime": ISODate("2024-12-29T09:30:00.000Z"),
         "hasFreeRegistration": true,
         "room": {
             "_id": ObjectId("653ef3a8a3e34567bcdf5005"),
@@ -784,7 +785,6 @@ db.training_sessions.insertMany([
         "section": {
             name: "Football Techniques"
         },
-        "startTime": ISODate("2024-11-06T18:00:00.000Z"),
         "trainer": {
             "_id": ObjectId("653ef3a8a3e34567bcdf2005"),
             "name": "Tom",
@@ -829,9 +829,9 @@ db.training_sessions.insertMany([
             }
         ],
         // 1
-        "createdAt": ISODate("2024-12-20T00:00:00.000Z"),
-        "startTime": ISODate("2024-12-20T10:00:00.000Z"),
-        "endTime": ISODate("2024-12-20T12:00:00.000Z"),
+        "createdAt": ISODate("2024-12-29T00:00:00.000Z"),
+        "startTime": ISODate("2024-12-29T11:00:00.000Z"),
+        "endTime": ISODate("2024-12-29T13:00:00.000Z"),
         "hasFreeRegistration": true,
         "room": {
             "_id": ObjectId("653ef3a8a3e34567bcdf5001"),
@@ -1068,7 +1068,7 @@ db.users.insertMany([
 
 
 // новые клиенты
-db.training_sessions.insertMany([
+db.users.insertMany([
     {
         "_id": ObjectId("613ef3a8a3e34567bcdf1002"),
         "name": "Bob",
