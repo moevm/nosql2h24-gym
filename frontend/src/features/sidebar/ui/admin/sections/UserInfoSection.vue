@@ -64,7 +64,7 @@
 
         <template v-if="props.role === 'ROLE_USER'">
           <h3>Информация об абонементе</h3>
-          <el-card v-for="subscription in userInfo.clientInfo.subscriptions" :key="subscription.startDate" >
+          <el-card v-for="subscription in userInfo.clientInfo.subscriptions" :key="subscription.startDate">
             <p>
               <el-text type="primary">Статус:</el-text>
               <span :style="{ color: subscription.status === 'ACTIVE' ? 'green' : 'blue', fontWeight: 700 }">{{ subscription.status }}</span>
@@ -82,23 +82,23 @@
               {{ subscription.restDays >= 0 ? subscription.restDays : 'Истек' }}
             </p>
             <div style="display: flex; gap: 10px; margin-top: 15px">
-              <el-button @click="openExtendForm(subscription)" type="primary">
+              <el-button @click="openExtendForm(subscription.startDate)" type="primary">
                 Продлить
               </el-button>
               <el-button
-                  v-if="subscription.status !== 'INACTIVE'"
-                  @click="toggleFreeze"
-                  type="danger"
+                v-if="subscription.status !== 'INACTIVE'"
+                @click="toggleFreeze"
+                type="danger"
               >
                 {{ subscription.status === 'FREEZE' ? 'Разморозить' : 'Заморозить' }}
               </el-button>
-
             </div>
+
             <!-- Форма продления -->
             <el-card
               class="card-dark"
-              v-if="showExtendForm"
-              @close="closeExtendForm"
+              v-if="extendsFormState[subscription.startDate]"
+              @close="closeExtendForm(subscription.startDate)"
             >
               <h3>Продление абонемента</h3>
               <el-form :model="extendForm">
@@ -110,7 +110,7 @@
                 </el-form-item>
               </el-form>
               <div style="text-align: right; margin-top: 15px">
-                <el-button @click="closeExtendForm">Отменить</el-button>
+                <el-button @click="closeExtendForm(subscription.startDate)">Отменить</el-button>
                 <el-button type="primary" @click="submitExtend">Отправить</el-button>
               </div>
             </el-card>
@@ -118,21 +118,16 @@
             <spacer></spacer>
 
             <!-- Форма заморозки -->
-            <el-dialog
-              :model-value="isFreezeModalOpen"
-            >
+            <el-dialog :model-value="isFreezeModalOpen">
               <el-text>
                 Вы уверены что хотите заморозить абонемент?
               </el-text>
               <Spacer></Spacer>
-
-              <el-container style="justify-content:space-between">
+              <el-container style="justify-content: space-between">
                 <el-button @click="submitFreeze" type="danger">
-                  Заморозить
+                  {{ subscription.status === 'FREEZE' ? 'Разморозить' : 'Заморозить' }}
                 </el-button>
-                <el-button type="primary">
-                  Отменить
-                </el-button>
+                <el-button type="primary">Отменить</el-button>
               </el-container>
             </el-dialog>
           </el-card>
@@ -170,16 +165,18 @@ const extendForm = ref({
   price: null
 });
 
-const emits = defineEmits(['close'])
+const extendsFormState = ref<Record<string, boolean>>({});
+
+const emits = defineEmits(['close']);
 
 const submitExtend = () => {
   axiosInstance
-    .put(`/subscriptions/${ props.userId }/extend`, {
+    .put(`/subscriptions/${props.userId}/extend`, {
       duration: extendForm.value.days,
       price: extendForm.value.price
     })
     .then(() => {
-      alert('Абонемент продлен')
+      alert('Абонемент продлен');
       closeExtendForm();
       refreshUserInfo();
     });
@@ -201,7 +198,6 @@ const userInfo = ref<any | null>(null);
 const editMode = ref(false);
 const originalUserInfo = ref<any | null>(null);
 const newSection = ref('');
-const showExtendForm = ref(false);
 
 const toggleEdit = () => {
   editMode.value = true;
@@ -236,12 +232,12 @@ const removeSection = (index: number) => {
   userInfo.value.trainerInfo.sections.splice(index, 1);
 };
 
-const openExtendForm = (subscription: any) => {
-  showExtendForm.value = true;
+const openExtendForm = (startDate: string) => {
+  extendsFormState.value[startDate] = true;
 };
 
-const closeExtendForm = () => {
-  showExtendForm.value = false;
+const closeExtendForm = (startDate: string) => {
+  extendsFormState.value[startDate] = false;
 };
 
 const isFreezeModalOpen = ref(false);
@@ -256,7 +252,7 @@ const submitFreeze = () => {
     refreshUserInfo();
     toggleFreeze();
   });
-}
+};
 
 onMounted(() => {
   const endpointMap = {
