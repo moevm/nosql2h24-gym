@@ -21,7 +21,7 @@ public class ResponseTrainingClientDto {
     @Schema(description = "Тренировка", implementation = ResponseTrainingDto.class)
     private ResponseTrainingDto training;
     @ArraySchema(
-            schema = @Schema(description = "Клиенты", implementation = ResponseClientDto.class)
+        schema = @Schema(description = "Клиенты", implementation = ResponseClientDto.class)
     )
     private List<ResponseClientDto> clients;
 }

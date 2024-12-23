@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Subscription {
-
+    
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;

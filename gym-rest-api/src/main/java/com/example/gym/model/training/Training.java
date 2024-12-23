@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Document(collection = "training_sessions")
+@Builder
 public class Training {
 
     @Id
@@ -36,7 +38,7 @@ public class Training {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private boolean hasFreeRegistration = true;
+    private boolean hasFreeRegistration;
     private Integer availableSlots;
 
     @JsonProperty("trainer")

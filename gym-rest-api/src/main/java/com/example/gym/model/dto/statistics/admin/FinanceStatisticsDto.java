@@ -15,5 +15,5 @@ public class FinanceStatisticsDto {
 
     private TrainerPojo trainer;
     private Double profit;
-
+    
 }

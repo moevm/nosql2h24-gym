@@ -29,7 +29,7 @@ public class ExceptionController {
     public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException exception, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", Instant.now());
-        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("status", HttpStatus.NOT_FOUND.value());
         response.put("error", "NOT FOUND");
         response.put("errors", exception.getMessage());
         response.put("path", request.getRequestURI());
@@ -73,19 +73,19 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException exception, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", Instant.now());
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("error", "NOT FOUND");
-        response.put("errors", exception.getMessage());
+        response.put("status", HttpStatus.FORBIDDEN.value());
+        response.put("error", "FORBIDDEN");
+        response.put("errors", "Неверные логин или пароль");
         response.put("path", request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleConstraintViolationException(MethodArgumentNotValidException e, HttpServletRequest request) {
+    @ExceptionHandler(MethodArgumentNotValidException .class)
+    public ResponseEntity<?> handleConstraintViolationException(MethodArgumentNotValidException  e, HttpServletRequest request) {
         Map<String, String> errors = new HashMap<>();
         for (ObjectError error : e.getBindingResult().getAllErrors()) {
             errors.put(((FieldError) error).getField(), error.getDefaultMessage());

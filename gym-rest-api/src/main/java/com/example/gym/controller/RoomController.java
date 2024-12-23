@@ -49,12 +49,12 @@ public class RoomController {
                                     schema = @Schema(implementation = ResponseRoomDto.class))
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Неккоректные данные.",
-                            content = @Content(mediaType = "application/json",
+                        responseCode = "400",
+                        description = "Неккоректные данные.",
+                        content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-            })
+    })
     public ResponseEntity<?> createRoom(
             @RequestBody @Parameter(description = "Сущность зала, который необходимо создать", required = true)
             @Valid CreateRoomDto dto
@@ -74,9 +74,9 @@ public class RoomController {
                                     schema = @Schema(implementation = ResponseRoomDto.class))
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Неккоректные данные.",
-                            content = @Content(mediaType = "application/json",
+                        responseCode = "400",
+                        description = "Неккоректные данные.",
+                        content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -85,7 +85,7 @@ public class RoomController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-            })
+    })
     public ResponseEntity<?> updateRoom(
             @Parameter(description = "Идентификатор зала, который необходимо обновить.", required = true)
             @PathVariable String roomId,
@@ -100,19 +100,19 @@ public class RoomController {
     @Operation(summary = "Получить все залы",
             description = "Возвращает все залы.",
             responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Список залов успешно получен.",
-                            content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(
-                                            schema = @Schema(implementation = ResponseRoomDto.class)
-                                    ))
-                    )
-            })
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Список залов успешно получен.",
+                        content = @Content(mediaType = "application/json",
+                                array = @ArraySchema(
+                                        schema = @Schema(implementation = ResponseRoomDto.class) 
+                                ))
+                )
+    })  
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok().body(roomService.findAll());
     }
-
+    
     @GetMapping("/{roomId}")
     @Operation(summary = "Получить зал по его идентификатору.",
             description = "Получить зал по его идентификатору.",
@@ -129,7 +129,7 @@ public class RoomController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-            })
+    })
     public ResponseEntity<?> getRoomById(
             @Parameter(description = "Идентификатор зала, который необходимо обновить.", required = true)
             @PathVariable String roomId
@@ -147,7 +147,7 @@ public class RoomController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = String.class))
                     )
-            })
+    })
     public ResponseEntity<?> deleteRoom(
             @PathVariable @Parameter(description = "Идентификатор зала, который необходимо удалить", required = true)
             String id

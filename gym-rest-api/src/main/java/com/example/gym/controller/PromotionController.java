@@ -50,18 +50,18 @@ public class PromotionController {
                                     schema = @Schema(implementation = ResponsePromotionDto.class))
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Неккоректные данные.",
-                            content = @Content(mediaType = "application/json",
+                        responseCode = "400",
+                        description = "Неккоректные данные.",
+                        content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
-                            responseCode = "404",
-                            description = "Пользовать с указанным ID не найден.",
-                            content = @Content(mediaType = "application/json",
+                        responseCode = "404",
+                        description = "Пользовать с указанным ID не найден.",
+                        content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-            })
+    })
     public ResponseEntity<?> createPromotion(
             @RequestBody @Parameter(description = "Сущность промо акции, которую необходимо создать", required = true)
             @Valid CreatePromotionDto dto
@@ -74,15 +74,15 @@ public class PromotionController {
     @Operation(summary = "Получить все промо акции",
             description = "Возвращает все промо акции.",
             responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Список промо акций успешно получен.",
-                            content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(
-                                            schema = @Schema(implementation = ResponsePromotionDto.class)
-                                    ))
-                    )
-            })
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Список промо акций успешно получен.",
+                        content = @Content(mediaType = "application/json",
+                                array = @ArraySchema(
+                                        schema = @Schema(implementation = ResponsePromotionDto.class) 
+                                ))
+                )
+    })
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok().body(promotionService.findAll());
     }
@@ -103,7 +103,7 @@ public class PromotionController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-            })
+    })
 
     public ResponseEntity<?> findPromotionById(
             @PathVariable @Parameter(description = "Идентификатор промо акции, котороую необходимо получить", required = true)
@@ -123,9 +123,9 @@ public class PromotionController {
                                     schema = @Schema(implementation = ResponsePromotionDto.class))
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Неккоректные данные.",
-                            content = @Content(mediaType = "application/json",
+                        responseCode = "400",
+                        description = "Неккоректные данные.",
+                        content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -134,7 +134,7 @@ public class PromotionController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-            })
+    })
     public ResponseEntity<?> editPromotion(
             @PathVariable @Parameter(description = "Идентификатор промо акции, которую необходимо обновить", required = true)
             String id,
@@ -154,7 +154,7 @@ public class PromotionController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = String.class))
                     )
-            })
+    })
     public ResponseEntity<?> deletePromotion(
             @PathVariable @Parameter(description = "Идентификатор промо акции, которую необходимо удалить", required = true)
             String id

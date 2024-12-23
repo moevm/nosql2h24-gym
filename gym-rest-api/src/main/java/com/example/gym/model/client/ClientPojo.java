@@ -13,13 +13,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ClientPojo {
+    public class ClientPojo {
 
-    private String id;
-    private String name;
-    private String surname;
-    private GenderType gender;
-    private Integer loyaltyPoints;
-    private LocalDateTime registrationDate;
-
-}
+        private String id;
+        private String name;
+        private String surname;
+        private GenderType gender;
+        private Integer loyaltyPoints;
+        private LocalDateTime registrationDate;
+        
+    }

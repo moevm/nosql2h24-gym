@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
+@Setter 
 @Schema(name = "SectionStatistics", description = "Статистика по секции")
 public class SectionStatistics {
 

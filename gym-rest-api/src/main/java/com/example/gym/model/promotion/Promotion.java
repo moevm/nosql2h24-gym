@@ -28,7 +28,7 @@ public class Promotion {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Integer discountPercentage;
-
+    
     @JsonProperty("createdBy")
     private CreatedBy createdBy;
     private LocalDateTime created;

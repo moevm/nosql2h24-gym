@@ -50,15 +50,15 @@ public class AdminController {
     @Operation(summary = "Получить всех админов",
             description = "Возвращает всех админов.",
             responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Список админов успешно получен.",
-                            content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(
-                                            schema = @Schema(implementation = ResponseAdminDto.class)
-                                    ))
-                    )
-            })
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Список админов успешно получен.",
+                        content = @Content(mediaType = "application/json",
+                                array = @ArraySchema(
+                                        schema = @Schema(implementation = ResponseAdminDto.class) 
+                                ))
+                )
+    })
     public ResponseEntity<?> findAllAdmins(
             @Parameter(description = "Имя администратора", required = false)
             @RequestParam(name = "name", required = false) String name,
@@ -89,7 +89,7 @@ public class AdminController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-            })
+    })
     public ResponseEntity<?> getAdminById(
             @PathVariable @Parameter(description = "Идентификатор админа, которого необходимо получить", required = true)
             String adminId
@@ -108,7 +108,7 @@ public class AdminController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseAdminDto.class))
                     )
-            })
+    })
     public ResponseEntity<?> deleteAdmin(
             @PathVariable @Parameter(description = "Идентификатор админа, которого необходимо удалить", required = true)
             String adminId
@@ -128,9 +128,9 @@ public class AdminController {
                                     schema = @Schema(implementation = ResponseAdminDto.class))
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Неккоректные данные.",
-                            content = @Content(mediaType = "application/json",
+                        responseCode = "400",
+                        description = "Неккоректные данные.",
+                        content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -139,7 +139,7 @@ public class AdminController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-            })
+    })
     public ResponseEntity<?> updateAdmin(
             @PathVariable @Parameter(description = "Идентификатор админа, которого необходимо обновить", required = true)
             String adminId,
@@ -161,7 +161,7 @@ public class AdminController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseAdminDto.class))
                     )
-            })
+    })
     public ResponseEntity<?> getAllUsers() {
         return ResponseEntity.ok().body(adminService.findAllUsers());
     }
@@ -185,12 +185,12 @@ public class AdminController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApplicationStatistics.class))
                     )
-            })
+    })
     public ResponseEntity<?> getApplicationStatistics(
-            // @RequestParam @Parameter(description = "Начальная дата", required = true)
-            // LocalDate startDate,
-            // @RequestParam @Parameter(description = "Конечная дата", required = true)
-            // LocalDate endDate
+        // @RequestParam @Parameter(description = "Начальная дата", required = true) 
+        // LocalDate startDate,
+        // @RequestParam @Parameter(description = "Конечная дата", required = true) 
+        // LocalDate endDate
     ) {
         return ResponseEntity.ok().body(adminService.getApplicationStatistics());
     }
@@ -205,18 +205,18 @@ public class AdminController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = PurchasedSubcriptions.class))
                     )
-            })
+    })
     public ResponseEntity<?> getSubscriptionsStatistics(
-            @RequestParam(required = false) @Parameter(description = "Id клиента", required = false)
-            String clientId,
-            @RequestParam(required = false) @Parameter(description = "Начальная дата", required = false)
-            LocalDate startDate,
-            @RequestParam(required = false) @Parameter(description = "Конечная дата", required = false)
-            LocalDate endDate,
-            @RequestParam(required = false) @Parameter(description = "Статус", required = false)
-            SubscriptionStatus status,
-            @RequestParam(required = false, defaultValue = "0") @Parameter(description = "Номер страницы", required = false) int page,
-            @RequestParam(required = false, defaultValue = "5") @Parameter(description = "Размер страницы", required = false) int size
+        @RequestParam(required = false) @Parameter(description = "Id клиента", required = false) 
+        String clientId,
+        @RequestParam(required = false) @Parameter(description = "Начальная дата", required = false) 
+        LocalDate startDate,
+        @RequestParam(required = false) @Parameter(description = "Конечная дата", required = false) 
+        LocalDate endDate,
+        @RequestParam(required = false) @Parameter(description = "Статус", required = false) 
+        SubscriptionStatus status,
+        @RequestParam(required = false, defaultValue = "0") @Parameter(description = "Номер страницы", required = false) int page,
+        @RequestParam(required = false, defaultValue = "5") @Parameter(description = "Размер страницы", required = false) int size
     ) {
         return ResponseEntity.ok().body(adminService.getPurchasedSubscriptions(clientId, startDate, endDate, status, page, size));
     }
@@ -229,18 +229,18 @@ public class AdminController {
                             responseCode = "200",
                             description = "Статистика успешно получена.",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(
-                                            schema = @Schema(implementation = SectionStatistics.class)
-                                    ))
+                            array = @ArraySchema(
+                                schema = @Schema(implementation = SectionStatistics.class)
+                            ))
                     )
-            })
+    })
     public ResponseEntity<?> getTrainingsStatistics(
-            @RequestParam @Parameter(description = "Начальная дата", required = true)
-            LocalDate startDate,
-            @RequestParam @Parameter(description = "Конечная дата", required = true)
-            LocalDate endDate,
-            @RequestParam(defaultValue = "0") @Parameter(description = "Номер страницы", required = false) int page,
-            @RequestParam(required = false, defaultValue = "5") @Parameter(description = "Размер страницы", required = false) int size
+        @RequestParam @Parameter(description = "Начальная дата", required = true) 
+        LocalDate startDate,
+        @RequestParam @Parameter(description = "Конечная дата", required = true) 
+        LocalDate endDate,
+        @RequestParam(defaultValue = "0") @Parameter(description = "Номер страницы", required = false) int page,
+        @RequestParam(required = false, defaultValue = "5") @Parameter(description = "Размер страницы", required = false) int size
     ) {
         return ResponseEntity.ok().body(adminService.getFinishedTrainings(startDate, endDate, page, size));
     }
@@ -267,7 +267,7 @@ public class AdminController {
     //     return ResponseEntity.ok().body(adminService.getTrainersStatistics(startDate, endDate));
     // }
 
-
+    
     @GetMapping("/statistics/room")
     @Operation(summary = "Получить статистику по залам по промежутку времени.",
             description = "Возвращает статистику по залам по промежутку времени.",
@@ -278,12 +278,12 @@ public class AdminController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = PurchasedSubcriptions.class))
                     )
-            })
+    })
     public ResponseEntity<?> getRoomStatistics(
-            @RequestParam @Parameter(description = "Начальная дата", required = true)
-            LocalDate startDate,
-            @RequestParam @Parameter(description = "Конечная дата", required = true)
-            LocalDate endDate
+        @RequestParam @Parameter(description = "Начальная дата", required = true) 
+        LocalDate startDate,
+        @RequestParam @Parameter(description = "Конечная дата", required = true) 
+        LocalDate endDate
     ) {
         return ResponseEntity.ok().body(adminService.getRoomsActive(startDate, endDate));
     }
@@ -298,12 +298,12 @@ public class AdminController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = PurchasedSubcriptions.class))
                     )
-            })
+    })
     public ResponseEntity<?> getFinanceStatistics(
-            @RequestParam @Parameter(description = "Начальная дата", required = true)
-            LocalDate startDate,
-            @RequestParam @Parameter(description = "Конечная дата", required = true)
-            LocalDate endDate
+        @RequestParam @Parameter(description = "Начальная дата", required = true) 
+        LocalDate startDate,
+        @RequestParam @Parameter(description = "Конечная дата", required = true) 
+        LocalDate endDate
     ) {
         return ResponseEntity.ok().body(adminService.getFinanceActivity(startDate, endDate));
     }

@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import com.example.gym.model.user.pojo.GenderType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +22,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Schema(name = "Update Trainer", description = "Сущность тренера, для обновления")
+@Builder
 public class UpdateTrainerDto {
 
     @Schema(description = "Имя", example = "Иван")
@@ -46,6 +49,7 @@ public class UpdateTrainerDto {
     @Schema(description = "Заметка")
     private String comment;
 
+    @Valid
     private UpdateTrainerInfo trainerInfo;
 
 }

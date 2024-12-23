@@ -9,10 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -62,11 +58,11 @@ public class TrainerService {
         profitStatistics.put("today", 0.0);
         profitStatistics.put("this_week", 0.0);
         profitStatistics.put("this_month", 0.0);
-
+        
         Map<String, Double> previousMonthsProfit = new HashMap<>();
 
         LocalDate today = LocalDate.now();
-        LocalDate startOfWeek = today.minusDays(today.getDayOfWeek().getValue());
+        LocalDate startOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
         LocalDate startOfMonth = today.withDayOfMonth(1);
 
         for (Training training : trainings) {
@@ -86,10 +82,9 @@ public class TrainerService {
                 profitStatistics.put("this_month", profitStatistics.get("this_month") + trainingProfit);
             }
 
-            if (trainingDate.getYear() == today.getYear() && (trainingDate.isBefore(startOfMonth) || trainingDate.getMonth() == today.getMonth())) {
+            if (trainingDate.isBefore(startOfMonth)) {
                 String monthYearKey = trainingDate.getYear() + "-" + trainingDate.getMonthValue();
                 previousMonthsProfit.put(monthYearKey, previousMonthsProfit.getOrDefault(monthYearKey, 0.0) + trainingProfit);
-                previousMonthsProfit.put("total", previousMonthsProfit.getOrDefault("total", 0.0) + trainingProfit);
             }
         }
 
@@ -100,48 +95,27 @@ public class TrainerService {
         return result;
     }
 
-    public Page<TrainingDetailDto> getTrainingsStatistics(
-            String trainerId,
-            int page,
-            int size,
-            LocalDateTime dateRangeFrom,
-            LocalDateTime dateRangeTo,
-            Double aboveProfit,
-            Integer aboveClients
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
+    public List<TrainingDetailDto> getTrainingsStatistics(String trainerId) {
+        // LocalDateTime startDateTime = startDate.atStartOfDay();
+        // LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+        List<Training> trainings = trainingRepository.findAllByEndTimeBeforeAndTrainerId(
+                LocalDateTime.now(),
+                trainerId);
 
-        // Получаем данные из репозитория
-        Page<Training> trainingsPage = trainingRepository.findAllByTrainerIdAndEndTimeBetween(
-                trainerId,
-                dateRangeFrom,
-                dateRangeTo,
-                Pageable.unpaged() // Забираем все записи для последующей фильтрации
-        );
+        return trainings.stream()
+            .map(t -> {
+                Integer clientCount = t.getClients().size();
+                Double hourlyRate = t.getTrainer().getHourlyRate();
+                Double duration = t.getDurationInHours();
+                Double profit = clientCount * hourlyRate * duration;
 
-        // Фильтрация данных
-        List<TrainingDetailDto> filteredTrainings = trainingsPage.getContent().stream()
-                .map(t -> {
-                    Integer clientCount = t.getClients().size();
-                    Double hourlyRate = t.getTrainer().getHourlyRate();
-                    Double duration = t.getDurationInHours();
-                    Double profit = clientCount * hourlyRate * duration;
+                LocalDate date = t.getStartTime().toLocalDate();
+                LocalTime time = t.getStartTime().toLocalTime();
 
-                    LocalDate date = t.getStartTime().toLocalDate();
-                    LocalTime time = t.getStartTime().toLocalTime();
-
-                    return new TrainingDetailDto(date, time, clientCount, profit, t.getId());
-                })
-                .filter(dto -> (aboveProfit == null || dto.getProfit() >= aboveProfit))
-                .filter(dto -> (aboveClients == null || dto.getClientCount() >= aboveClients))
-                .collect(Collectors.toList());
-
-        // Пагинация результата
-        int start = Math.min(page * size, filteredTrainings.size());
-        int end = Math.min((page + 1) * size, filteredTrainings.size());
-        List<TrainingDetailDto> paginatedTrainings = filteredTrainings.subList(start, end);
-
-        return new PageImpl<>(paginatedTrainings, pageable, filteredTrainings.size());
+                System.out.println(t.getStartTime());
+                return new TrainingDetailDto(date, time, clientCount, profit, t.getId());
+            })
+            .collect(Collectors.toList());
     }
 
     public ResponseTrainingForStatistics getTrainingStatistics(String trainerId, String trainingId) {
@@ -167,32 +141,43 @@ public class TrainerService {
             LocalDateTime birthdayBefore
     ) {
         Query query = new Query();
-
-        if (section != null && !section.isEmpty() && !section.isBlank())
-            query.addCriteria(Criteria.where("trainerInfo.sectionNames").in(section));
-
+        
+        if (section != null && !section.isEmpty() && !section.isBlank()) {
+            query.addCriteria(
+                Criteria.where("trainerInfo.sections")
+                    .regex(section, "i")
+            );
+        }
+        
         if (name != null && !name.isEmpty() && !name.isBlank())
             query.addCriteria(Criteria.where("name").regex(name, "i"));
-
+        
         if (surname != null && !surname.isEmpty() && !surname.isBlank())
             query.addCriteria(Criteria.where("surname").regex(surname, "i"));
-
+        
         if (gender.isPresent())
             query.addCriteria(Criteria.where("gender").is(gender.get()));
-
-        if (birthdayFrom != null)
-            query.addCriteria(Criteria.where("birthday").gte(birthdayFrom));
-
-        if (birthdayBefore != null)
-            query.addCriteria(Criteria.where("birthday").lt(birthdayBefore));
+        
+            if (birthdayFrom != null && birthdayBefore != null) {
+                query.addCriteria(
+                    new Criteria().andOperator(
+                        Criteria.where("birthday").gte(birthdayFrom),
+                        Criteria.where("birthday").lte(birthdayBefore)
+                    )
+                );
+            } else if (birthdayFrom != null) {
+                query.addCriteria(Criteria.where("birthday").gte(birthdayFrom));
+            } else if (birthdayBefore != null) {
+                query.addCriteria(Criteria.where("birthday").lte(birthdayBefore));
+            }
 
         query.addCriteria(Criteria.where("roles").in(UserRoleType.ROLE_TRAINER));
-
+        
         List<User> trainers = mongoTemplate.find(query, User.class);
-
+        
         return trainers.stream()
-                .map(modelMapper::toDtoWithoutTraining)
-                .collect(Collectors.toList());
+            .map(modelMapper::toDtoWithoutTraining)
+            .collect(Collectors.toList());
     }
 
     // public List<ResponseTrainerWithoutTrainingsDto> findAllFree(String section) {
@@ -256,7 +241,14 @@ public class TrainerService {
             needUpdate = true;
         }
 
-        if (dto.getBirthday() != null && (trainer.getBirthday() == null ||
+        if (dto.getComment() != null && 
+                (trainer.getComment() == null || 
+                (trainer.getComment() != null && !trainer.getComment().equals(dto.getComment())))
+        ) {
+            trainer.setComment(dto.getComment());
+        }
+
+        if (dto.getBirthday() != null && (trainer.getBirthday() == null || 
                 (trainer.getBirthday() != null && !trainer.getBirthday().equals(dto.getBirthday())))) {
             trainer.setBirthday(dto.getBirthday());
         }
@@ -302,11 +294,11 @@ public class TrainerService {
         }
 
         return modelMapper.toTrainerDto(updatedTrainer);
-    }
+    } 
 
     public void deleteTrainer(String id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent() && user.get().getClientInfo() != null &&
+        if (user.isPresent() && user.get().getClientInfo() != null &&  
                 !user.get().getClientInfo().getSubscriptions().isEmpty() &&
                 user.get().getClientInfo().getSubscriptions().get(0).getStatus() == SubscriptionStatus.ACTIVE) {
             throw new InvalidDataException("Нельзя удалить пользователя с активным абонементом");
@@ -330,7 +322,7 @@ public class TrainerService {
 
     public List<ResponseTrainingDto> findTrainigs(String id) {
         getById(id);
-        return trainingService.findActualTrainingsByTrainerId(id);
+        return trainingService.findTrainingsByTrainerId(id);
     }
 
     @Transactional
@@ -341,16 +333,16 @@ public class TrainerService {
         LocalDateTime newEndTime = dto.getEndTime();
 
         if (newStartTime.isAfter(newEndTime)) {
-            throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
+            throw new InvalidDataException("Начало тренировке не может быть позже её окончания.");
         }
-
+    
         List<Training> overlappingTrainings = trainingService.findAll().stream()
                 .filter(training -> training.getTrainer().getId().equals(trainerId))
-                .filter(training ->
-                        (newStartTime.isBefore(training.getEndTime()) && newEndTime.isAfter(training.getStartTime()))
+                .filter(training -> 
+                    (newStartTime.isBefore(training.getEndTime()) && newEndTime.isAfter(training.getStartTime()))
                 )
                 .collect(Collectors.toList());
-
+        
         if (!overlappingTrainings.isEmpty()) {
             throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
         }

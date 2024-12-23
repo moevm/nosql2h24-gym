@@ -7,10 +7,12 @@ import com.example.gym.model.user.pojo.Section;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,17 +22,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @Schema(name = "Create Room", description = "Сущность для создания комнаты")
+@Builder
 public class CreateRoomDto {
 
     @Schema(description = "Название зала", example = "Название")
     @NotBlank(message = "Название не может быть пустым")
     private String name;
-
+    
     @Schema(description = "Вместительность")
     @NotNull(message = "Вместительность не может быть пустой")
     @Positive(message = "Вместительность должна быть положительной")
     private Integer capacity;
 
+    @Valid
     private LocationPojo location;
 
     @Schema(description = "Рабочие дни", example = "ВТ, ЧТ, СБ")

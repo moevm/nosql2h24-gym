@@ -4,13 +4,13 @@ package com.example.gym.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.example.gym.model.training.Training;
 
+@Repository
 public interface TrainingRepository extends MongoRepository<Training, String> {
 
     @Query("{ 'trainer.id': ?0 }")
@@ -35,25 +35,18 @@ public interface TrainingRepository extends MongoRepository<Training, String> {
 
     @Query("{ 'endTime': { $lt: ?0 }, 'trainer.id': ?1, 'id': ?2 }")
     Training findByEndTimeBeforeAndTrainerIdAndId(
-            LocalDateTime now, String trainerId, String trainingId);
+        LocalDateTime now, String trainerId, String trainingId);
 
     @Query("{ 'endTime': { $lt: ?0 }, 'trainer.id': ?1 }")
     List<Training> findAllByEndTimeBeforeAndTrainerId(
-            LocalDateTime now, String trainerId);
+        LocalDateTime now, String trainerId);
 
     @Query("{ 'trainer.id': { $in: ?0 } }")
     List<Training> findAllByTrainerIds(List<String> trainerIds);
 
     @Query("{ 'endTime': { $lt: ?0 } }")
     List<Training> findAllByEndTimeBefore(LocalDateTime now);
-
-    Page<Training> findAllByTrainerIdAndEndTimeBetween(
-            String trainerId,
-            LocalDateTime dateRangeFrom,
-            LocalDateTime dateRangeTo,
-            Pageable pageable
-    );
-
+            
     // Optional<Training> findByIdAndTrainerId(String id, String trainingId);
 
 }

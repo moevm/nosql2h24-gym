@@ -45,22 +45,22 @@ public class FileController {
 
     @Value("${spring.data.mongodb.uri}")
     private String uri;
-
+    
     @PostMapping("/export")
     public ResponseEntity<ByteArrayResource> exportDatabase() throws IOException, JsonProcessingException {
         // Создаем экземпляр MongoClient
         MongoClient mongoClient = MongoClients.create(uri);
-
+    
         // Получаем экземпляр MongoDatabase
         MongoDatabase database = mongoClient.getDatabase(uri.split("/")[uri.split("/").length - 1].split("\\?")[0]);
-
+    
         // Читаем данные из базы данных
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-
+    
         Map<String, List<Map<String, Object>>> exportData = new HashMap<>();
         MongoIterable<String> collectionNames = database.listCollectionNames();
         for (String collectionName : collectionNames) {
@@ -105,16 +105,16 @@ public class FileController {
             }
             exportData.put(collectionName, documents);
         }
-
+    
         String json = mapper.writeValueAsString(exportData);
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-
+    
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=export.json")
                 .body(new ByteArrayResource(bytes));
     }
-
+    
     @PostMapping("/import")
     public ResponseEntity<String> importDatabase(@RequestParam("file") MultipartFile file) throws IOException, StreamReadException, DatabindException {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -147,12 +147,12 @@ public class FileController {
                             Object transformedValue = transformValueIfDate(entryDoc.getKey(), entryDoc.getValue());
                             doc.put(entryDoc.getKey(), transformedValue);
                         }
-                    }
-                    if (!doc.containsKey("_id")) {
-                        doc.put("_id", new ObjectId());
-                    }
-                    collection.insertOne(doc);
                 }
+                if (!doc.containsKey("_id")) {
+                    doc.put("_id", new ObjectId());
+                }
+                collection.insertOne(doc);
+            }
             }
 
             return ResponseEntity.ok("База данных успешно заполнена");
@@ -171,5 +171,5 @@ public class FileController {
         }
         return value;
     }
-
+ 
 }

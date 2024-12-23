@@ -25,22 +25,18 @@ public class ResponseRoomDto {
     private LocationPojo location;
 
     @Schema(description = "Рабочие дни", example = "ВТ, ЧТ, СБ")
-    @NotNull(message = "Часы открытия не могут быть пустыми")
     private String workingDays;
 
     @Schema(description = "Часы открытия", example = "09:30:00")
-    @NotNull(message = "Часы открытия не могут быть пустыми")
     private LocalTime openingTime;
 
     @Schema(description = "Часы закрытия", example = "16:30:00")
-    @NotNull(message = "Часы закрытия не могут быть пустыми")
     private LocalTime closingTime;
 
     @ArraySchema(schema = @Schema(description = "Id тренеров", implementation = String.class))
     private List<String> trainers;
 
     @ArraySchema(schema = @Schema(description = "Секции", example = "['Name1', 'Name2']"))
-    @NotNull(message = "Секции не могут быть пустыми")
     private List<String> sections;
-
+    
 }

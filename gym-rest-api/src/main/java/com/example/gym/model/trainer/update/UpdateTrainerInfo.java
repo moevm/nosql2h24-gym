@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @Schema(name = "Update Trainer Info", description = "Информация о тренере для обновления")
 public class UpdateTrainerInfo {
-
+    
     @Schema(description = "Опыт работы", example = "2")
     @Min(value = 0, message = "Опыт работы не может быть отрицательным")
     private Integer experience;

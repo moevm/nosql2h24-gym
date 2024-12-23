@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Schema(name = "Update Training", description = "Сущность тренировки, для изменения")
+@Builder
 public class UpdateTrainingDto {
 
     @Schema(description = "Время начала тренировки в формате ISO 8601", example = "2023-10-01T15:30:00")
@@ -39,7 +41,11 @@ public class UpdateTrainingDto {
 
     @AssertTrue(message = "Время окончания тренировки должно быть после времени начала")
     public boolean isEndTimeAfterStartTime() {
-        return endTime.isAfter(startTime);
+        if (startTime != null && endTime != null) {
+            return endTime.isAfter(startTime);
+        }
+
+        return true;
     }
 
 }

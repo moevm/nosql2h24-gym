@@ -35,17 +35,17 @@ public class SubscriptionService {
     public ResponseClientDto createSubscription(CreateSubscriptionDto dto, String clientId) throws ResourceNotFoundException {
         User client = userRepository.findById(clientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Клиент с id %s не найден".formatted(clientId)));
-
+        
         ClientInfo clientInfo = client.getClientInfo();
         LocalDateTime now = LocalDateTime.now();
         Subscription subscription = new Subscription(
-                now,
-                now.plusDays(dto.getDuration()),
-                SubscriptionStatus.ACTIVE,
-                dto.getPrice(),
-                null,
-                LocalDateTime.now(),
-                LocalDateTime.now());
+            now,
+            now.plusDays(dto.getDuration()),
+            SubscriptionStatus.ACTIVE,
+            dto.getPrice(),
+            null,
+            LocalDateTime.now(), 
+            LocalDateTime.now());
 
         clientInfo.setSubscriptions(List.of(subscription));
 
@@ -53,7 +53,7 @@ public class SubscriptionService {
 
         if (!loyaltySettings.isEmpty()) {
             LoyaltySettings loyaltySetting = loyaltySettings.get(0);
-
+            
             Double loyalty = dto.getPrice() * loyaltySetting.getAcceptanceRate();
             Integer bonus = 0;
             if (loyalty < 1d) {
@@ -64,7 +64,7 @@ public class SubscriptionService {
 
             if (clientInfo.getLoyaltyPoints() == null) {
                 clientInfo.setLoyaltyPoints(0);
-            }
+            } 
 
             clientInfo.setLoyaltyPoints(clientInfo.getLoyaltyPoints() + bonus);
         }
@@ -150,7 +150,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public ResponseSubscriptionDto freezeSubscription(String clientId) {
+    public ResponseSubscriptionDto  freezeSubscription(String clientId) {
         User user = userRepository.findById(clientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Клиент с id %s не найден".formatted(clientId)));
 
@@ -170,9 +170,8 @@ public class SubscriptionService {
         if (subscription.getStatus() == SubscriptionStatus.ACTIVE) {
             subscription.setStatus(SubscriptionStatus.FREEZE);
             subscription.setFreezeDate(LocalDateTime.now());
-
-            subscriptions.set(0, subscription);
-            clientInfo.setSubscriptions(subscriptions);
+    
+            clientInfo.setSubscriptions(List.of(subscription));
             user.setClientInfo(clientInfo);
             userRepository.save(user);
         } else if (subscription.getStatus() == SubscriptionStatus.FREEZE) {
@@ -183,13 +182,12 @@ public class SubscriptionService {
             LocalDateTime now = LocalDateTime.now();
             long daysBetween = ChronoUnit.DAYS.between(freezeDate, now);
             subscription.setEndDate(oldEndDate.plusDays(daysBetween));
-
-            subscriptions.set(0, subscription);
-            clientInfo.setSubscriptions(subscriptions);
+            
+            clientInfo.setSubscriptions(List.of(subscription));
             user.setClientInfo(clientInfo);
             userRepository.save(user);
         }
-
+        
         return modelMapper.toDto(subscription, clientId);
     }
 

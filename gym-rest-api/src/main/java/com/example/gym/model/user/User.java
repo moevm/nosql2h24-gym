@@ -10,12 +10,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.example.gym.model.user.pojo.ClientInfo;
 import com.example.gym.model.user.pojo.GenderType;
 import com.example.gym.model.user.pojo.TrainerInfo;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +26,7 @@ import lombok.ToString;
 @Setter
 @Document(collection = "users")
 @ToString
+@Builder
 public class User {
 
     @Id
@@ -40,7 +40,7 @@ public class User {
     private String phoneNumber;
     private String comment;
     private List<String> roles;
-
+    
     private GenderType gender;
     private LocalDateTime birthday;
 

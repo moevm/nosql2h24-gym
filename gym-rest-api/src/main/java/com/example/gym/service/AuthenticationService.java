@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gym.exception.AuthenticationException;
 import com.example.gym.exception.UniquenessViolationException;
@@ -21,9 +22,11 @@ import com.example.gym.security.service.MyUserDetail;
 import com.example.gym.security.service.MyUserDetailService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
 
     private final UserRepository userRepository;
@@ -32,7 +35,8 @@ public class AuthenticationService {
     private final MyUserDetailService userDetailService;
     private final JwtTokenUtils jwtTokenUtils;
 
-    public void register(RegisterUserDto dto) throws UniquenessViolationException {
+    @Transactional
+    public User register(RegisterUserDto dto) throws UniquenessViolationException {
         if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
             throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
                     .formatted(dto.getEmail()));
@@ -53,14 +57,10 @@ public class AuthenticationService {
 
         ClientInfo clientInfo = new ClientInfo(0, new ArrayList<>(), new ArrayList<>());
         userToCreate.setClientInfo(clientInfo);
-        userRepository.save(userToCreate);
-
+        return userRepository.save(userToCreate);
     }
 
     public JwtResponse login(LoginUserDto dto) throws AuthenticationException {
-        System.out.println(userRepository.findByEmail(dto.getEmail()).get());
-        System.out.println(dto.getEmail());
-        System.out.println(dto.getPassword());
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
@@ -71,8 +71,8 @@ public class AuthenticationService {
         MyUserDetail userDetails = userDetailService.loadUserByUsername(dto.getEmail());
         String accessToken = jwtTokenUtils.generateAccessToken(userDetails, dto.getEmail());
         String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails, dto.getEmail());
-
+    
         return new JwtResponse(accessToken, refreshToken);
     }
-
+    
 }

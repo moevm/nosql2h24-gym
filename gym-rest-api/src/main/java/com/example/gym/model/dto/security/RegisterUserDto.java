@@ -37,5 +37,5 @@ public class RegisterUserDto {
     @NotBlank(message = "Номер телефона не может быть пустым")
     @Pattern(regexp = "^(?=(?:\\D*\\d){11}\\D*$).*", message = "Номер телефона должен содержать 11 цифр")
     private String phoneNumber;
-
+    
 }

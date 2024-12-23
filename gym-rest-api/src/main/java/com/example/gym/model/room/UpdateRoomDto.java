@@ -7,9 +7,11 @@ import com.example.gym.model.user.pojo.Section;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,15 +21,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @Schema(name = "Update Room", description = "Сущность для изменения комнаты")
+@Builder
 public class UpdateRoomDto {
 
     @Schema(description = "Название")
     private String name;
-
+    
     @Schema(description = "Вместительность")
     @Positive(message = "Вместительность должна быть положительной")
     private Integer capacity;
 
+    @Valid
     private LocaltionUpdatePojo location;
 
     @Schema(description = "Рабочие дни", example = "ВТ, ЧТ, СБ")
@@ -43,7 +47,6 @@ public class UpdateRoomDto {
     private List<String> trainers;
 
     @ArraySchema(schema = @Schema(description = "Секции", example = "['Name1', 'Name2']"))
-    @NotNull(message = "Секции не могут быть пустыми")
     private List<String> sections;
 
 }

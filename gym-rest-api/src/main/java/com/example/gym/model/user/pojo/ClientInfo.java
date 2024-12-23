@@ -19,7 +19,7 @@ public class ClientInfo {
     @Schema(name = "Баллы лояльности", description = "100")
     private Integer loyaltyPoints = 0;
     @ArraySchema(
-            schema = @Schema(name = "Абонементы", implementation = Subscription.class)
+           schema = @Schema(name = "Абонементы", implementation = Subscription.class)
     )
     private List<Subscription> subscriptions;
     @ArraySchema(

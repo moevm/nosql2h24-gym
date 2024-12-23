@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Schema(name = "Create Training", description = "Сущность тренировки, для создания")
+@Builder
 public class CreateTrainingDto {
 
     @Schema(description = "Время начала тренировки в формате ISO 8601", example = "2023-10-01T15:30:00")

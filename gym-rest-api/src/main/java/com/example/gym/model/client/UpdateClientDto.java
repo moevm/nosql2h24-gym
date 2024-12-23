@@ -40,5 +40,5 @@ public class UpdateClientDto {
     @Schema(description = "Дата рождения", example = "2002-08-15T00:00:00Z")
     @Past(message = "Дата рождения не может быть в будущем")
     private LocalDateTime birthday;
-
+    
 }

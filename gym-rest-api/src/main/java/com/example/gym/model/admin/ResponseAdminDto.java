@@ -31,5 +31,5 @@ public class ResponseAdminDto {
     private GenderType gender;
     @Schema(description = "Дата рождения", example = "2002-08-15T00:00:00Z")
     private LocalDateTime birthday;
-
+    
 }

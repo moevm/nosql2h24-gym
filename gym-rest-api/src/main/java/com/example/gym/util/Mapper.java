@@ -132,7 +132,7 @@ public class Mapper {
         trainingModel.setStartTime(training.getStartTime());
         trainingModel.setEndTime(training.getEndTime());
         trainingModel.setSection(new Section(training.getSection()));
-
+        
         return trainingModel;
     }
 

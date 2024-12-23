@@ -56,7 +56,7 @@ public class RoomService {
         if (updateRoomDto.getLocation().getAddress() != null && !room.getLocation().getAddress().equals(updateRoomDto.getLocation().getAddress())) {
             room.getLocation().setAddress(updateRoomDto.getLocation().getAddress());
         }
-
+    
         if (updateRoomDto.getLocation().getNumber() != null && !room.getLocation().getNumber().equals(updateRoomDto.getLocation().getNumber())) {
             room.getLocation().setNumber(updateRoomDto.getLocation().getNumber());
         }
@@ -69,7 +69,7 @@ public class RoomService {
             room.setOpeningTime(updateRoomDto.getOpeningTime());
         }
 
-        if (updateRoomDto.getTrainers() != null) {
+        if (updateRoomDto.getTrainers() != null && updateRoomDto.getTrainers().size() != 0) {
             List<User> trainers = userRepository.findAllById(updateRoomDto.getTrainers());
 
             room.setTrainers(trainers.stream()
@@ -77,7 +77,7 @@ public class RoomService {
                     .toList());
         }
 
-        if (updateRoomDto.getSections() != null) {
+        if (updateRoomDto.getSections() != null && updateRoomDto.getSections().size() != 0) {
             room.setSections(updateRoomDto.getSections());
         }
 
@@ -90,16 +90,16 @@ public class RoomService {
         List<Training> trainings = trainingRepository.findAllByRoomId(room.getId());
         trainings.forEach(training -> {
             RoomPojo roomPojo = training.getRoom();
-
+            
             if (roomPojo != null) {
                 if (updateRoomDto.getName() != null && !roomPojo.getName().equals(updatedRoom.getName())) {
                     roomPojo.setName(room.getName());
                 }
-
+                
                 if (updateRoomDto.getCapacity() != null && !roomPojo.getCapacity().equals(updatedRoom.getCapacity())) {
                     roomPojo.setCapacity(room.getCapacity());
                 }
-
+                
                 trainingRepository.save(training);
             }
         });
@@ -114,6 +114,12 @@ public class RoomService {
     }
 
     public void delete(String roomId) {
+        List<Training> trainings = trainingRepository.findAllByRoomId(roomId);
+        trainings.forEach(t -> {
+                t.setRoom(null); 
+                trainingRepository.save(t);
+        });
+        
         roomRepository.deleteById(roomId);
     }
 
