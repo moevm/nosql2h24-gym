@@ -71,8 +71,8 @@ public class AuthenticationService {
         MyUserDetail userDetails = userDetailService.loadUserByUsername(dto.getEmail());
         String accessToken = jwtTokenUtils.generateAccessToken(userDetails, dto.getEmail());
         String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails, dto.getEmail());
-    
+
         return new JwtResponse(accessToken, refreshToken);
     }
-    
+
 }

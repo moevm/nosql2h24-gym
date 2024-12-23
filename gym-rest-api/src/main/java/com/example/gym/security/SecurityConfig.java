@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(entryPoint))
-                .sessionManagement(sessionManagement -> 
+                .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(request -> request
@@ -46,12 +46,12 @@ public class SecurityConfig {
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/register").permitAll()
                         .requestMatchers(
-                            "/trainers", 
-                            "/trainers/{trainerId}/trainings",
-                            "/trainers/{trainerId}").hasAnyRole("USER", "TRAINER", "ADMIN")
+                                "/trainers",
+                                "/trainers/{trainerId}/trainings",
+                                "/trainers/{trainerId}").hasAnyRole("USER", "TRAINER", "ADMIN")
                         .requestMatchers(
-                                "/trainings", 
-                                "/trainings/{trainingId}", 
+                                "/trainings",
+                                "/trainings/{trainingId}",
                                 "/tarinigs/{trainingId}/registration/{clientId}").hasAnyRole("USER", "TRAINER", "ADMIN")
                         .requestMatchers("/clients", "/clients/{clientId}").hasAnyRole("USER", "TRAINER", "ADMIN")
                         .requestMatchers("/trainers/**").hasAnyRole("TRAINER", "ADMIN")
@@ -60,13 +60,13 @@ public class SecurityConfig {
                         .requestMatchers("/admins/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(JwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
-                .build(); 
+                .build();
     }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-          .requestMatchers("/swagger-ui/**", "/v3/api-docs*/**");
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs*/**");
     }
 
     @Bean
@@ -91,8 +91,8 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter JwtAuthenticationTokenFilter() {
-      return new JwtAuthenticationFilter();
+        return new JwtAuthenticationFilter();
     }
-  
+
 
 }

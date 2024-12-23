@@ -19,9 +19,9 @@ public class ResponseService {
 
     public ResponseEntity<?> getBadRequestResponseEntity(String message) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ResponseError.builder()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .message(message)
-                .build());
+                .body(ResponseError.builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
     }
 }

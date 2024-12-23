@@ -31,7 +31,7 @@ public class PurchasedSubcriptions {
     private Double totalPrice;
 
     @ArraySchema(
-        schema = @Schema(description = "Абонимент", implementation = ResponseSubscriptionDto.class)
+            schema = @Schema(description = "Абонимент", implementation = ResponseSubscriptionDto.class)
     )
     private List<SubscriptionDetailDto> subscriptions;
 

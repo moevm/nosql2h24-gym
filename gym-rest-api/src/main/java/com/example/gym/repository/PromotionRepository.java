@@ -11,5 +11,5 @@ public interface PromotionRepository extends MongoRepository<Promotion, String> 
 
     @Query("{ 'createdBy.id': ?0 }")
     List<Promotion> findAllByCreatedById(String id);
-    
+
 }

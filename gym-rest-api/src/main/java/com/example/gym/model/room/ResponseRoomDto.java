@@ -42,5 +42,5 @@ public class ResponseRoomDto {
     @ArraySchema(schema = @Schema(description = "Секции", example = "['Name1', 'Name2']"))
     @NotNull(message = "Секции не могут быть пустыми")
     private List<String> sections;
-    
+
 }

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Schema(name = "Training Statisctics", description = "Статистика одной тренировки")
 public class ResponseTrainingForStatistics {
-    
+
     @Schema(description = "Прибыль с одной тренировки", example = "1000.00")
     private Double profit;
     private ResponseTrainingDto training;

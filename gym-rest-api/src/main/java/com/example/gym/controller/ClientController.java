@@ -48,15 +48,15 @@ public class ClientController {
     @Operation(summary = "Получить всех клиентов",
             description = "Возвращает всех клиентов.",
             responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "Список клиентов успешно получен.",
-                        content = @Content(mediaType = "application/json",
-                                array = @ArraySchema(
-                                        schema = @Schema(implementation = ResponseClientDto.class) 
-                                ))
-                )
-    })
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Список клиентов успешно получен.",
+                            content = @Content(mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = ResponseClientDto.class)
+                                    ))
+                    )
+            })
     public ResponseEntity<?> findAllClients(
             @Parameter(description = "Имя клиента", required = false)
             @RequestParam(name = "name", required = false) String name,
@@ -89,7 +89,7 @@ public class ClientController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> findClientById(
             @PathVariable @Parameter(description = "Идентификатор клиента, которго необходимо получить", required = true)
             String clientId
@@ -109,9 +109,9 @@ public class ClientController {
                                     schema = @Schema(implementation = ResponseClientDto.class))
                     ),
                     @ApiResponse(
-                    responseCode = "400",
-                    description = "Неккоректные данные.",
-                    content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -120,7 +120,7 @@ public class ClientController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> updateClient(
             @PathVariable @Parameter(description = "Идентификатор клиента, которого необходимо обновить", required = true)
             String clientId,
@@ -149,7 +149,7 @@ public class ClientController {
                             description = "Список тренировок успешно получен.",
                             content = @Content(mediaType = "application/json",
                                     array = @ArraySchema(
-                                            schema = @Schema(implementation = ResponseTrainingForClientDto.class) 
+                                            schema = @Schema(implementation = ResponseTrainingForClientDto.class)
                                     ))
                     ),
                     @ApiResponse(
@@ -158,7 +158,7 @@ public class ClientController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> findClientTrainings(
             @PathVariable @Parameter(description = "Идентификатор клиента, которого необходимо получить", required = true)
             String clientId
@@ -176,7 +176,7 @@ public class ClientController {
                             description = "Абонемент успешно получен.",
                             content = @Content(mediaType = "application/json",
                                     array = @ArraySchema(
-                                            schema = @Schema(implementation = ResponseSubscriptionDto.class) 
+                                            schema = @Schema(implementation = ResponseSubscriptionDto.class)
                                     ))
                     ),
                     @ApiResponse(
@@ -185,7 +185,7 @@ public class ClientController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> findClientSubscription(
             @PathVariable @Parameter(description = "Идентификатор клиента, абонемент которго необходимо получить", required = true)
             String clientId

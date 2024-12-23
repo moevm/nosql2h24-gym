@@ -22,5 +22,5 @@ public class UniquenessCheckService {
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber);
     }
-    
+
 }

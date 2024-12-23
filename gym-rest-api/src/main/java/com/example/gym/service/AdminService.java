@@ -75,40 +75,41 @@ public class AdminService {
 
     public Map<String, Map<String, Object>> getApplicationStatistics() {
         List<Training> trainings = trainingRepository.findAllByEndTimeBefore(LocalDateTime.now());
-        
+
         Map<String, Map<String, Object>> statistics = new HashMap<>();
         statistics.put("today", new HashMap<String, Object>());
         statistics.put("week", new HashMap<String, Object>());
         statistics.put("month", new HashMap<String, Object>());
-        
+
         LocalDate today = LocalDate.now();
         LocalDate startOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
-        
+
         for (Training training : trainings) {
             System.out.println(training);
             LocalDate trainingDate = training.getStartTime().toLocalDate();
             System.out.println(training.getClients().size());
             System.out.println(training.getAvailableSlots());
             double trainingLoad = ((double) training.getClients().size() / (double) training.getAvailableSlots()) * 100;
-            
+
             if (trainingDate.isEqual(today)) {
                 updateStatistics(statistics, "today", trainingLoad);
             }
-            
+
             if (trainingDate.isAfter(startOfWeek) && trainingDate.isBefore(today.plusDays(7))) {
                 updateStatistics(statistics, "week", trainingLoad);
             }
-            
+
             if (trainingDate.getMonth() == today.getMonth() && trainingDate.getYear() == today.getYear()) {
                 updateStatistics(statistics, "month", trainingLoad);
             }
         }
-        
+
         return statistics;
-    }    
+    }
+
     private void updateStatistics(Map<String, Map<String, Object>> statistics, String period, double load) {
         Map<String, Object> periodStats = statistics.get(period);
-        
+
         int currentCount = (Integer) periodStats.getOrDefault("trainingCount", 0) + 1;
         double currentLoadSum = (Double) periodStats.getOrDefault("loadSum", 0.0) + load;
 
@@ -116,12 +117,12 @@ public class AdminService {
         System.out.println(currentCount);
         System.out.println(currentLoadSum);
         System.out.println(currentLoadSum / currentCount);
-        
+
         periodStats.put("trainingCount", currentCount);
         periodStats.put("loadSum", currentLoadSum);
         periodStats.put("averageLoad", currentLoadSum / currentCount);
     }
-    
+
     // public List<TrainerStatistics> getTrainersStatistics(LocalDate startDate, LocalDate endDate) {
     //     List<User> trainers = userRepository.findAllByRoles("ROLE_TRAINER");
 
@@ -154,33 +155,33 @@ public class AdminService {
         List<User> users = userRepository.findAll();
         return users.stream()
                 .sorted(Comparator.comparing(user -> user.getRoles().stream()
-                    .findFirst()
-                    .orElse("")))
+                        .findFirst()
+                        .orElse("")))
                 .map(modelMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<ResponseAdminDto> findAllAdmins(
             String name,
-            String surname, 
+            String surname,
             LocalDateTime birthdayFrom,
             LocalDateTime birthdayBefore
     ) {
         Query query = new Query();
-        if (name != null && !name.isEmpty() && !name.isBlank()) 
+        if (name != null && !name.isEmpty() && !name.isBlank())
             query.addCriteria(Criteria.where("name").regex(name, "i"));
-        
+
         if (surname != null && !surname.isEmpty() && !surname.isBlank())
             query.addCriteria(Criteria.where("surname").regex(surname, "i"));
-        
+
         if (birthdayFrom != null)
             query.addCriteria(Criteria.where("birthday").gte(birthdayFrom));
-        
-        if (birthdayBefore != null) 
+
+        if (birthdayBefore != null)
             query.addCriteria(Criteria.where("birthday").lt(birthdayBefore));
 
         query.addCriteria(Criteria.where("roles").in(UserRoleType.ROLE_ADMIN));
-        
+
         List<User> admins = mongoTemplate.find(query, User.class);
 
         return admins.stream()
@@ -199,7 +200,7 @@ public class AdminService {
 
     @Transactional
     public ResponseAdminDto updateAdmin(
-            String id, 
+            String id,
             UpdateAdminDto dto
     ) throws ResourceNotFoundException, UniquenessViolationException {
         User admin = getById(id);
@@ -220,8 +221,8 @@ public class AdminService {
             if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
                 throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
                         .formatted(dto.getEmail()));
-            } 
-            
+            }
+
             admin.setEmail(dto.getEmail());
         }
 
@@ -239,16 +240,16 @@ public class AdminService {
             List<Promotion> promotions = promotionRepository.findAllByCreatedById(updatedAdmin.getId());
             promotions.forEach(promotion -> {
                 CreatedBy createdBy = promotion.getCreatedBy();
-                
+
                 if (createdBy != null) {
                     if (dto.getName() != null && !createdBy.getName().equals(updatedAdmin.getName())) {
                         createdBy.setName(updatedAdmin.getName());
                     }
-                    
+
                     if (dto.getSurname() != null && !createdBy.getSurname().equals(updatedAdmin.getSurname())) {
                         createdBy.setSurname(updatedAdmin.getSurname());
                     }
-                    
+
                     promotionRepository.save(promotion);
                 }
             });
@@ -265,32 +266,32 @@ public class AdminService {
     public List<SectionStatistics> getFinishedTrainings(LocalDate startDate, LocalDate endDate, int page, int size) {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        
+
         List<Training> trainings = trainingRepository.findAllByEndTimeBeforeAndStartTimeBetween(LocalDateTime.now(), startDateTime, endDateTime);
-        
+
         log.info("Start Date: {}", startDateTime);
         log.info("End Date: {}", endDateTime);
         log.info("Found trainings: {}", trainings.size());
 
         Map<String, SectionStatistics> sectionStatisticsMap = new HashMap<>();
-    
+
         for (Training training : trainings) {
             String sectionName = training.getSection().getName();
             SectionStatistics sectionStats = sectionStatisticsMap.getOrDefault(sectionName, new SectionStatistics());
-    
+
             sectionStats.setTrainingCount(sectionStats.getTrainingCount() == null ? 1 : sectionStats.getTrainingCount() + 1);
-            
+
             int currentClientCount = training.getClients().size();
             sectionStats.setClientCount(sectionStats.getClientCount() == null ? currentClientCount : sectionStats.getClientCount() + currentClientCount);
-    
+
             int totalSlots = training.getRoom().getCapacity();
             double loadPercentage = totalSlots > 0 ? (currentClientCount / (double) totalSlots) * 100 : 0;
             sectionStats.setLoadPercentage(loadPercentage);
-    
+
             sectionStats.setSectionName(sectionName);
             sectionStatisticsMap.put(sectionName, sectionStats);
         }
-    
+
         Map<String, SectionStatistics> sortedMap = new TreeMap<>(sectionStatisticsMap);
         List<String> sortedKeys = new ArrayList<>(sortedMap.keySet());
 
@@ -310,13 +311,13 @@ public class AdminService {
     }
 
     public PurchasedSubcriptions getPurchasedSubscriptions(
-            String clientId, 
-            LocalDate startDate, 
-            LocalDate endDate, 
+            String clientId,
+            LocalDate startDate,
+            LocalDate endDate,
             SubscriptionStatus status,
             int page,
             int size
-    ) {    
+    ) {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
         PurchasedSubcriptions purchasedSubcriptions = new PurchasedSubcriptions();
@@ -324,7 +325,7 @@ public class AdminService {
         List<User> filteredClients = clients.stream()
                 .filter(client -> {
                     if (clientId != null && !client.getId().equals(clientId)) {
-                        return false; 
+                        return false;
                     }
 
                     ClientInfo clientInfo = client.getClientInfo();
@@ -335,20 +336,20 @@ public class AdminService {
                             LocalDateTime subscriptionEndDate = subscription.getEndDate();
                             boolean dateInRange = subscriptionStartDate.isBefore(endDateTime) && subscriptionEndDate.isAfter(startDateTime);
                             boolean statusMatches = (status == null || subscription.getStatus() == status);
-                            return dateInRange && statusMatches; 
+                            return dateInRange && statusMatches;
                         });
                     }
 
-                    return false; 
+                    return false;
                 })
                 .toList();
-        
+
         System.out.println("Filtered Clients Count: " + filteredClients.size());
 
         Double totalPrice = filteredClients.stream()
                 .flatMap(client -> client.getClientInfo().getSubscriptions().stream()
                         .filter(subscription -> (status == null || subscription.getStatus() == status)))
-                        .map(Subscription::getPrice)
+                .map(Subscription::getPrice)
                 .reduce(0.0, Double::sum);
 
         purchasedSubcriptions.setTotalPrice(totalPrice);
@@ -361,7 +362,7 @@ public class AdminService {
         purchasedSubcriptions.setActiveCount(active.size());
 
         List<User> freeze = filteredClients.stream()
-                .filter(client -> client.getClientInfo().getSubscriptions() 
+                .filter(client -> client.getClientInfo().getSubscriptions()
                         .stream().anyMatch(subscription -> subscription.getStatus() == SubscriptionStatus.FREEZE))
                 .toList();
         purchasedSubcriptions.setFreezeCount(freeze.size());
@@ -384,29 +385,29 @@ public class AdminService {
         System.out.println("Total Subscriptions Count: " + subscriptions.size());
         purchasedSubcriptions.setCount(subscriptions.size());
         return purchasedSubcriptions;
-    } 
+    }
 
     public RoomsActive getRoomsActive(LocalDate startDate, LocalDate endDate) {
         RoomsActive roomsActive = new RoomsActive();
-    
+
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
-    
+
         List<Room> rooms = roomRepository.findAll();
         System.out.println("Количество комнат: " + rooms.size());
-    
+
         List<Training> trainings = trainingRepository.findAllByEndTimeBeforeAndStartTimeBetween(LocalDateTime.now(), startDateTime, endDateTime);
         System.out.println("Количество тренировок: " + trainings.size());
-    
+
         System.out.println("Start Date: " + startDateTime);
         System.out.println("End Date: " + endDateTime);
 
 
         trainings.forEach(training -> System.out.println("Training Room ID: " + training.getRoom().getId()));
-    
+
         Map<String, Long> trainingCountByRoomId = trainings.stream()
                 .collect(Collectors.groupingBy(training -> training.getRoom().getId(), Collectors.counting()));
-    
+
         // Выводим информацию о мапе
         trainingCountByRoomId.forEach((roomId, count) -> System.out.println("Room ID: " + roomId + ", Count: " + count));
 
@@ -417,13 +418,13 @@ public class AdminService {
                 System.out.println("Room ID: " + room.getId() + " will NOT be added because it has no active training.");
             }
         });
-    
+
         if (trainings.isEmpty()) {
             System.out.println("Нет тренировок в указанном диапазоне дат со статусом AWAIT.");
             roomsActive.setRoomsActive(new ArrayList<>());
             return roomsActive;
         }
-    
+
         List<RoomActive> roomActives = rooms.stream()
                 .filter(room -> trainingCountByRoomId.containsKey(room.getId()))
                 .map(room -> {
@@ -432,18 +433,18 @@ public class AdminService {
                     roomActive.setName(room.getName());
                     roomActive.setCapacity(room.getCapacity());
                     roomActive.setTrainingCount(trainingCountByRoomId.get(room.getId()));
-    
+
                     if (room.getCapacity() != null && room.getCapacity() > 0) {
                         double loadPercentage = (trainingCountByRoomId.get(room.getId()).doubleValue() / room.getCapacity()) * 100;
                         roomActive.setLoadPercentage(loadPercentage);
                     } else {
                         roomActive.setLoadPercentage(0.0);
                     }
-    
+
                     return roomActive;
                 })
                 .collect(Collectors.toList());
-    
+
         roomsActive.setRoomsActive(roomActives);
         return roomsActive;
     }
@@ -455,12 +456,12 @@ public class AdminService {
         List<Training> trainings = trainingRepository.findAllByTrainerIds(trainerIds);
 
         LocalDateTime localEndDateTime = LocalDateTime.of(
-            endDate.getYear(),
-            endDate.getMonthValue(),
-            endDate.getDayOfMonth(),
-            23,
-            59,
-            59 
+                endDate.getYear(),
+                endDate.getMonthValue(),
+                endDate.getDayOfMonth(),
+                23,
+                59,
+                59
         );
 
         List<FinanceStatisticsDto> filteredTrainings = trainings.stream()

@@ -40,7 +40,7 @@ public class User {
     private String phoneNumber;
     private String comment;
     private List<String> roles;
-    
+
     private GenderType gender;
     private LocalDateTime birthday;
 

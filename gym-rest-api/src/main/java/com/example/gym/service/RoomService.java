@@ -56,7 +56,7 @@ public class RoomService {
         if (updateRoomDto.getLocation().getAddress() != null && !room.getLocation().getAddress().equals(updateRoomDto.getLocation().getAddress())) {
             room.getLocation().setAddress(updateRoomDto.getLocation().getAddress());
         }
-    
+
         if (updateRoomDto.getLocation().getNumber() != null && !room.getLocation().getNumber().equals(updateRoomDto.getLocation().getNumber())) {
             room.getLocation().setNumber(updateRoomDto.getLocation().getNumber());
         }
@@ -90,16 +90,16 @@ public class RoomService {
         List<Training> trainings = trainingRepository.findAllByRoomId(room.getId());
         trainings.forEach(training -> {
             RoomPojo roomPojo = training.getRoom();
-            
+
             if (roomPojo != null) {
                 if (updateRoomDto.getName() != null && !roomPojo.getName().equals(updatedRoom.getName())) {
                     roomPojo.setName(room.getName());
                 }
-                
+
                 if (updateRoomDto.getCapacity() != null && !roomPojo.getCapacity().equals(updatedRoom.getCapacity())) {
                     roomPojo.setCapacity(room.getCapacity());
                 }
-                
+
                 trainingRepository.save(training);
             }
         });

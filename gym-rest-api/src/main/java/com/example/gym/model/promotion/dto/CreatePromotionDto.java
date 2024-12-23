@@ -44,7 +44,7 @@ public class CreatePromotionDto {
     @Min(value = 0, message = "Скидка в процентах должна быть не менее 0")
     @Max(value = 100, message = "Скидка в процентах должна быть не более 100")
     private Integer discountPercentage;
-    
+
     @Schema(name = "Идентификатор создателя")
     @NotBlank(message = "Идентификатор создателя не может быть пустым")
     private String creatorId;

@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @Schema(name = "Training Detail", description = "Статистика по тренировке")
 public class TrainingDetailDto {
-    
+
     @Schema(description = "Дата тренировки", example = "2023-10-01")
     private LocalDate date;
 

@@ -51,7 +51,7 @@ public class ResponseTrainingDto {
     private TrainingStatus status;
 
     @ArraySchema(
-        schema = @Schema(name = "Клиенты", implementation = ClientPojo.class)
+            schema = @Schema(name = "Клиенты", implementation = ClientPojo.class)
     )
     @Schema(description = "Дата созадния")
     private List<ClientPojo> clients;

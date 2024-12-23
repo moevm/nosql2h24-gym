@@ -21,7 +21,7 @@ import lombok.Setter;
 public class ResponseTrainerDto {
     @Schema(description = "Идентификатор", example = "1")
     private String id;
-    
+
     @Schema(description = "Имя", example = "Иван")
     private String name;
 
@@ -43,8 +43,8 @@ public class ResponseTrainerDto {
     @ArraySchema(
             schema = @Schema(description = "Роль", example = "ROLE_USER")
     )
-    private List<String> roles; 
-    
+    private List<String> roles;
+
     private TrainerInfo trainerInfo;
 
     @Schema(description = "Пол", enumAsRef = true)

@@ -18,5 +18,5 @@ public class loyaltyPointsEntry {
     private String transactionType;
     private String description;
     private LocalDateTime transactionDate;
-    
+
 }

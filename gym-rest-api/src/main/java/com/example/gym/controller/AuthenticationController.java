@@ -46,14 +46,14 @@ public class AuthenticationController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> registration(
             @RequestBody @Parameter(description = "Сущность пользователя для создания", required = true)
             @Valid RegisterUserDto registerUserDto
     ) throws UniquenessViolationException {
         authenticationService.register(registerUserDto);
         return ResponseEntity.ok().body(null);
-    } 
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(

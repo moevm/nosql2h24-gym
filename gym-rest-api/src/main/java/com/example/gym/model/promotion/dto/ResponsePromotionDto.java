@@ -34,7 +34,7 @@ public class ResponsePromotionDto {
 
     @Schema(name = "Скидка в процентах")
     private Integer discountPercentage;
-    
+
     @Schema(name = "Идентификатор создателя", implementation = CreatedBy.class)
     private CreatedBy createdBy;
 }

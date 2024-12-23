@@ -35,17 +35,17 @@ public class SubscriptionService {
     public ResponseClientDto createSubscription(CreateSubscriptionDto dto, String clientId) throws ResourceNotFoundException {
         User client = userRepository.findById(clientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Клиент с id %s не найден".formatted(clientId)));
-        
+
         ClientInfo clientInfo = client.getClientInfo();
         LocalDateTime now = LocalDateTime.now();
         Subscription subscription = new Subscription(
-            now,
-            now.plusDays(dto.getDuration()),
-            SubscriptionStatus.ACTIVE,
-            dto.getPrice(),
-            null,
-            LocalDateTime.now(), 
-            LocalDateTime.now());
+                now,
+                now.plusDays(dto.getDuration()),
+                SubscriptionStatus.ACTIVE,
+                dto.getPrice(),
+                null,
+                LocalDateTime.now(),
+                LocalDateTime.now());
 
         clientInfo.setSubscriptions(List.of(subscription));
 
@@ -53,7 +53,7 @@ public class SubscriptionService {
 
         if (!loyaltySettings.isEmpty()) {
             LoyaltySettings loyaltySetting = loyaltySettings.get(0);
-            
+
             Double loyalty = dto.getPrice() * loyaltySetting.getAcceptanceRate();
             Integer bonus = 0;
             if (loyalty < 1d) {
@@ -64,7 +64,7 @@ public class SubscriptionService {
 
             if (clientInfo.getLoyaltyPoints() == null) {
                 clientInfo.setLoyaltyPoints(0);
-            } 
+            }
 
             clientInfo.setLoyaltyPoints(clientInfo.getLoyaltyPoints() + bonus);
         }
@@ -150,7 +150,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public ResponseSubscriptionDto  freezeSubscription(String clientId) {
+    public ResponseSubscriptionDto freezeSubscription(String clientId) {
         User user = userRepository.findById(clientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Клиент с id %s не найден".formatted(clientId)));
 
@@ -189,7 +189,7 @@ public class SubscriptionService {
             user.setClientInfo(clientInfo);
             userRepository.save(user);
         }
-        
+
         return modelMapper.toDto(subscription, clientId);
     }
 

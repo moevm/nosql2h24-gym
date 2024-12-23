@@ -62,7 +62,7 @@ public class TrainerService {
         profitStatistics.put("today", 0.0);
         profitStatistics.put("this_week", 0.0);
         profitStatistics.put("this_month", 0.0);
-        
+
         Map<String, Double> previousMonthsProfit = new HashMap<>();
 
         LocalDate today = LocalDate.now();
@@ -167,32 +167,32 @@ public class TrainerService {
             LocalDateTime birthdayBefore
     ) {
         Query query = new Query();
-        
+
         if (section != null && !section.isEmpty() && !section.isBlank())
             query.addCriteria(Criteria.where("trainerInfo.sectionNames").in(section));
-        
+
         if (name != null && !name.isEmpty() && !name.isBlank())
             query.addCriteria(Criteria.where("name").regex(name, "i"));
-        
+
         if (surname != null && !surname.isEmpty() && !surname.isBlank())
             query.addCriteria(Criteria.where("surname").regex(surname, "i"));
-        
+
         if (gender.isPresent())
             query.addCriteria(Criteria.where("gender").is(gender.get()));
-        
+
         if (birthdayFrom != null)
             query.addCriteria(Criteria.where("birthday").gte(birthdayFrom));
-        
+
         if (birthdayBefore != null)
             query.addCriteria(Criteria.where("birthday").lt(birthdayBefore));
 
         query.addCriteria(Criteria.where("roles").in(UserRoleType.ROLE_TRAINER));
-        
+
         List<User> trainers = mongoTemplate.find(query, User.class);
-        
+
         return trainers.stream()
-            .map(modelMapper::toDtoWithoutTraining)
-            .collect(Collectors.toList());
+                .map(modelMapper::toDtoWithoutTraining)
+                .collect(Collectors.toList());
     }
 
     // public List<ResponseTrainerWithoutTrainingsDto> findAllFree(String section) {
@@ -256,7 +256,7 @@ public class TrainerService {
             needUpdate = true;
         }
 
-        if (dto.getBirthday() != null && (trainer.getBirthday() == null || 
+        if (dto.getBirthday() != null && (trainer.getBirthday() == null ||
                 (trainer.getBirthday() != null && !trainer.getBirthday().equals(dto.getBirthday())))) {
             trainer.setBirthday(dto.getBirthday());
         }
@@ -302,11 +302,11 @@ public class TrainerService {
         }
 
         return modelMapper.toTrainerDto(updatedTrainer);
-    } 
+    }
 
     public void deleteTrainer(String id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent() && user.get().getClientInfo() != null &&  
+        if (user.isPresent() && user.get().getClientInfo() != null &&
                 !user.get().getClientInfo().getSubscriptions().isEmpty() &&
                 user.get().getClientInfo().getSubscriptions().get(0).getStatus() == SubscriptionStatus.ACTIVE) {
             throw new InvalidDataException("Нельзя удалить пользователя с активным абонементом");
@@ -343,14 +343,14 @@ public class TrainerService {
         if (newStartTime.isAfter(newEndTime)) {
             throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
         }
-    
+
         List<Training> overlappingTrainings = trainingService.findAll().stream()
                 .filter(training -> training.getTrainer().getId().equals(trainerId))
-                .filter(training -> 
-                    (newStartTime.isBefore(training.getEndTime()) && newEndTime.isAfter(training.getStartTime()))
+                .filter(training ->
+                        (newStartTime.isBefore(training.getEndTime()) && newEndTime.isAfter(training.getStartTime()))
                 )
                 .collect(Collectors.toList());
-        
+
         if (!overlappingTrainings.isEmpty()) {
             throw new InvalidDataException("Время новой тренировки пересекается с существующей тренировкой.");
         }

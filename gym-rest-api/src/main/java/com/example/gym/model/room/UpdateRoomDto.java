@@ -23,7 +23,7 @@ public class UpdateRoomDto {
 
     @Schema(description = "Название")
     private String name;
-    
+
     @Schema(description = "Вместительность")
     @Positive(message = "Вместительность должна быть положительной")
     private Integer capacity;

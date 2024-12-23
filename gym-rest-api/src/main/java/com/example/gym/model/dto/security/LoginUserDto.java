@@ -18,7 +18,7 @@ public class LoginUserDto {
     @Schema(description = "Пароль", example = "password")
     @NotBlank(message = "Пароль не может быть пустым")
     private String password;
-    
+
     @Schema(description = "Электронная почта", example = "example@example.com")
     @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Не верный формат электронной почты")

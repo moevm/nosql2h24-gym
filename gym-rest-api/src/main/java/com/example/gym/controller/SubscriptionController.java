@@ -48,9 +48,9 @@ public class SubscriptionController {
                                     schema = @Schema(implementation = ResponseClientDto.class))
                     ),
                     @ApiResponse(
-                        responseCode = "400",
-                        description = "Неккоректные данные.",
-                        content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -59,7 +59,7 @@ public class SubscriptionController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> createSubscription(
             @RequestBody @Parameter(description = "Сущность абонемента, которого необходимо создать")
             @Valid CreateSubscriptionDto dto,
@@ -164,9 +164,9 @@ public class SubscriptionController {
                                     schema = @Schema(implementation = ResponseSubscriptionDto.class))
                     ),
                     @ApiResponse(
-                        responseCode = "400",
-                        description = "Неккоректные данные.",
-                        content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -175,7 +175,7 @@ public class SubscriptionController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> extendSubscription(
             @RequestBody @Parameter(description = "Сущность для продления абонемента.")
             UpdateSubscriptionDto dto,
@@ -197,9 +197,9 @@ public class SubscriptionController {
                                     schema = @Schema(implementation = ResponseSubscriptionDto.class))
                     ),
                     @ApiResponse(
-                        responseCode = "400",
-                        description = "Неккоректные данные.",
-                        content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -208,10 +208,10 @@ public class SubscriptionController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> freezeSubscription(
-        @PathVariable @Parameter(description = "Идентификатор клиента абонемент которого необходимо заморозить.")
-        String clientId
+            @PathVariable @Parameter(description = "Идентификатор клиента абонемент которого необходимо заморозить.")
+            String clientId
     ) {
         ResponseSubscriptionDto subscription = subscriptionService.freezeSubscription(clientId);
         return ResponseEntity.ok().body(subscription);

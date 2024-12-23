@@ -59,36 +59,36 @@ public class ClientService {
 
     public List<ResponseClientDto> findAllClients(
             String name,
-            String surname, 
+            String surname,
             Optional<GenderType> gender,
             LocalDateTime birthdayFrom,
             LocalDateTime birthdayBefore
     ) {
         Query query = new Query();
-        if (name != null && !name.isEmpty() && !name.isBlank()) 
+        if (name != null && !name.isEmpty() && !name.isBlank())
             query.addCriteria(Criteria.where("name").regex(name, "i"));
-        
+
         if (surname != null && !surname.isEmpty() && !surname.isBlank())
             query.addCriteria(Criteria.where("surname").regex(surname, "i"));
-        
+
         if (gender.isPresent())
             query.addCriteria(Criteria.where("gender").is(gender.get()));
-        
+
         if (birthdayFrom != null) {
             query.addCriteria(Criteria.where("birthday").gte(birthdayFrom));
         }
-        
+
         if (birthdayBefore != null) {
             query.addCriteria(Criteria.where("birthday").lt(birthdayBefore));
         }
 
         query.addCriteria(Criteria.where("roles").in(UserRoleType.ROLE_USER));
-        
+
         List<User> clients = mongoTemplate.find(query, User.class);
-        
+
         return clients.stream()
-            .map(modelMapper::toClientDto)
-            .collect(Collectors.toList());
+                .map(modelMapper::toClientDto)
+                .collect(Collectors.toList());
     }
 
     public ResponseClientDto findClientById(String id) throws ResourceNotFoundException {
@@ -97,7 +97,7 @@ public class ClientService {
 
     public void deleteClient(String id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent() && user.get().getClientInfo() != null &&  
+        if (user.isPresent() && user.get().getClientInfo() != null &&
                 !user.get().getClientInfo().getSubscriptions().isEmpty() &&
                 user.get().getClientInfo().getSubscriptions().get(0).getStatus() == SubscriptionStatus.ACTIVE) {
             throw new InvalidDataException("Нельзя удалить пользователя с активным абонементом");
@@ -111,7 +111,7 @@ public class ClientService {
         User client = getById(id);
 
         boolean needUpdate = false;
-        
+
         if (dto.getName() != null && !client.getName().equals(dto.getName())) {
             client.setName(dto.getName());
             needUpdate = true;
@@ -126,7 +126,7 @@ public class ClientService {
             if (uniquenessCheckService.findByEmail(dto.getEmail()).isPresent()) {
                 throw new UniquenessViolationException("Пользователь с электронной почтой %s уже существует"
                         .formatted(dto.getEmail()));
-            } 
+            }
 
             client.setEmail(dto.getEmail());
         }
@@ -135,7 +135,7 @@ public class ClientService {
             if (uniquenessCheckService.findByPhoneNumber(dto.getPhoneNumber()).isPresent()) {
                 throw new UniquenessViolationException("Пользователь с номером телефона %s уже существует"
                         .formatted(dto.getPhoneNumber()));
-            } 
+            }
 
             client.setPhoneNumber(dto.getPhoneNumber());
         }
@@ -163,7 +163,7 @@ public class ClientService {
                 training.getClients().add(clientPojo);
                 trainingRepository.save(training);
             });
-        } 
+        }
         return modelMapper.toClientDto(updatedClient);
     }
 

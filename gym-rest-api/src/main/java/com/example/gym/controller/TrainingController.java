@@ -54,7 +54,7 @@ public class TrainingController {
                             responseCode = "200",
                             description = "Тренировка успешно удалена."
                     )
-    })
+            })
     public ResponseEntity<?> deleteTraining(
             @Parameter(description = "Идентификатор тренировки, которую необходимо удалить.", required = true)
             @PathVariable String trainingId
@@ -71,11 +71,11 @@ public class TrainingController {
                             responseCode = "200",
                             description = "Тренировки успешно получены.",
                             content = @Content(mediaType = "application/json",
-                                array = @ArraySchema(
-                                        schema = @Schema(implementation = ResponseTrainingDto.class) 
-                                ))
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = ResponseTrainingDto.class)
+                                    ))
                     )
-    })
+            })
     public ResponseEntity<?> findAllTrainigs(
             @Parameter(description = "Адрес проведения", required = false)
             @RequestParam(name = "address", required = false) String address,
@@ -106,9 +106,9 @@ public class TrainingController {
                                     schema = @Schema(implementation = String.class))
                     ),
                     @ApiResponse(
-                        responseCode = "400",
-                        description = "Неккоректные данные.",
-                        content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -117,7 +117,7 @@ public class TrainingController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> registrationClientForTraining(
             @Parameter(description = "Идентификатор тренировки", required = true)
             @PathVariable String trainingId,
@@ -139,9 +139,9 @@ public class TrainingController {
                                     schema = @Schema(implementation = ResponseTrainingDto.class))
                     ),
                     @ApiResponse(
-                        responseCode = "400",
-                        description = "Неккоректные данные.",
-                        content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -150,7 +150,7 @@ public class TrainingController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> updateTraining(
             @Parameter(description = "Идентификатор тренировки, которую необходимо обновить.", required = true)
             @PathVariable String trainingId,
@@ -172,9 +172,9 @@ public class TrainingController {
                                     schema = @Schema(implementation = ResponseTrainingDto.class))
                     ),
                     @ApiResponse(
-                        responseCode = "400",
-                        description = "Неккоректные данные.",
-                        content = @Content(mediaType = "application/json",
+                            responseCode = "400",
+                            description = "Неккоректные данные.",
+                            content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     ),
                     @ApiResponse(
@@ -183,7 +183,7 @@ public class TrainingController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ResponseError.class))
                     )
-    })
+            })
     public ResponseEntity<?> getTraining(
             @Parameter(description = "Идентификатор тренировки, которую необходимо получить.", required = true)
             @PathVariable String trainingId
@@ -207,10 +207,10 @@ public class TrainingController {
                             description = "Тренировка/Клиент с указанным идентификатором не найден.",
                             content = @Content(mediaType = "application/json",
                                     array = @ArraySchema(
-                                            schema = @Schema(implementation = ResponseClientDto.class) 
+                                            schema = @Schema(implementation = ResponseClientDto.class)
                                     ))
                     )
-    })
+            })
     public ResponseEntity<?> findTrainingClients(
             @Parameter(description = "Идентификатор тренировки", required = true)
             @PathVariable String trainingId

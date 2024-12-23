@@ -84,8 +84,8 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException .class)
-    public ResponseEntity<?> handleConstraintViolationException(MethodArgumentNotValidException  e, HttpServletRequest request) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleConstraintViolationException(MethodArgumentNotValidException e, HttpServletRequest request) {
         Map<String, String> errors = new HashMap<>();
         for (ObjectError error : e.getBindingResult().getAllErrors()) {
             errors.put(((FieldError) error).getField(), error.getDefaultMessage());

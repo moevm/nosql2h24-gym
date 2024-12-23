@@ -25,7 +25,7 @@ public class CreateRoomDto {
     @Schema(description = "Название зала", example = "Название")
     @NotBlank(message = "Название не может быть пустым")
     private String name;
-    
+
     @Schema(description = "Вместительность")
     @NotNull(message = "Вместительность не может быть пустой")
     @Positive(message = "Вместительность должна быть положительной")

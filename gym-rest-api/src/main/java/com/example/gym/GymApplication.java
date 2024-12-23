@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 @EnableMongoAuditing
 public class GymApplication {
 
-	public static void main(String[] args) {
-		SpringApplication app = new SpringApplication(GymApplication.class);
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(GymApplication.class);
         String branch = System.getenv("CI_COMMIT_BRANCH");
         String profile = "default";
         if ("prod".equals(branch) || "test".equals(branch)) {
@@ -20,7 +20,7 @@ public class GymApplication {
         app.setAdditionalProfiles(profile);
         app.run(args);
 
-	}
+    }
 
 }
 	

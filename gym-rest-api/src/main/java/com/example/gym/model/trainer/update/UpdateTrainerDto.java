@@ -45,7 +45,7 @@ public class UpdateTrainerDto {
 
     @Schema(description = "Заметка")
     private String comment;
-    
+
     private UpdateTrainerInfo trainerInfo;
 
 }

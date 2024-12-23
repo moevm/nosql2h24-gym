@@ -35,11 +35,11 @@ public interface TrainingRepository extends MongoRepository<Training, String> {
 
     @Query("{ 'endTime': { $lt: ?0 }, 'trainer.id': ?1, 'id': ?2 }")
     Training findByEndTimeBeforeAndTrainerIdAndId(
-        LocalDateTime now, String trainerId, String trainingId);
+            LocalDateTime now, String trainerId, String trainingId);
 
     @Query("{ 'endTime': { $lt: ?0 }, 'trainer.id': ?1 }")
     List<Training> findAllByEndTimeBeforeAndTrainerId(
-        LocalDateTime now, String trainerId);
+            LocalDateTime now, String trainerId);
 
     @Query("{ 'trainer.id': { $in: ?0 } }")
     List<Training> findAllByTrainerIds(List<String> trainerIds);

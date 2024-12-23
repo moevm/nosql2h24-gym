@@ -35,7 +35,7 @@ public class JwtTokenUtils {
                 .toList();
         claims.put("roles", roles);
         claims.put("email", email);
-        
+
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + tokenLifeTime.toMillis());
 
@@ -55,7 +55,7 @@ public class JwtTokenUtils {
                 .toList();
         claims.put("roles", roles);
         claims.put("email", email);
-        
+
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + tokenLifeTime.toMillis());
 

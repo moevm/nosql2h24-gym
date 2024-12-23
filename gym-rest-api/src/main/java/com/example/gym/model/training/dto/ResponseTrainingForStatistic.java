@@ -19,7 +19,7 @@ public class ResponseTrainingForStatistic {
     @Schema(description = "Количество проведенных тренировок", example = "10")
     private Integer count;
     @ArraySchema(
-        schema = @Schema(description = "Тренировка", implementation = ResponseTrainingDto.class)
+            schema = @Schema(description = "Тренировка", implementation = ResponseTrainingDto.class)
     )
     private List<ResponseTrainingDto> trainings;
 

@@ -49,7 +49,7 @@ public class ResponseClientDto {
     @ArraySchema(
             schema = @Schema(description = "Роль", example = "ROLE_USER")
     )
-    private List<String> roles;     
+    private List<String> roles;
 
     @Schema(description = "Информация о клиенте", implementation = ClientInfo.class)
     private ClientInfo clientInfo;
@@ -60,5 +60,5 @@ public class ResponseClientDto {
     @Schema(description = "Дата последнего обновления")
     private LocalDateTime updatedDate;
 
-    
+
 }
