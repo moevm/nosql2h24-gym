@@ -1,7 +1,8 @@
 FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
+COPY pom.xml pom.xml
+COPY src src
+RUN mvn clean package
 
 #FROM openjdk:17-jdk-slim
 FROM bellsoft/liberica-openjre-alpine-musl:23
