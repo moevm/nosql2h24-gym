@@ -6,6 +6,6 @@ RUN mvn clean package -DskipTests
 #FROM openjdk:17-jdk-slim
 FROM bellsoft/liberica-openjre-alpine-musl:23
 WORKDIR /app
-COPY --from=build /app/target/gym-1.0.jar /app/app.jar
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+COPY --from=build /app/target/gym-1.0.jar /app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
 EXPOSE 8080
